@@ -1,0 +1,16 @@
+{
+  "name": "papeleria-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "handlebars-layouts": "^3.1.4",
+    "hbs": "^4.1.1"
+  }
+}

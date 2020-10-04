@@ -6,7 +6,7 @@ router.get('/productos/categorias', (req, res) => {
     res.render('productos/categorias', {
         sectionName: 'Productos',
         subsectionName: 'Categorías',
-        script: 'productosCategorias'
+        script: 'productosCategoriasClient'
     })
 })
 

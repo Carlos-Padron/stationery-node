@@ -68,7 +68,7 @@ var blockElem = (elem) => {
 
 var unblockElem = () => {
 
-    const elem = document.querySelector('overlay')
+    const elem = document.querySelector('.overlay')
     elem.remove()
 
 }

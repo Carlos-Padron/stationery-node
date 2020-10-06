@@ -2,10 +2,9 @@
   border: 1px red solid;
 }
 
-
 /*** Tables ***/
 
-.thead-orange{
+.thead-orange {
   background-color: #fbc177;
 }
 
@@ -122,3 +121,26 @@
     opacity: 0;
   }
 }
+
+/*** Cards ***/
+@media (min-width: 0) {
+  .card-deck .card {
+    flex: 0 0 calc(100% - 30px);
+  }
+}
+@media (min-width: 576px) {
+  .card-deck .card {
+    flex: 0 0 calc(50% - 30px);
+  }
+}
+@media (min-width: 768px) {
+  .card-deck .card {
+    flex: 0 0 calc(33.3333333333% - 30px);
+  }
+}
+@media (min-width: 992px) {
+  .card-deck .card {
+    flex: 0 0 calc(25% - 30px);
+  }
+}
+

@@ -11,12 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     var pwDiv = document.querySelector('#pwDiv')
     var pwMsg = document.querySelector('#pwMsg')
 
-    var blockElem = document.querySelector('.card')
+    var elemToBlock = document.querySelector('.card')
 
-    console.log(blockElem);
 
-    blockElem(blockElem)
-    unblockElem()
+  /*   blockElem(elemToBlock)
+    unblockElem() */
     //Listeners
     logInButton.addEventListener('click', () => {
         resetEmail()

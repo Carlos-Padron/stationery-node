@@ -1,3 +1,4 @@
+require('./DB/mongoose')
 const express   = require('express')
 const hbs       = require('hbs');
 const layouts   = require('handlebars-layouts');
@@ -14,13 +15,16 @@ const partialsPath          = path.join(__dirname, 'View/partials')
 //Routes imports
 const authRoutes        =  require('./Routes/auth/auth')
 const dashboardhRoutes  =  require('./Routes/dashboard/dashboard')
-const productosRoutes   =  require('./Routes/productos/productos')
+const productosRoutes   =  require('./Routes/productos/productos');
 
 //Sets hbs view engine ,views location, layout helper and partials
 app.set('view engine','hbs')
 app.set('views', viewsPath)
 hbs.registerHelper(layouts(hbs.handlebars))
 hbs.registerPartials(partialsPath)
+
+//JSON config
+app.use(express.json())
 
 //Sets static directory
 app.use(express.static(publicDirectoryPath))

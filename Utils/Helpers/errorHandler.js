@@ -1,17 +1,13 @@
 
-const errorHandler = (error, fieldsArray) =>{
+const errorHandler = (error) => {
     let localizedErrors = []
-console.log(fieldsArray);
-    fieldsArray.forEach(field => {
-        if (error.errors[field]) {
-            localizedErrors.push(error.errors[field].message)
-        }
-    });
-
+    for (const key in error.errors) {
+        let err = error.errors[key].message
+        localizedErrors.push(err)
+    }
     return localizedErrors
 
 }
-
 
 
 module.exports = errorHandler

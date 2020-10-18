@@ -14,9 +14,9 @@ const viewsPath             = path.join(__dirname, 'View/layouts')
 const partialsPath          = path.join(__dirname, 'View/partials')
 
 //Routes imports
-const authRoutes        =  require('./Routes/auth/auth')
-const dashboardhRoutes  =  require('./Routes/dashboard/dashboard')
-const productosRoutes   =  require('./Routes/productos/productos');
+const authRoutes        =  require('./Routes/auth/authRoutes')
+const dashboardhRoutes  =  require('./Routes/dashboard/dashboardRoutes')
+const productosRoutes   =  require('./Routes/productos/productosRoutes');
 
 //Sets hbs view engine ,views location, layout helper and partials
 app.set('view engine','hbs')

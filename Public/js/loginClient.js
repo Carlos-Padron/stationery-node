@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     var elemToBlock = document.querySelector('.card')
 
 
-  /*   blockElem(elemToBlock)
-    unblockElem() */
+    /*   blockElem(elemToBlock)
+      unblockElem() */
     //Listeners
     logInButton.addEventListener('click', () => {
         resetEmail()
@@ -23,9 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
         valdiateEmail(email)
         valdiatePw(pw)
 
+        sendLoginCredeintials(email.value, pw.value, elemToBlock)
+
+
     })
-
-
 
     function valdiateEmail(email) {
         if (email.value === '') {
@@ -66,6 +67,42 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(pwDiv);
     }
 
+    async function sendLoginCredeintials(email, pw, elemToBlock) {
 
+        //successNotification('memis')
+
+        let data = JSON.stringify({
+            "email": email,
+            "password": pw
+        })
+
+        console.log(data);
+        blockElem(elemToBlock)
+
+        try {
+            let request = await fetch('/login', { method: 'POST' }, data)
+            let json = await request.json()
+            console.log(json);
+
+            unblockElem()
+
+            if (json === undefined) { return }
+
+            if (json.error) {
+                warningNotification(json.response)
+            } else {
+                successNotification(json.response)
+
+                let token = json.response.token
+                localStorage.setItem('authToken', token)
+                //window.location = '/dashboard'
+            }
+        } catch (error) {
+            errorNotification(error.toString())
+            unblockElem()
+
+        }
+
+    }
 
 })

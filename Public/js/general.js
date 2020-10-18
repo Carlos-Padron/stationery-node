@@ -1,5 +1,7 @@
 const SITE = 'localhost:3000/'
 
+
+//DataTables
 const dataTableConfig = {
     "sProcessing": "Procesando...",
     "sLengthMenu": "Mostrar _MENU_ registros",
@@ -32,11 +34,75 @@ var initializeDataTable = (tableID, data, columns) => {
         order: [],
         pageLength: 10,
         language: dataTableConfig
-
-
     });
 }
 
+//Notify
+
+var successNotification = (message) => {
+    $.notify({ message: message }, {
+        type: 'success',
+        allow_dismiss: true,
+        z_index: 1031,
+        delay: 2000,
+        offset: {
+            x: 20,
+            y: 20
+        },
+        placement: {
+            from: "top",
+            align: "right"
+        },
+        animate: {
+            enter: 'animated fadeIn',
+            exit: 'animated fadeOut'
+        },
+    });
+}
+
+var errorNotification = (message) => {
+    $.notify({ message: message }, {
+        type: 'danger',
+        allow_dismiss: true,
+        z_index: 1031,
+        delay: 2000,
+        offset: {
+            x: 20,
+            y: 20
+        },
+        placement: {
+            from: "top",
+            align: "right"
+        },
+        animate: {
+            enter: 'animated fadeIn',
+            exit: 'animated fadeOut'
+        },
+    });
+}
+
+var warningNotification = (message) => {
+    $.notify({ message: message }, {
+        type: 'warning',
+        allow_dismiss: true,
+        z_index: 1031,
+        delay: 2000,
+        offset: {
+            x: 20,
+            y: 20
+        },
+        placement: {
+            from: "top",
+            align: "right"
+        },
+        animate: {
+            enter: 'animated fadeIn',
+            exit: 'animated fadeOut'
+        },
+    });
+}
+
+//Custom Functions
 var blockElem = (elem) => {
     const div = document.createElement('div')
     div.classList.add('overlay')

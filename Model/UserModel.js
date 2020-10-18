@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -33,13 +32,7 @@ const userSchema = new mongoose.Schema({
     },
     picture: {
         type: Buffer
-    },
-    tokens: [{
-        token: {
-            type: String,
-            required: false
-        }
-    }]
+    }
 }, {
     timestamps: true
 })
@@ -50,7 +43,8 @@ userSchema.methods.toJSON = function () {
     const userObj = user.toObject()
 
     delete userObj.password
-    delete userObj.tokens
+    delete userObj.createdAt
+    delete userObj.updatedAt
 
     return userObj
 }
@@ -58,11 +52,20 @@ userSchema.methods.toJSON = function () {
 //Validator
 //*Retornar TRUE si es válido
 //*Retornar FALSE si no pasa la validación
-userSchema.path('email').validate(async (email) => {
+userSchema.path('email').validate(async function (email) {
+    let existingUser = await mongoose.models.User.findOne({ _id: this._id.toString() })
 
-    const emailCount = await mongoose.models.User.countDocuments({ email })
-    return emailCount == 0 ? true : false
-
+    if (existingUser) {
+        if (existingUser.email === email) {
+            return true
+        } else {
+            let email = await mongoose.models.User.findOne({ email })
+                (email) ? false : true
+        }
+    } else {
+        let user = await mongoose.models.User.find({ email })
+            (user.length > 0) ? false : true
+    }
 }, 'Ya existe una cuenta con el correo ingresado.')
 
 
@@ -80,29 +83,21 @@ userSchema.methods.generateAuthToken = async function () {
     const user = this
     const token = jwt.sign({ _id: user._id.toString() }, process.env.SECRET_KEY)
 
-    console.log(`=== TOKEN: ${token} ===`)
-    user.tokens = user.tokens.push({ token })
-    await user.save()
-
     return token
 }
 
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email })
-    console.log(user);
 
     if (!user) {
-        throw new Error("No se encontró al usuario con el correo ingresado")
+        throw new Error("No se encontró al usuario con el correo ingresado.")
     }
 
     const isMatch = await bcrypt.compare(password, user.password)
-
     if (!isMatch) {
-        throw new Error('Constraseña incorrecta')
+        throw new Error('Constraseña incorrecta.')
     }
-
     return user
-
 }
 
 

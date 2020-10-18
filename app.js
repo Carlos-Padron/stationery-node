@@ -1,17 +1,30 @@
 require('dotenv').config()
 require('./DB/mongoose')
-const express   = require('express')
-const hbs       = require('hbs');
-const layouts   = require('handlebars-layouts');
-const path      = require('path')
+const express    = require('express')
+const redis      = require('redis')
+const bodyParser = require('body-parser')
+const hbs        = require('hbs');
+const layouts    = require('handlebars-layouts');
+const path       = require('path')
+const session    = require('express-session')
+const redisStore = require('connect-redis')(session)
 
-const app       = express()
-const PORT      = process.env.PORT || 3000
+const app        = express()
+const PORT       = process.env.PORT || 3000
 
 //Express config
 const publicDirectoryPath   = path.join(__dirname, 'Public')
 const viewsPath             = path.join(__dirname, 'View/layouts')
 const partialsPath          = path.join(__dirname, 'View/partials')
+
+//Session config
+const redisClient = redis.createClient()
+app.use(session({
+    secret: process.env.REDIS_SECRET,
+    store: new redisStore({host:"localhost", port: 6379, client: redisClient, ttl:260}),
+    saveUninitialized: false,
+    resave: false,
+}))
 
 //Routes imports
 const authRoutes        =  require('./Routes/auth/authRoutes')
@@ -25,7 +38,7 @@ hbs.registerHelper(layouts(hbs.handlebars))
 hbs.registerPartials(partialsPath)
 
 //JSON config
-app.use(express.json())
+app.use(bodyParser.json())
 
 //Sets static directory
 app.use(express.static(publicDirectoryPath))

@@ -21,9 +21,9 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
+        required: [true, 'El email es requerido.'],
         lowercase: true,
-        unique: [true, 'Ya existe un usuario con el correo ingresado.']
+        //unique: true
     },
     password: {
         type: String,
@@ -53,6 +53,7 @@ userSchema.methods.toJSON = function () {
 //*Retornar TRUE si es válido
 //*Retornar FALSE si no pasa la validación
 userSchema.path('email').validate(async function (email) {
+
     let existingUser = await mongoose.models.User.findOne({ _id: this._id.toString() })
 
     if (existingUser) {
@@ -60,11 +61,12 @@ userSchema.path('email').validate(async function (email) {
             return true
         } else {
             let email = await mongoose.models.User.findOne({ email })
-                (email) ? false : true
+            if (email){ return false } else { return true }
         }
     } else {
-        let user = await mongoose.models.User.find({ email })
-            (user.length > 0) ? false : true
+        console.log('en else');
+        let u = await mongoose.models.User.find({ email })
+        if (u.length > 0){ return false } else { return true }
     }
 }, 'Ya existe una cuenta con el correo ingresado.')
 

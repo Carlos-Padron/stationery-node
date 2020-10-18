@@ -71,16 +71,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //successNotification('memis')
 
-        let data = JSON.stringify({
+        let body = JSON.stringify({
             "email": email,
             "password": pw
         })
 
-        console.log(data);
+        console.log(body);
         blockElem(elemToBlock)
 
         try {
-            let request = await fetch('/login', { method: 'POST' }, data)
+            let request = await fetch('/login', 
+            { method: 'POST', 
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body
+            })
+
             let json = await request.json()
             console.log(json);
 
@@ -91,11 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (json.error) {
                 warningNotification(json.response)
             } else {
-                successNotification(json.response)
+                successNotification()
 
                 let token = json.response.token
                 localStorage.setItem('authToken', token)
-                //window.location = '/dashboard'
+                window.location = '/dashboard'
             }
         } catch (error) {
             errorNotification(error.toString())

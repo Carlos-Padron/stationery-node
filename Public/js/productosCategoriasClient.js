@@ -76,8 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
 
     //Initial Actions
-    initTable('mainTable', data, 'btnNext', 'btnPrev', 'pageCounter')
-    reloadTable()
+    //initTable('mainTable', data, 'btnNext', 'btnPrev', 'pageCounter')
+    //reloadTable()
+
+    let normalTable = new NormalTable('mainTable',['col1', 'col2', 'col3',  'col1', 'col2', 'col3' ,'col1', 'col2', 'col3', 'col1', 'col2', 'col3'], data, 'btnNext', 'btnPrev', 'pageCounter')
+    normalTable.reloadTable()
 
 
 })

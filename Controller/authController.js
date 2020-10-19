@@ -28,8 +28,7 @@ const createUser = async (req, res) => {
 
 
 const logInUser = async (req, res) => {
-    const email = req.body.email
-    const password = req.body.password
+    const {email, password} = req.body
 
     try {
         const user = await User.findByCredentials(email, password)

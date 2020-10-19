@@ -24,6 +24,12 @@ app.use(session({
     store: new redisStore({host:"localhost", port: 6379, client: redisClient, ttl:260}),
     saveUninitialized: false,
     resave: false,
+    name: "sessionID",
+    cookie:{
+        secure: "false",
+        httpOnly: true,
+       // maxAge: 
+    }
 }))
 
 //Routes imports

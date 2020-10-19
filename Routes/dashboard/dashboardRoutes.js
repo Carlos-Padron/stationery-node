@@ -3,7 +3,11 @@ const router = new express.Router()
 
 router.get('/dashboard',(req, res)=>{
 
-    if (req.session.key) {
+    res.render('dashboard',{
+        name: 'Tablero',
+        script:'dashboardClient'
+    }) 
+   /*  if (req.session.key) {
         res.render('dashboard',{
             name: 'Tablero'
         })    
@@ -12,7 +16,7 @@ router.get('/dashboard',(req, res)=>{
             script: 'loginClient'
         })
     }
-
+ */
     
 })
 

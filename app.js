@@ -1,13 +1,11 @@
 require('dotenv').config()
 require('./DB/mongoose')
 const express    = require('express')
-const redis      = require('redis')
 const bodyParser = require('body-parser')
 const hbs        = require('hbs');
 const layouts    = require('handlebars-layouts');
 const path       = require('path')
-const session    = require('express-session')
-const redisStore = require('connect-redis')(session)
+const { sessionObj } = require('./Utils/Helpers/redisHelper')
 
 const app        = express()
 const PORT       = process.env.PORT || 3000
@@ -18,19 +16,7 @@ const viewsPath             = path.join(__dirname, 'View/layouts')
 const partialsPath          = path.join(__dirname, 'View/partials')
 
 //Session config
-const redisClient = redis.createClient()
-app.use(session({
-    secret: process.env.REDIS_SECRET,
-    store: new redisStore({host:"localhost", port: 6379, client: redisClient, ttl:260}),
-    saveUninitialized: false,
-    resave: false,
-    name: "sessionID",
-    cookie:{
-        secure: "false",
-        httpOnly: true,
-       // maxAge: 
-    }
-}))
+app.use( sessionObj )
 
 //Routes imports
 const authRoutes        =  require('./Routes/auth/authRoutes')

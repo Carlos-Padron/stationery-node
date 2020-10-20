@@ -36,6 +36,7 @@ const logInUser = async (req, res) => {
 
         req.session.key = token
 
+        console.log(req.session);
         return res.json({
             error: false,
             message: "Acceso correcto.",

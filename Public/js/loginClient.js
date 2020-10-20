@@ -14,8 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     var elemToBlock = document.querySelector('.card')
 
 
-    /*   blockElem(elemToBlock)
-      unblockElem() */
+    //initialActions
+    getErrorCode()
+
     //Listeners
     logInButton.addEventListener('click', () => {
         resetEmail()
@@ -80,14 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
         blockElem(elemToBlock)
 
         try {
-            let request = await fetch('/login', 
-            { method: 'POST', 
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body
-            })
+            let request = await fetch('/login',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'credentials': 'same-origin'
+                    },
+                    body
+                })
 
             let json = await request.json()
             console.log(json);
@@ -97,18 +100,37 @@ document.addEventListener('DOMContentLoaded', () => {
             if (json === undefined) { return }
 
             if (json.error) {
-                warningNotification(json.response)
+                warningNotification(json.message)
             } else {
-                successNotification()
+                successNotification(json.message)
 
-                let token = json.response.token
-                localStorage.setItem('authToken', token)
                 window.location = '/dashboard'
             }
         } catch (error) {
             errorNotification(error.toString())
             unblockElem()
 
+        }
+
+    }
+
+    function getErrorCode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        switch (code) {
+            case '401':
+                errorNotification('No se pudo autorizar la petición.')
+                break;
+
+            case '403':
+                errorNotification('No se pudo autenticar el usuario.')
+                break
+            case '500':
+                errorNotification('Ocurrió un error en el sitio.')
+                break
+            default:
+                break;
         }
 
     }

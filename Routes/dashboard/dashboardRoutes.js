@@ -1,23 +1,14 @@
 const express = require('express')
 const router = new express.Router()
 
-router.get('/dashboard',(req, res)=>{
+const { authViews } = require('../../Utils/Middlewares/authMiddleware')
+
+
+router.get('/dashboard',authViews ,async (req, res)=>{
 
     res.render('dashboard',{
-        name: 'Tablero',
-        script:'dashboardClient'
-    }) 
-   /*  if (req.session.key) {
-        res.render('dashboard',{
-            name: 'Tablero'
-        })    
-    } else {
-        res.render('login',{
-            script: 'loginClient'
-        })
-    }
- */
-    
+        name: 'Tablero'
+    })    
 })
 
 module.exports = router

@@ -1,28 +1,42 @@
-const jwt = require('jsonwebtoken')
+const jwt          = require('jsonwebtoken')
+const User         = require('../../Model/UserModel')
+const { redisGet } = require('../Helpers/redisHelper')
 
-const auth = async (req, res, next) => {
-    let authorizationHeader = req.header('Authorization')
 
-    if (authorizationHeader) {
-        const token = auhtorizationHeader.split(' ')[1]
-        jwt.verify(token, process.env.SECRET_KEY, (error, userID) => {
-            if (error) {
-                res.status(401).json({
-                    "error": true,
-                    "reponse": "Usuario no autenticado"
-                })
-            } else {
-                req.userID = userID
-                next()
+
+const authViews = async (req, res, next) => {
+    try {
+        console.log('en middleware');
+
+        if (req.sessionID) {
+
+            let cookie = await redisGet(`sess:${req.sessionID}`)
+
+            if (!cookie) {
+                return res.redirect('/login?data=d')
             }
-        })
-    } else {
-        res.status(401).json({
-            "error": true,
-            "reponse": "Token no proveído"
-        })
+
+            console.log(cookie);
+            let token = JSON.parse(cookie).key
+
+            let userID = jwt.verify(token, process.env.SECRET_KEY)
+            let user = await User.findById(userID)
+
+            if (user) {
+                req.user = user
+                next()
+            } else {
+                return res.redirect('/login?code=403')
+            }
+        } else {
+            return res.redirect('/login?code=401')
+        }
+    } catch (error) {
+        return res.redirect('/login?code=500')
     }
 }
 
-module.exports = auth
+module.exports = {
+    authViews
+}
 

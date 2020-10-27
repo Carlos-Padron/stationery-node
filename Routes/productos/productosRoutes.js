@@ -1,12 +1,13 @@
 const express = require('express')
 const router = new express.Router()
+const User = require('../../Model/UserModel')
 
 
-router.get('/productos/categorias', (req, res) => {
-    res.render('productos/categorias', {
+router.get('/productos/marcas', (req, res) => {
+    res.render('productos/marcas', {
         sectionName: 'Productos',
-        subsectionName: 'Categorías',
-        script: 'productosCategoriasClient'
+        subsectionName: 'Marcas',
+        script: 'productosMarcasClient'
     })
 })
 
@@ -17,5 +18,6 @@ router.get('/productos/inventario', (req, res) => {
         script: 'productosInventario'
     })
 })
+
 
 module.exports = router

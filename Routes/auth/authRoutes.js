@@ -1,17 +1,12 @@
 const express = require('express');
 const router = new express.Router();
 const authController = require('../../Controller/authController')
+const { redirect } = require('../../Utils/Middlewares/authMiddleware')
 
-router.post('/usuarios/nuevoUsuario', authController.createUser)
+router.get('/login', redirect, authController.index)
 
 router.post('/login', authController.logInUser)
 
-
-router.get('/login',(req, res)=>{
-    res.render('login',{
-        script: 'loginClient'
-    })
-})
 
        
 

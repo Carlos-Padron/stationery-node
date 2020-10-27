@@ -22,6 +22,7 @@ app.use( sessionObj )
 const authRoutes        =  require('./Routes/auth/authRoutes')
 const dashboardhRoutes  =  require('./Routes/dashboard/dashboardRoutes')
 const productosRoutes   =  require('./Routes/productos/productosRoutes');
+const usuariosRoutes   =  require('./Routes/usuarios/usuariosRoutes');
 
 //Sets hbs view engine ,views location, layout helper and partials
 app.set('view engine','hbs')
@@ -39,6 +40,7 @@ app.use(express.static(publicDirectoryPath))
 app.use(authRoutes)
 app.use(dashboardhRoutes)
 app.use(productosRoutes)
+app.use(usuariosRoutes)
 
 
 app.listen(PORT,()=>{

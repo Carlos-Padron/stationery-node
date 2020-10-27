@@ -15,7 +15,7 @@ const sessionObj = session({
     cookie:{
         secure: false,
         httpOnly: false,
-       // maxAge: 
+        maxAge: (60 * 60 * 1000) * 24 
     }
 })
 

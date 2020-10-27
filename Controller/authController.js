@@ -1,31 +1,10 @@
 const User = require('../Model/UserModel')
-const errorHandler = require('../Utils/Helpers/errorHandler')
 
-
-const createUser = async (req, res) => {
-    const user = new User(req.body)
-
-    try {
-        await user.save()
-        res.status(201).json({
-            "error": false,
-            "message": 'Usuario creado correctamente.',
-            "response": null,
-        })
-
-    } catch (error) {
-
-       let errors = errorHandler(error)
-        res.status(400).json({
-            "error": true,
-            "message": errors,
-            "response": null
-        });
-
-    }
-
+const index = (req,res) =>{
+    res.render('login',{
+        script: 'loginClient'
+    })
 }
-
 
 const logInUser = async (req, res) => {
     const {email, password} = req.body
@@ -58,9 +37,13 @@ const logInUser = async (req, res) => {
 
 }
 
+const logOutUser = async (req,res) => {
+
+}
 
 module.exports = {
-    createUser,
-    logInUser
+    index,
+    logInUser,
+    logOutUser
 }
 

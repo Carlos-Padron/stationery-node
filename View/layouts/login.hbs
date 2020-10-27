@@ -32,6 +32,12 @@
         }
     }
 </style>
+<script type="text/javascript">
+    window.history.forward();
+    function noBack() {
+        window.history.forward();
+    } 
+</script>
 
 <body class="bg-default">
     <div class="main-content">
@@ -69,7 +75,8 @@
                                 <div id="emailDiv" class="form-group mb-3">
                                     <div class="input-group input-group-merge input-group-alternative">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="uil uil-envelope-alt" style="color:#adb5bd; font-size:1.05rem !important"></i></span>
+                                            <span class="input-group-text"><i class="uil uil-envelope-alt"
+                                                    style="color:#adb5bd; font-size:1.05rem !important"></i></span>
                                         </div>
                                         <input id="email" class="form-control" placeholder="Email" type="email">
                                     </div>
@@ -79,7 +86,8 @@
                                 <div id="pwDiv" class="form-group">
                                     <div class="input-group input-group-merge input-group-alternative">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="uil uil-lock-alt" style="color:#adb5bd; font-size:1.05rem !important"></i></span>
+                                            <span class="input-group-text"><i class="uil uil-lock-alt"
+                                                    style="color:#adb5bd; font-size:1.05rem !important"></i></span>
                                         </div>
                                         <input id="pw" class="form-control" placeholder="Contraseña" type="password">
                                     </div>
@@ -111,7 +119,7 @@
     <script src="/assets/vendor/js-cookie/js.cookie.js"></script>
     <script src="/assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
     <script src="/assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
-    
+
     <script src="/assets/js/argon.js?v=1.1.0"></script>
     <!-- Argon JS -->
     <script src="assets/vendor/bootstrap-notify/bootstrap-notify.min.js"></script>

@@ -2,12 +2,6 @@
   border: 1px red solid;
 }
 
-/*** Tables ***/
-
-.thead-orange {
-  background-color: #fbc177;
-}
-
 /***Spinner Overlay***/
 
 .overlay {
@@ -143,4 +137,10 @@
     flex: 0 0 calc(25% - 30px);
   }
 }
+
+.disabled-btn {
+  cursor: wait;
+}
+
+
 

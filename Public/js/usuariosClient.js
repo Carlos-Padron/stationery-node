@@ -21,15 +21,15 @@ window.addEventListener("DOMContentLoaded", () => {
   ];
   let usuariosData = [];
 
-  const searchBtn      = document.querySelector("#btnSearch");
-  const searchForm     = document.querySelector("#searchForm");
+  const searchBtn = document.querySelector("#btnSearch");
+  const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
-  const usuariosTable  = document.querySelector("#mainTable");
-  const addBtn         = document.querySelector("#btnAdd");
-  const addUserBtn     = document.querySelector("#btn_add_user");
-  const updateUserBtn  = document.querySelector("#btn_update_user");
-  const mainModal      = document.querySelector("#main_modal");
-  const mainTableBody  = document.querySelector("#mainTable tbody.list");
+  const usuariosTable = document.querySelector("#mainTable");
+  const addBtn = document.querySelector("#btnAdd");
+  const addUserBtn = document.querySelector("#btn_add_user");
+  const updateUserBtn = document.querySelector("#btn_update_user");
+  const mainModal = document.querySelector("#main_modal");
+  const mainTableBody = document.querySelector("#mainTable tbody.list");
 
   //Listeners
   searchBtn.addEventListener("click", search);
@@ -37,12 +37,10 @@ window.addEventListener("DOMContentLoaded", () => {
   addUserBtn.addEventListener("click", addUserBtnClick);
   updateUserBtn.addEventListener("click", updateUserBtnClick);
   mainTableBody.addEventListener("click", rowClicked);
-  btnClearSearch.addEventListener("click", rowClicked);
+  btnClearSearch.addEventListener("click", cleanSearch);
 
   //functions
   async function search() {
-    console.log("tapped");
-    console.log(searchForm);
     blockElem(searchForm);
 
     let body = {};
@@ -180,7 +178,6 @@ window.addEventListener("DOMContentLoaded", () => {
           return;
         }
       }
-      console.log(mainModal);
       enableButton(addUserBtn, "Agregar");
 
       modalAlert(
@@ -298,8 +295,6 @@ window.addEventListener("DOMContentLoaded", () => {
           data = document.querySelector(`#${elem}`);
           msg = document.querySelector(`#${elem}Msg`);
 
-          console.log(data);
-
           if (data.value === "") {
             data.classList.add("invalid-input");
             msg.innerHTML += "El apellido paterno es requerido.";
@@ -370,55 +365,11 @@ window.addEventListener("DOMContentLoaded", () => {
         addUserBtn.classList.remove("d-none");
         updateUserBtn.classList.add("d-none");
         break;
-
+      case "searchForm":
+        document.querySelector("#searchForm").reset();
+        break;
       default:
         break;
-    }
-  }
-
-  function addUserBtnClick() {
-    confirmationAlert("Se registrará el usuario.", () => {
-      save(routes.add);
-    });
-  }
-
-  function updateUserBtnClick() {
-    confirmationAlert("Se actualizará el usuario.", () => {
-      console.log("cb");
-      save(routes.update, true);
-    });
-  }
-
-  async function deleteConfirmation(_id) {
-    confirmationAlert("Se eliminará el usuario seleccionado.", () => {
-      destroy(_id);
-    });
-  }
-
-  async function rowClicked(e) {
-    if (e.target && e.target.classList.contains("show")) {
-      if (e.target.tagName === "I") {
-        let button = e.target.parentElement;
-        let index = button.getAttribute("data-index");
-        showMainModalEdit(usuariosData[index]);
-      } else {
-        let button = e.target;
-        let index = button.getAttribute("data-index");
-        console.log(usuariosData[index]);
-        showMainModalEdit(usuariosData[index]);
-      }
-    }
-
-    if (e.target && e.target.classList.contains("delete")) {
-      if (e.target.tagName === "I") {
-        let button = e.target.parentElement;
-        let index = button.getAttribute("data-index");
-        deleteConfirmation(usuariosData[index]);
-      } else {
-        let button = e.target;
-        let index = button.getAttribute("data-index");
-        deleteConfirmation(usuariosData[index]);
-      }
     }
   }
 
@@ -437,10 +388,66 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function addUserBtnClick() {
+    confirmationAlert("Se registrará el usuario.", () => {
+      save(routes.add);
+    });
+  }
+
+  function updateUserBtnClick() {
+    confirmationAlert("Se actualizará el usuario.", () => {
+      save(routes.update, true);
+    });
+  }
+
+  function deleteConfirmation(_id) {
+    confirmationAlert("Se eliminará el usuario seleccionado.", () => {
+      destroy(_id);
+    });
+  }
+
+  function cleanSearch() {
+    resetForm("searchForm");
+  }
+
+  async function rowClicked(e) {
+    if (e.target && e.target.classList.contains("show")) {
+      if (e.target.tagName === "I") {
+        let button = e.target.parentElement;
+        let index = button.getAttribute("data-index");
+        showMainModalEdit(usuariosData[index]);
+      } else {
+        let button = e.target;
+        let index = button.getAttribute("data-index");
+        showMainModalEdit(usuariosData[index]);
+      }
+    }
+
+    if (e.target && e.target.classList.contains("delete")) {
+      if (e.target.tagName === "I") {
+        let button = e.target.parentElement;
+        let index = button.getAttribute("data-index");
+        deleteConfirmation(usuariosData[index]);
+      } else {
+        let button = e.target;
+        let index = button.getAttribute("data-index");
+        deleteConfirmation(usuariosData[index]);
+      }
+    }
+  }
+
   function disableButton(btn, msg) {
     btn.setAttribute("disabled", true);
     btn.classList.add("disabled-btn");
-    btn.innerHTML = `<i class="fa fa-refresh fa-spin"></i> ${msg}`;
+    btn.innerHTML = `
+    
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="spinner-border spinner-border-sm text-light" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <span>${msg}</span>
+    </div>
+    `;
   }
 
   function enableButton(btn, msg) {

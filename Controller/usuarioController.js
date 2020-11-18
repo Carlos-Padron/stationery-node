@@ -110,7 +110,7 @@ const searchUsers = async (req, res) => {
     const users = await User.find({
       name: { $regex: ".*" + name + ".*", $options: "i" },
     });
-
+console.log(users);
     res.json({
       error: false,
       message: null,

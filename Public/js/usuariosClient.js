@@ -101,20 +101,15 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       usuariosData = json.response;
-
-      if (usuariosData.length === 0) {
-        usuariosTable.childNodes[0].innerHTML = "No se encontraron registros";
-        unblockElem(searchForm);
-        return;
-      }
-
+console.log('search');
+      
       usuariosData.forEach((elem, index) => {
         elem.actions = `<div class="btn-group">
         <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
         <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
     </div>`;
       });
-
+console.log('search reload');
       mainTable.reloadTable(usuariosData);
       unblockElem(searchForm);
     } catch (error) {
@@ -489,5 +484,5 @@ window.addEventListener("DOMContentLoaded", () => {
     "btnPrev",
     "pageCounter"
   );
-  mainTable.reloadTable();
+  mainTable.reloadTable(usuariosData);
 });

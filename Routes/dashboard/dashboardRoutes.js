@@ -1,14 +1,9 @@
-const express = require('express')
-const router = new express.Router()
+const express = require("express");
+const router = new express.Router();
+const dashboardContoller = require("../../Controller/dashboardController");
 
-const { authViews } = require('../../Utils/Middlewares/authMiddleware')
+const { authViews } = require("../../Utils/Middlewares/authMiddleware");
 
+router.get("/dashboard", authViews, dashboardContoller.index);
 
-router.get('/dashboard',authViews ,async (req, res)=>{
-
-    res.render('dashboard',{
-        name: 'Tablero'
-    })    
-})
-
-module.exports = router
+module.exports = router;

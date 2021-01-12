@@ -13,7 +13,6 @@ const authViews = async (req, res, next) => {
         return res.redirect("/login");
       }
 
-      console.log(cookie);
       let token = JSON.parse(cookie).key;
 
       let userID = jwt.verify(token, process.env.SECRET_KEY);
@@ -26,6 +25,8 @@ const authViews = async (req, res, next) => {
         return res.redirect("/login?code=403");
       }
     } else {
+      console.log("sin session");
+
       return res.redirect("/login?code=401");
     }
   } catch (error) {
@@ -39,14 +40,23 @@ const redirect = async (req, res, next) => {
       let cookie = await redisGet(`sess:${req.sessionID}`);
 
       if (cookie) {
-        return res.redirect("/dashboard");
-        next();
+        let token = JSON.parse(cookie).key;
+
+        let userID = jwt.verify(token, process.env.SECRET_KEY);
+        let user = await User.findById(userID);
+
+        if (user) {
+          req.user = user;
+          return res.redirect("/dashboard");
+        }
       }
 
-      console.log(cookie);
       next();
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    next();
+  }
 };
 
 module.exports = {

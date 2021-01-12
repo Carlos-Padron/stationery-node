@@ -1,13 +1,17 @@
-const express = require('express');
+const { Router } = require("express");
+const express = require("express");
 const router = new express.Router();
-const authController = require('../../Controller/authController')
-const { redirect } = require('../../Utils/Middlewares/authMiddleware')
+const authController = require("../../Controller/authController");
+const dashboardContoller = require("../../Controller/dashboardController");
+const { authViews } = require("../../Utils/Middlewares/authMiddleware");
 
-router.get('/login', authController.index)
+const { redirect } = require("../../Utils/Middlewares/authMiddleware");
 
-router.post('/login', authController.logInUser)
+//deafult route
+router.get("/", authViews ,dashboardContoller.index);
 
+router.get("/login", redirect, authController.index);
 
-       
+router.post("/login", authController.logInUser);
 
-module.exports = router
+module.exports = router;

@@ -7,8 +7,9 @@ const index = (req,res) =>{
 }
 
 const logInUser = async (req, res) => {
-    const {email, password} = req.body
 
+    const { email, password } = req.body
+    
     try {
         const user = await User.findByCredentials(email, password)
         const token = await user.generateAuthToken()

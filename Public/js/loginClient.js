@@ -64,8 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function sendLoginCredeintials(email, pw, elemToBlock) {
-    //successNotification('memis')
-
     let body = JSON.stringify({
       email: email,
       password: pw,
@@ -74,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(body);
     blockElem(elemToBlock);
     try {
+
       let request = await fetch("/login", {
         method: "POST",
         headers: {
@@ -86,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let json = await request.json();
       console.log(json);
-      
+
       unblockElem(elemToBlock);
 
       if (json === undefined) {
@@ -123,6 +122,5 @@ document.addEventListener("DOMContentLoaded", () => {
       default:
         break;
     }
-  
   }
 });

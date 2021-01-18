@@ -8,7 +8,7 @@ class NormalTable {
     pageCounterID
   ) {
     this.currentPage = 1;
-    this.rows = 1;
+    this.rows = 10;
 
     this.table = document.querySelector(`#${tableID}`);
     this.headers = headers;
@@ -16,15 +16,12 @@ class NormalTable {
     this.next = document.querySelector(`#${btnNextID}`);
     this.prev = document.querySelector(`#${btnPrevID}`);
     this.pageCounter = document.querySelector(`#${pageCounterID}`);
-console.log(this.data);
     this.next.addEventListener("click", this.nextPage);
     this.prev.addEventListener("click", this.prevPage);
   }
 
   nextPage = () => {
-    console.log('nextPage');
     if (this.currentPage < this.numPages()) {
-      console.log('nestfunc');
       this.currentPage++;
       this.reloadTable(this.data);
     }
@@ -32,9 +29,7 @@ console.log(this.data);
 
   prevPage = () => {
 
-    console.log('prev Page');
     if (this.currentPage > 1) {
-      console.log('prevFunc');
       this.currentPage--;
       this.reloadTable(this.data);
     }
@@ -45,7 +40,6 @@ console.log(this.data);
     //   return;
     // }
 
-    console.log(newData.length);
     this.data = (newData.length > 0) ? newData : []
 
     // Validate page
@@ -55,7 +49,6 @@ console.log(this.data);
     let tbody = this.table.children[1];
     tbody.innerHTML = "";
 
-    console.log(this.data);
 
     if (this.data.length > 0) {
       for (

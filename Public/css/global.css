@@ -225,3 +225,9 @@
   clip: auto;
   white-space: normal;
 }
+
+/*** Other ***/
+
+.hover:hover {
+  cursor: pointer;
+}

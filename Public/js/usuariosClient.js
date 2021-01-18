@@ -24,7 +24,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.querySelector("#btnSearch");
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
-  const usuariosTable = document.querySelector("#mainTable");
   const addBtn = document.querySelector("#btnAdd");
   const addUserBtn = document.querySelector("#btn_add_user");
   const updateUserBtn = document.querySelector("#btn_update_user");
@@ -101,7 +100,6 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       usuariosData = json.response;
-console.log('search');
       
       usuariosData.forEach((elem, index) => {
         elem.actions = `<div class="btn-group">
@@ -109,7 +107,7 @@ console.log('search');
         <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
     </div>`;
       });
-console.log('search reload');
+
       mainTable.reloadTable(usuariosData);
       unblockElem(searchForm);
     } catch (error) {

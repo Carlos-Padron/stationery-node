@@ -51,13 +51,6 @@
         <div class="card-body" style="padding-bottom: 0">
           <div class="table-responsive">
             <table id="mainTable" class="table align-items-center">
-              <thead class="thead-light">
-                <tr>
-                  <th class="text-center">Usuario</th>
-                  <th class="text-center">Acciones</th>
-                </tr>
-              </thead>
-              <tbody class="list"></tbody>
             </table>
           </div>
         </div>
@@ -430,6 +423,9 @@
         "pageCounter"
       );
 
+      mainTable.reloadCardTable(usuariosData);
+
+
       //Se valida que el elemento que se está haciendo click sea
       //un elemento de los del boton.
       //Se desean cambiar los botones, deben ajustar está validacion
@@ -459,7 +455,6 @@
         }
       }
 
-      let actions = mainTable.reloadCardTable(usuariosData);
     </script>
   </body>
 </html>

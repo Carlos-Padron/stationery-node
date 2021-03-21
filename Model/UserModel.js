@@ -55,7 +55,7 @@ userSchema.methods.toJSON = function () {
 userSchema.path('email').validate(async function (email) {
 
     let existingUser = await mongoose.models.User.findOne({ _id: this._id.toString() })
-
+    console.log(existingUser);
     if (existingUser) {
         if (existingUser.email === email) {
             return true

@@ -1,7 +1,7 @@
 const express = require('express')
 const router = new express.Router()
 
-const usuarioController = require('../../Controller/usuarioController')
+const usuarioController = require('../Controller/usuarioController')
 
 router.get('/usuarios', usuarioController.index)
 

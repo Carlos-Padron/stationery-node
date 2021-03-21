@@ -19,10 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
   logInButton.addEventListener("click", () => {
     resetEmail();
     resetPw();
-    valdiateEmail(email);
-    valdiatePw(pw);
+    let validEmail = valdiateEmail(email);
+    let validPW = valdiatePw(pw);
 
-    sendLoginCredeintials(email.value, pw.value, elemToBlock);
+    if (validEmail && validPW) {
+      sendLoginCredeintials(email.value, pw.value, elemToBlock);
+    }
   });
 
   function valdiateEmail(email) {
@@ -30,14 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
       emailDiv.classList.add("invalid-input");
       emailMsg.innerHTML = "El email es requerido";
       emailMsg.classList.add("text-danger");
-      return;
+      return false;
     }
     if (!isEmail(email.value)) {
       emailDiv.classList.add("invalid-input");
       emailMsg.innerHTML = "Ingrese un email válido";
       emailMsg.classList.add("text-danger");
-      return;
+      return false;
     }
+    return true
   }
 
   function valdiatePw(pw) {
@@ -45,8 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
       pwDiv.classList.add("invalid-input");
       pwMsg.innerHTML = "La contraseña es requerida";
       pwMsg.classList.add("text-danger");
-      return;
+      return false;
     }
+
+    return true
   }
 
   function resetEmail() {

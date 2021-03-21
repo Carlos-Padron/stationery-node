@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
         required: [true, 'La contraseña es requerida.'],
         minlength: [7, 'La contraseña debe tener mínimo 7 letras.']
     },
+    disabled:{
+        type: Boolean,
+        default: false
+    },
     picture: {
         type: Buffer
     }
@@ -50,12 +54,14 @@ userSchema.methods.toJSON = function () {
 }
 
 //Validator
+//*Se trigerea cuando se aurgar un registro
 //*Retornar TRUE si es válido
 //*Retornar FALSE si no pasa la validación
 userSchema.path('email').validate(async function (email) {
 
     let existingUser = await mongoose.models.User.findOne({ _id: this._id.toString() })
-    console.log(existingUser);
+
+    console.log('existingUser: ' + existingUser);
     if (existingUser) {
         if (existingUser.email === email) {
             return true

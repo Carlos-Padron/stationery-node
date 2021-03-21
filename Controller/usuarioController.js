@@ -20,6 +20,7 @@ const createUser = async (req, res) => {
       message: "Usuario creado correctamente.",
       response: null,
     });
+
   } catch (error) {
     let errors = errorHandler(error);
     errors = errors.length === 0 ? error : errors;
@@ -82,15 +83,15 @@ const deleteUser = async (req, res) => {
       });
       return;
     }
-    await User.findByIdAndDelete(_id).exec();
 
+    user.disabled = true
+    await user.save()
     res.json({
       error: false,
       message: "Usuario eliminado correctamente.",
       response: null,
     });
   } catch (error) {
-    console.log(error);
     let errors = errorHandler(error);
     errors = errors.length === 0 ? error.errors : errors;
 
@@ -105,12 +106,12 @@ const deleteUser = async (req, res) => {
 const searchUsers = async (req, res) => {
   const { name } = req.body;
 
-  console.log(req.body);
   try {
     const users = await User.find({
       name: { $regex: ".*" + name + ".*", $options: "i" },
+      disabled: false
     });
-console.log(users);
+
     res.json({
       error: false,
       message: null,

@@ -117,7 +117,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   async function save(route, update) {
-    resetFormValidation(update);
+    resetFormValidation();
     let response = validateForm(update);
 
     if (response.valid === false) {

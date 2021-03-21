@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("./DB/mongoose");
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const hbs = require("hbs");
@@ -17,13 +18,7 @@ const partialsPath = path.join(__dirname, "View/partials");
 
 //Session config
 app.use(sessionObj);
-     
-//Routes imports
-const authRoutes = require("./Routes/auth/authRoutes");
-const dashboardhRoutes = require("./Routes/dashboard/dashboardRoutes");
-const productosRoutes = require("./Routes/productos/productosRoutes");
-const usuariosRoutes = require("./Routes/usuarios/usuariosRoutes");
-
+  
 //Sets hbs view engine ,views location, layout helper and partials
 app.set("view engine", "hbs");
 app.set("views", viewsPath);
@@ -37,11 +32,18 @@ app.use(bodyParser.json());
 app.use(express.static(publicDirectoryPath));
 
 //Routes
+const authRoutes = require("./Routes/authRoutes");
+const dashboardhRoutes = require("./Routes/dashboard/dashboardRoutes");
+const productosRoutes = require("./Routes/productosRoutes");
+const usuariosRoutes = require("./Routes/usuarios/usuariosRoutes");
+
 app.use(authRoutes);
 app.use(dashboardhRoutes);
 app.use(productosRoutes);
 app.use(usuariosRoutes);
 
+
+//Server
 app.listen(PORT, () => {
   console.log("Server running " + PORT);
 });

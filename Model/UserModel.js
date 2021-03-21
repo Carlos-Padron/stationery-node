@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'El email es requerido.'],
         lowercase: true,
-        //unique: true
+        unique: true
     },
     password: {
         type: String,
@@ -64,7 +64,6 @@ userSchema.path('email').validate(async function (email) {
             if (email){ return false } else { return true }
         }
     } else {
-        console.log('en else');
         let u = await mongoose.models.User.find({ email })
         if (u.length > 0){ return false } else { return true }
     }
@@ -75,7 +74,7 @@ userSchema.path('email').validate(async function (email) {
 userSchema.pre('save', async function (next) {
     const user = this
     if (user.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 10)
+        user.password = await bcrypt.hash(user.password, process.env.BCRYPT_ROUNDS)
     }
     next()
 

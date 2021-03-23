@@ -1,8 +1,29 @@
 const SITE = "localhost:3000/";
 
-function isEmail(email) {
+const isEmail = (email) =>{
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
+}
+
+//butons
+const disableButton = (btn, msg) => {
+  btn.setAttribute("disabled", true);
+  btn.classList.add("disabled-btn");
+  btn.innerHTML = `
+  
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="spinner-border spinner-border-sm text-light" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <span>${msg}</span>
+  </div>
+  `;
+}
+
+const enableButton = (btn, msg) => {
+  btn.removeAttribute("disabled");
+  btn.classList.remove("disabled-btn");
+  btn.innerHTML = msg;
 }
 
 //SweetAlert

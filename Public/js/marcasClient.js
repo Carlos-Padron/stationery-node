@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
   searchBtn.addEventListener("click", search);
   addBtn.addEventListener("click", showMainModalAdd);
   addBrandBtn.addEventListener("click", addBrandBtnClick);
-  updateBrandBtn.addEventListener("click", updateBrandBtnClick),
+  updateBrandBtn.addEventListener("click", updateBrandBtnClick);
   mainTableBody.addEventListener("click", rowClicked);
   btnClearSearch.addEventListener("click", clearSearch);
 
@@ -98,10 +98,193 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function save(route) {
+    resetFormValidation();
+
+    let response = validateForm();
+
+    if (response.valid === false) {
+      return;
+    }
+
+    disableButton(addBrandBtn, "Agregando");
+
+    try {
+      let body = JSON.stringify(response.body);
+
+      let request = await fetch(route, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          credentials: "same-origin",
+        },
+        body,
+      });
+
+      let json = await request.json();
+
+      if (json.error) {
+        if (Array.isArray(json.message)) {
+          let messages = "";
+          json.message.forEach((msg) => {
+            messages += `<strong>*${msg}</strong> <br>`;
+          });
+          enableButton(addUserBtn, "Agregar");
+
+          modalAlert("warning", "Aviso", messages);
+          return;
+        } else {
+          modalAlert(
+            "warning",
+            "Aviso",
+            `<strong>${json.message}</strong> <br>`
+          );
+          return;
+        }
+      }
+      enableButton(addUserBtn, "Agregar");
+
+      modalAlert(
+        "success",
+        "Aviso ",
+        `<strong>${json.message}</strong> <br>`,
+        () => {
+          $("#main_modal").modal("hide");
+          search();
+        }
+      );
+    } catch (error) {
+      warningNotification("Error interno del servidor");
+      enableButton(addUserBtn, "Agregar");
+      console.error(error);
+    }
+  }
+
+  async function destroy(_id) {
+    blockElem(mainTableBody);
+    let body = JSON.stringify({ _id });
+
+    try {
+      let request = await fetch(routes.delete, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          credentials: "same-origin",
+        },
+        body,
+      });
+
+      let json = await request.json();
+
+      if (json.error) {
+        if (Array.isArray(json.message)) {
+          let messages = "";
+          json.message.forEach((msg) => {
+            messages += `<strong>*${msg}</strong>`;
+          });
+          unblockElem(mainTableBody);
+          modalAlert("warning", "Aviso", messages);
+          return;
+        } else {
+          unblockElem(mainTableBody);
+
+          modalAlert(
+            "warning",
+            "Aviso",
+            `<strong>*${json.message}</strong> <br>`
+          );
+          return;
+        }
+      }
+
+      modalAlert(
+        "success",
+        "Aviso ",
+        `<strong>${json.message}</strong> <br>`,
+        () => {
+          search();
+        }
+      );
+    } catch (error) {
+      warningNotification(error);
+      unblockElem(mainTableBody);
+      console.error(error);
+    }
+  }
+
+  function validateForm() {
+    let body = {};
+    let valid = true;
+
+    $fields.forEach((elem) => {
+      let data;
+      let msg;
+      switch (elem) {
+        case "_id":
+          data = document.querySelector(`#${elem}`);
+          body[elem] = data.value;
+          break;
+
+        case "name":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (data.value === "") {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "El nombre es requerido.";
+            msg.classList.add("text-danger");
+            valid = false;
+          }
+          body[elem] = data.value;
+          break;
+
+        default:
+          break;
+      }
+    });
+
+    return {
+      valid,
+      body,
+    };
+  }
+
   function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML =
       "Agregar una nueva marca";
     $("#main_modal").modal("show");
+  }
+
+  async function resetForm(form) {
+    switch (form) {
+      case "usuariosForm":
+        document.querySelector("#brandsForm").reset();
+        addUserBtn.classList.remove("d-none");
+        updateUserBtn.classList.add("d-none");
+        break;
+      case "searchForm":
+        document.querySelector("#searchForm").reset();
+        break;
+      default:
+        break;
+    }
+  }
+
+  function resetFormValidation() {
+    $fields.forEach((elem) => {
+      let msg = document.querySelector(`#${elem}Msg`);
+      let field = document.querySelector(`#${elem}`);
+
+      if (field) {
+        field.classList.remove("invalid-input");
+      }
+      if (msg) {
+        msg.innerHTML = "";
+        msg.classList.remove("text-danger");
+      }
+    });
   }
 
   function addBrandBtnClick() {}
@@ -114,7 +297,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   $("#main_modal").on("hidden.bs.modal", function (e) {
     resetFormValidation();
-    resetForm("usuarios_form");
+    resetForm("brandsForm");
   });
 
   //Initial actions

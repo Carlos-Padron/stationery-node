@@ -119,7 +119,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
       let request = await fetch(route, {
         method: "POST",
-
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -128,17 +127,7 @@ window.addEventListener("DOMContentLoaded", () => {
         body,
       });
 
-      let json = await request
-        .clone()
-        .json()
-        .catch((err) => {
-          request.text.then((text) => {
-            warningNotification("Error interno del servidor");
-            console.log(text);
-            enableButton(addUserBtn, "Agregar");
-            return;
-          });
-        });
+      let json = await request.json();
 
       if (json.error) {
         if (Array.isArray(json.message)) {
@@ -171,12 +160,14 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       );
     } catch (error) {
-      warningNotification(error);
+      warningNotification("Error interno del servidor");
       enableButton(addUserBtn, "Agregar");
+      console.error(error);
     }
   }
 
   async function destroy(_id) {
+    blockElem(mainTableBody);
     let body = JSON.stringify({ _id });
 
     try {
@@ -190,17 +181,7 @@ window.addEventListener("DOMContentLoaded", () => {
         body,
       });
 
-      let json = await request
-        .clone()
-        .json()
-        .catch((err) => {
-          request.text.then((text) => {
-            warningNotification("Error interno del servidor");
-            console.log(text);
-            enableButton(addUserBtn, "Agregar");
-            return;
-          });
-        });
+      let json = await request.json();
 
       if (json.error) {
         if (Array.isArray(json.message)) {
@@ -208,9 +189,12 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong>`;
           });
+          unblockElem(mainTableBody);
           modalAlert("warning", "Aviso", messages);
           return;
         } else {
+          unblockElem(mainTableBody);
+
           modalAlert(
             "warning",
             "Aviso",
@@ -230,6 +214,8 @@ window.addEventListener("DOMContentLoaded", () => {
       );
     } catch (error) {
       warningNotification(error);
+      unblockElem(mainTableBody);
+      console.error(error);
     }
   }
 
@@ -415,26 +401,6 @@ window.addEventListener("DOMContentLoaded", () => {
         deleteConfirmation(usuariosData[index]);
       }
     }
-  }
-
-  function disableButton(btn, msg) {
-    btn.setAttribute("disabled", true);
-    btn.classList.add("disabled-btn");
-    btn.innerHTML = `
-    
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="spinner-border spinner-border-sm text-light" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <span>${msg}</span>
-    </div>
-    `;
-  }
-
-  function enableButton(btn, msg) {
-    btn.removeAttribute("disabled");
-    btn.classList.remove("disabled-btn");
-    btn.innerHTML = msg;
   }
 
   function showMainModalAdd() {

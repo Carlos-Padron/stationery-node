@@ -1,28 +1,23 @@
-const User = require("../Model/UserModel");
+const Brand = require("../Model/BrandModel");
 const errorHandler = require("../Utils/Helpers/errorHandler");
 
 const index = (req, res) => {
-  res.render("usuarios/usuarios", {
-    sectionName: "Usuarios",
-    script: "usuariosClient",
+  res.render("productos/marcas", {
+    sectionName: "Marcas",
+    script: "marcasClient",
   });
 };
 
-const createUser = async (req, res) => {
-  delete req.body._id;
-  const user = new User(req.body);
-
+const createBrand = async (req, res) => {
+  let brand = new Brand(req.body);
   try {
-    await user.save();
+    await brand.save();
     res.json({
       error: false,
-      message: "Usuario creado correctamente.",
-      response: null,
     });
   } catch (error) {
     let errors = errorHandler(error);
     errors = errors.length === 0 ? error : errors;
-
     res.json({
       error: true,
       message: errors,
@@ -31,31 +26,30 @@ const createUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
+const updateBrand = async (req, res) => {
   const _id = req.body._id;
   delete req.body._id;
 
   try {
-    let user = await User.findById(_id).exec();
+    let brand = await Brand.findById(_id).exec();
 
-    if (!user) {
+    if (!brand) {
       res.json({
         error: true,
-        message: "No se econtró al usuario solicitado.",
+        message: "No se encontró la marca solicitada.",
         response: null,
       });
       return;
     }
 
-    await User.findByIdAndUpdate(_id, req.body).exec();
+    await Brand.findByIdAndUpdate(_id, req.body).exec();
 
     res.json({
       error: false,
-      message: "El usuario actualizado correctamente.",
+      message: "La marca fue actualizada correctamente.",
       response: null,
     });
   } catch (error) {
-    console.log(error);
     let errors = errorHandler(error);
     errors = errors.length === 0 ? error.errors : errors;
 
@@ -67,26 +61,27 @@ const updateUser = async (req, res) => {
   }
 };
 
-const deleteUser = async (req, res) => {
-  const _id = req.body._id;
+const deleteBrand = async (req, res) => {
+  let _id = req.body;
 
   try {
-    let user = await User.findById(_id).exec();
+    let brand = await Brand.findById(_id).exec();
 
-    if (!user) {
+    if (!brand) {
       res.json({
         error: true,
-        message: "No se encontró al usuario solicitado.",
+        message: "No se encontró la marca solicitada.",
         response: null,
       });
       return;
     }
 
-    user.disabled = true;
-    await user.save();
+    brand.disabled = true;
+    await brand.save();
+
     res.json({
       error: false,
-      message: "El usuario eliminado correctamente.",
+      message: "La marca fue eliminada correctamente",
       response: null,
     });
   } catch (error) {
@@ -101,24 +96,25 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const searchUsers = async (req, res) => {
+const searchBrands = async (req, res) => {
   const { name } = req.body;
-
   try {
-    const users = await User.find({
+    console.log("before search");
+    const brands = await Brand.find({
       name: { $regex: `.*${name}.*`, $options: "i" },
       disabled: false,
     });
 
+    console.log(brands);
     res.json({
       error: false,
       message: null,
-      response: users,
+      response: brands,
     });
   } catch (error) {
     let errors = errorHandler(error);
     errors = errors.length === 0 ? error : errors;
-
+    console.log(error);
     res.json({
       error: true,
       message: errors,
@@ -129,8 +125,8 @@ const searchUsers = async (req, res) => {
 
 module.exports = {
   index,
-  searchUsers,
-  createUser,
-  updateUser,
-  deleteUser,
+  createBrand,
+  updateBrand,
+  deleteBrand,
+  searchBrands,
 };

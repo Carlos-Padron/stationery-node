@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../../Model/UserModel");
 const { redisGet } = require("../Helpers/redisHelper");
 
+//Valida que se tenga la cookie con el token para validar lais vistas
 const authViews = async (req, res, next) => {
   try {
     console.log("en middleware");
@@ -19,7 +20,6 @@ const authViews = async (req, res, next) => {
       let user = await User.findById(userID);
 
       if (user) {
-        req.user = user;
         next();
       } else {
         return res.redirect("/login?code=403");
@@ -34,7 +34,33 @@ const authViews = async (req, res, next) => {
   }
 };
 
-const redirect = async (req, res, next) => {
+//Si se está logueado y se trata de ingresar al login, se redirigue al dashboard
+const redirectIfAuth = async (req, res, next) => {
+  try {
+    if (req.sessionID) {
+      let cookie = await redisGet(`sess:${req.sessionID}`);
+
+      if (cookie) {
+        let token = JSON.parse(cookie).key;
+
+        let userID = jwt.verify(token, process.env.SECRET_KEY);
+        let user = await User.findById(userID);
+
+        if (user) {
+          return res.redirect("/dashboard");
+        }
+      }
+
+      next();
+    }
+  } catch (error) {
+    console.error(error);
+    return res.redirect("/login");
+  }
+};
+
+//Verifica si se está autenticado para hacer la solicitud
+const authRoute = async (req, res, next) => {
   try {
     if (req.sessionID) {
       let cookie = await redisGet(`sess:${req.sessionID}`);
@@ -47,19 +73,38 @@ const redirect = async (req, res, next) => {
 
         if (user) {
           req.user = user;
-          return res.redirect("/dashboard");
-        }
-      }
 
-      next();
+          next();
+          return;
+        }
+      } else {
+        return res.json({
+          error: true,
+          message: "No se puedo verificar el usuario autenticado.",
+          response: null,
+        });
+      }
+    } else {
+      return res.json({
+        error: true,
+        message: "No se puedo verificar el usuario autenticado.",
+        response: null,
+      });
     }
   } catch (error) {
     console.error(error);
-    next();
+    return res.json({
+      error: true,
+      message: "No se puedo verificar el usuario autenticado.",
+      response: null,
+    });
   }
 };
 
+//TODO: middlerware para verificar el el usuario puede acceder a ciertos módulos
+
 module.exports = {
   authViews,
-  redirect,
+  redirectIfAuth,
+  authRoute,
 };

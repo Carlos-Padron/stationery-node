@@ -25,18 +25,17 @@ window.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
   const addBtn = document.querySelector("#btnAdd");
-  const addUserBtn = document.querySelector("#btn_add_user");
-  const updateUserBtn = document.querySelector("#btn_update_user");
-  const mainModal = document.querySelector("#main_modal");
+  const addUserBtn = document.querySelector("#btnAddUser");
+  const updateUserBtn = document.querySelector("#btnUpdateUser");
   const mainTableBody = document.querySelector("#mainTable tbody.list");
 
   //Listeners
   searchBtn.addEventListener("click", search);
-  addBtn.addEventListener("click", showManinModalAdd);
+  addBtn.addEventListener("click", showMainModalAdd);
   addUserBtn.addEventListener("click", addUserBtnClick);
   updateUserBtn.addEventListener("click", updateUserBtnClick);
   mainTableBody.addEventListener("click", rowClicked);
-  btnClearSearch.addEventListener("click", cleanSearch);
+  btnClearSearch.addEventListener("click", clearSearch);
 
   //functions
   async function search() {
@@ -52,8 +51,6 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    blockElem(searchForm);
-
     try {
       body = JSON.stringify(body);
 
@@ -67,17 +64,7 @@ window.addEventListener("DOMContentLoaded", () => {
         body,
       });
 
-      let json = await request
-        .clone()
-        .json()
-        .catch((err) => {
-          request.text().then((text) => {
-            warningNotification("Error interno del servidor");
-            console.log(text);
-            unblockElem(searchForm);
-            return;
-          });
-        });
+      let json = await request.json();
 
       if (json.error) {
         if (Array.isArray(json.message)) {
@@ -100,7 +87,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       usuariosData = json.response;
-      
+
       usuariosData.forEach((elem, index) => {
         elem.actions = `<div class="btn-group">
         <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
@@ -112,7 +99,8 @@ window.addEventListener("DOMContentLoaded", () => {
       unblockElem(searchForm);
     } catch (error) {
       unblockElem(searchForm);
-      warningNotification(error);
+      warningNotification("Error interno del servidor");
+      console.error(error);
     }
   }
 
@@ -353,8 +341,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   async function resetForm(form) {
     switch (form) {
-      case "usuarios_form":
-        document.querySelector("#usuarios_form").reset();
+      case "usuariosForm":
+        document.querySelector("#usuariosForm").reset();
         addUserBtn.classList.remove("d-none");
         updateUserBtn.classList.add("d-none");
         break;
@@ -399,7 +387,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function cleanSearch() {
+  function clearSearch() {
     resetForm("searchForm");
   }
 
@@ -449,7 +437,7 @@ window.addEventListener("DOMContentLoaded", () => {
     btn.innerHTML = msg;
   }
 
-  function showManinModalAdd() {
+  function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML = "Agregar nuevo usuario";
     $("#main_modal").modal("show");
   }
@@ -470,7 +458,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   $("#main_modal").on("hidden.bs.modal", function (e) {
     resetFormValidation();
-    resetForm("usuarios_form");
+    resetForm("usuariosForm");
   });
 
   //Initial actions
@@ -480,7 +468,8 @@ window.addEventListener("DOMContentLoaded", () => {
     usuariosColums,
     "btnNext",
     "btnPrev",
-    "pageCounter"
+    "pageCounter",
+    "2"
   );
   mainTable.reloadTable(usuariosData);
 });

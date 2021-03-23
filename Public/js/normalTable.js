@@ -5,7 +5,8 @@ class NormalTable {
     headers,
     btnNextID,
     btnPrevID,
-    pageCounterID
+    pageCounterID,
+    colspan
   ) {
     this.currentPage = 1;
     this.rows = 10;
@@ -18,6 +19,7 @@ class NormalTable {
     this.pageCounter = document.querySelector(`#${pageCounterID}`);
     this.next.addEventListener("click", this.nextPage);
     this.prev.addEventListener("click", this.prevPage);
+    this.colspan = colspan
   }
 
   nextPage = () => {
@@ -75,6 +77,8 @@ class NormalTable {
     }else{
       let tr = document.createElement('tr')
       let td = document.createElement('td')
+      td.setAttribute('colspan', this.colspan)
+      td.classList.add('text-center')
       td.innerHTML = "No se encontró información para mostrar."
 
       tr.appendChild(td)

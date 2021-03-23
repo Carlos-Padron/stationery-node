@@ -2,7 +2,7 @@
     {{#content "body" mode="append"}}
     <div class="card">
         <div class="card-header d-flex justify-content-between">
-            <h3 class="mb-0">Usuarios</h3>
+            <h3 class="mb-0">¡Filtra los usuarios del sistema!</h3>
             <div class="d-flex justify-content-between">
                 <button id="btnAdd" type="button" class="btn btn-sm btn-outline-secondary" style="width:150px"><i
                     class="uil uil-plus-circle"></i>
@@ -69,8 +69,8 @@
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-                            <form id="usuarios_form">
+                        <div class="modal-body pb-0">
+                            <form id="usuariosForm">
                                 <div class="row">
                                     <input id="_id" type="hidden">
                                     <div class="col-6 col-md-6 col-lg-6">
@@ -116,11 +116,11 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="modal-footer">
+                        <div class="modal-footer pt-0">
                             <button type="button" class="btn btn-secondary text-danger ml-auto"
                                 data-dismiss="modal">Cerrar</button>
-                            <button type="button" id="btn_add_user" class="btn btn-primary">Agregar</button>
-                            <button type="button" id="btn_update_user" class="btn btn-primary d-none">Actualizar</button>
+                            <button type="button" id="btnAddUser" class="btn btn-primary">Agregar</button>
+                            <button type="button" id="btnUpdateUser" class="btn btn-primary d-none">Actualizar</button>
                         </div>
                     </div>
                 </div>

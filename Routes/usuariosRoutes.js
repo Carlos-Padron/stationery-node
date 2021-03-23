@@ -1,16 +1,17 @@
-const express = require('express')
-const router = new express.Router()
+const express = require("express");
+const router = new express.Router();
 
-const usuarioController = require('../Controller/usuarioController')
+const usuarioController = require("../Controller/usuarioController");
+const { authViews, authRoute } = require("../Utils/Middlewares/authMiddleware");
 
-router.get('/usuarios', usuarioController.index)
+router.get("/usuarios", authViews, usuarioController.index);
 
-router.post('/getUsers', usuarioController.searchUsers)
+router.post("/getUsers", authRoute, usuarioController.searchUsers);
 
-router.post('/addUser',usuarioController.createUser)
+router.post("/addUser", authRoute, usuarioController.createUser);
 
-router.post('/updateUser',usuarioController.updateUser)
+router.post("/updateUser", authRoute, usuarioController.updateUser);
 
-router.post('/deleteUser',usuarioController.deleteUser)
+router.post("/deleteUser", authRoute, usuarioController.deleteUser);
 
-module.exports = router
+module.exports = router;

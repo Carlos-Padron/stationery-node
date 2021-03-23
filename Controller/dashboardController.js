@@ -1,5 +1,8 @@
 const index = (req, res) => {
-  res.render("dashboard");
+  res.render("dashboard/dashboard",{
+    sectionName: "Tablero",
+    script: "dashboardClient",
+  });
 };
 
 module.exports = {

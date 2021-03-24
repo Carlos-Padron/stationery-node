@@ -166,9 +166,9 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function destroy(_id) {
+  async function destroy(usuario) {
     blockElem(mainTableBody);
-    let body = JSON.stringify({ _id });
+    let body = JSON.stringify({ usuario });
 
     try {
       let request = await fetch(routes.delete, {
@@ -367,9 +367,9 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function deleteConfirmation(_id) {
+  function deleteConfirmation(usuario) {
     confirmationAlert("Se eliminará el usuario seleccionado.", () => {
-      destroy(_id);
+      destroy(usuario);
     });
   }
 

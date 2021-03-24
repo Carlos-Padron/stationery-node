@@ -16,18 +16,27 @@ const createUser = async (req, res) => {
     await user.save();
     res.json({
       error: false,
-      message: "Usuario creado correctamente.",
+      message: "El usuario se agregó correctamente.",
       response: null,
     });
   } catch (error) {
     let errors = errorHandler(error);
-    errors = errors.length === 0 ? error : errors;
 
-    res.json({
-      error: true,
-      message: errors,
-      response: null,
-    });
+    if (errors.length === 0) {
+      res
+        .json({
+          error: true,
+          message: error,
+          response: null,
+        })
+        .status(500);
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
   }
 };
 
@@ -57,13 +66,22 @@ const updateUser = async (req, res) => {
   } catch (error) {
     console.log(error);
     let errors = errorHandler(error);
-    errors = errors.length === 0 ? error.errors : errors;
 
-    res.json({
-      error: true,
-      message: errors,
-      response: null,
-    });
+    if (errors.length === 0) {
+      res
+        .json({
+          error: true,
+          message: error,
+          response: null,
+        })
+        .status(500);
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
   }
 };
 
@@ -91,13 +109,22 @@ const deleteUser = async (req, res) => {
     });
   } catch (error) {
     let errors = errorHandler(error);
-    errors = errors.length === 0 ? error.errors : errors;
 
-    res.json({
-      error: true,
-      message: errors,
-      response: null,
-    });
+    if (errors.length === 0) {
+      res
+        .json({
+          error: true,
+          message: error,
+          response: null,
+        })
+        .status(500);
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
   }
 };
 
@@ -108,7 +135,7 @@ const searchUsers = async (req, res) => {
     const users = await User.find({
       name: { $regex: `.*${name}.*`, $options: "i" },
       disabled: false,
-    });
+    }).sort({name: "asc"})
 
     res.json({
       error: false,
@@ -117,13 +144,22 @@ const searchUsers = async (req, res) => {
     });
   } catch (error) {
     let errors = errorHandler(error);
-    errors = errors.length === 0 ? error : errors;
 
-    res.json({
-      error: true,
-      message: errors,
-      response: null,
-    });
+    if (errors.length === 0) {
+      res
+        .json({
+          error: true,
+          message: error,
+          response: null,
+        })
+        .status(500);
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
   }
 };
 

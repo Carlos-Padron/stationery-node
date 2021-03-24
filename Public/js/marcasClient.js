@@ -3,7 +3,7 @@ window.addEventListener("DOMContentLoaded", () => {
   let $fields = ["_id", "name"];
   let routes = {
     get: "/getBrands",
-    add: "/getBrand",
+    add: "/addBrand",
     update: "/updateBrand",
     delete: "/deleteBrand",
   };
@@ -130,7 +130,7 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
-          enableButton(addUserBtn, "Agregar");
+          enableButton(addBrandBtn, "Agregar");
 
           modalAlert("warning", "Aviso", messages);
           return;
@@ -143,7 +143,7 @@ window.addEventListener("DOMContentLoaded", () => {
           return;
         }
       }
-      enableButton(addUserBtn, "Agregar");
+      enableButton(addBrandBtn, "Agregar");
 
       modalAlert(
         "success",
@@ -156,14 +156,14 @@ window.addEventListener("DOMContentLoaded", () => {
       );
     } catch (error) {
       warningNotification("Error interno del servidor");
-      enableButton(addUserBtn, "Agregar");
+      enableButton(addBrandBtn, "Agregar");
       console.error(error);
     }
   }
 
-  async function destroy(_id) {
+  async function destroy(brand) {
     blockElem(mainTableBody);
-    let body = JSON.stringify({ _id });
+    let body = JSON.stringify({ brand });
 
     try {
       let request = await fetch(routes.delete, {
@@ -251,18 +251,12 @@ window.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  function showMainModalAdd() {
-    document.querySelector("#modal_title").innerHTML =
-      "Agregar una nueva marca";
-    $("#main_modal").modal("show");
-  }
-
   async function resetForm(form) {
     switch (form) {
-      case "usuariosForm":
+      case "brandsForm":
         document.querySelector("#brandsForm").reset();
-        addUserBtn.classList.remove("d-none");
-        updateUserBtn.classList.add("d-none");
+        addBrandBtn.classList.remove("d-none");
+        updateBrandBtn.classList.add("d-none");
         break;
       case "searchForm":
         document.querySelector("#searchForm").reset();
@@ -287,13 +281,71 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function addBrandBtnClick() {}
+  function addBrandBtnClick() {
+    confirmationAlert("Se registrará la marca", () => {
+      save(routes.add);
+    });
+  }
 
-  function updateBrandBtnClick() {}
+  function updateBrandBtnClick() {
+    confirmationAlert("Se actualizará la marca", () => {
+      save(routes.update);
+    });
+  }
 
-  function rowClicked(e) {}
+  function deleteConfirmation(brand) {
+    confirmationAlert("Se eliminará la marca seleccionada", () => {
+      destroy(brand);
+    });
+  }
 
-  function clearSearch() {}
+  function clearSearch() {
+    resetForm("searchForm");
+  }
+
+  function rowClicked(e) {
+    if (e.target && e.target.classList.contains("show")) {
+      if (e.target.tagName === "I") {
+        let button = e.target.parentElement;
+        let index = button.getAttribute("data-index");
+        showMainModalEdit(brandsData[index]);
+      } else {
+        let button = e.target;
+        let index = button.getAttribute("data-index");
+        showMainModalEdit(brandsData[index]);
+      }
+    }
+
+    if (e.target && e.target.classList.contains("delete")) {
+      if (e.target.tagName === "I") {
+        let button = e.target.parentElement;
+        let index = button.getAttribute("data-index");
+        deleteConfirmation(brandsData[index]);
+      } else {
+        let button = e.target;
+        let index = button.getAttribute("data-index");
+        deleteConfirmation(brandsData[index]);
+      }
+    }
+  }
+
+  function showMainModalAdd() {
+    document.querySelector("#modal_title").innerHTML =
+      "Agregar una nueva marca";
+    $("#main_modal").modal("show");
+  }
+
+  function showMainModalEdit(brand) {
+    addBrandBtn.classList.add("d-none");
+    updateBrandBtn.classList.remove("d-none");
+
+    $fields.forEach((elem) => {
+      document.querySelector(`#${elem}`).value = brand[elem];
+    });
+
+    document.querySelector("#modal_title").innerHTML = "Editar marca";
+    $("#main_modal").modal("show");
+  }
 
   $("#main_modal").on("hidden.bs.modal", function (e) {
     resetFormValidation();

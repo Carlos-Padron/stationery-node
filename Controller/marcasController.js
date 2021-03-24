@@ -9,20 +9,34 @@ const index = (req, res) => {
 };
 
 const createBrand = async (req, res) => {
+  delete req.body._id;
+
   let brand = new Brand(req.body);
   try {
     await brand.save();
     res.json({
       error: false,
+      message: "La marca se agregó correctamente",
+      response: null,
     });
   } catch (error) {
     let errors = errorHandler(error);
-    errors = errors.length === 0 ? error : errors;
-    res.json({
-      error: true,
-      message: errors,
-      response: null,
-    });
+
+    if (errors.length === 0) {
+      res
+        .json({
+          error: true,
+          message: error,
+          response: null,
+        })
+        .status(500);
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
   }
 };
 
@@ -51,18 +65,27 @@ const updateBrand = async (req, res) => {
     });
   } catch (error) {
     let errors = errorHandler(error);
-    errors = errors.length === 0 ? error.errors : errors;
 
-    res.json({
-      error: true,
-      message: errors,
-      response: null,
-    });
+    if (errors.length === 0) {
+      res
+        .json({
+          error: true,
+          message: error,
+          response: null,
+        })
+        .status(500);
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
   }
 };
 
 const deleteBrand = async (req, res) => {
-  let _id = req.body;
+  const _id = req.body._id;
 
   try {
     let brand = await Brand.findById(_id).exec();
@@ -86,13 +109,22 @@ const deleteBrand = async (req, res) => {
     });
   } catch (error) {
     let errors = errorHandler(error);
-    errors = errors.length === 0 ? error.errors : errors;
-
-    res.json({
-      error: true,
-      message: errors,
-      response: null,
-    });
+    console.log(error);
+    if (errors.length === 0) {
+      res
+        .json({
+          error: true,
+          message: error,
+          response: null,
+        })
+        .status(500);
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
   }
 };
 
@@ -103,7 +135,7 @@ const searchBrands = async (req, res) => {
     const brands = await Brand.find({
       name: { $regex: `.*${name}.*`, $options: "i" },
       disabled: false,
-    });
+    }).sort({name: "asc"})
 
     console.log(brands);
     res.json({
@@ -113,13 +145,22 @@ const searchBrands = async (req, res) => {
     });
   } catch (error) {
     let errors = errorHandler(error);
-    errors = errors.length === 0 ? error : errors;
-    console.log(error);
-    res.json({
-      error: true,
-      message: errors,
-      response: null,
-    });
+
+    if (errors.length === 0) {
+      res
+        .json({
+          error: true,
+          message: error,
+          response: null,
+        })
+        .status(500);
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
   }
 };
 

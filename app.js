@@ -35,11 +35,13 @@ app.use(express.static(publicDirectoryPath));
 const authRoutes = require("./Routes/authRoutes");
 const dashboardhRoutes = require("./Routes/dashboardRoutes");
 const marcasRoutes = require('./Routes/marcasRoutes')
+const tiposArticulosRoutes = require('./Routes/tiposArticulosRoutes')
 const usuariosRoutes = require("./Routes/usuariosRoutes");
 
 app.use(authRoutes);
 app.use(dashboardhRoutes);
 app.use(marcasRoutes);
+app.use(tiposArticulosRoutes)
 app.use(usuariosRoutes);
 
 app.get('*',(req,res)=>{

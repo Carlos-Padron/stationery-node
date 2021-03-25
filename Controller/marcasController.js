@@ -11,8 +11,9 @@ const index = (req, res) => {
 const createBrand = async (req, res) => {
   delete req.body._id;
 
-  let brand = new Brand(req.body);
   try {
+    let brand = new Brand(req.body);
+    
     await brand.save();
     res.json({
       error: false,

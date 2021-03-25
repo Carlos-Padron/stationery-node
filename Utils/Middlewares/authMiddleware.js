@@ -80,14 +80,16 @@ const authRoute = async (req, res, next) => {
       } else {
         return res.json({
           error: true,
-          message: "No se puedo verificar el usuario autenticado.",
+          message:
+            "No se puedo verificar el usuario autenticado. Por favor vuelve a iniciar sesión.",
           response: null,
         });
       }
     } else {
       return res.json({
         error: true,
-        message: "No se puedo verificar el usuario autenticado.",
+        message:
+          "No se puedo verificar el usuario autenticado. Por favor vuelve a iniciar sesión.",
         response: null,
       });
     }

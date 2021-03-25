@@ -10,9 +10,10 @@ const index = (req, res) => {
 
 const createUser = async (req, res) => {
   delete req.body._id;
-  const user = new User(req.body);
-
+  
   try {
+    const user = new User(req.body);
+
     await user.save();
     res.json({
       error: false,

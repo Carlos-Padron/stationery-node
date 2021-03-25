@@ -4,7 +4,7 @@ const router = new express.Router()
 const marcasController = require('../Controller/marcasController')
 const { authViews, authRoute } = require("../Utils/Middlewares/authMiddleware");
 
-router.get('/productos/marcas', authViews ,marcasController.index)
+router.get('/inventario/marcas', authViews ,marcasController.index)
 
 router.post('/getBrands', authRoute, marcasController.searchBrands)
 

@@ -42,6 +42,9 @@ app.use(dashboardhRoutes);
 app.use(marcasRoutes);
 app.use(usuariosRoutes);
 
+app.get('*',(req,res)=>{
+  res.render('notFound')
+})
 
 //Server
 app.listen(PORT, () => {

@@ -2,7 +2,7 @@ const Brand = require("../Model/BrandModel");
 const errorHandler = require("../Utils/Helpers/errorHandler");
 
 const index = (req, res) => {
-  res.render("productos/marcas", {
+  res.render("inventario/marcas", {
     sectionName: "Marcas",
     script: "marcasClient",
   });

@@ -105,7 +105,7 @@ const deleteUser = async (req, res) => {
     await user.save();
     res.json({
       error: false,
-      message: "El usuario se desabilitó correctamente.",
+      message: "El usuario fue desabilitado correctamente.",
       response: null,
     });
   } catch (error) {

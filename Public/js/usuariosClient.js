@@ -102,7 +102,7 @@ window.addEventListener("DOMContentLoaded", () => {
       usuariosData.forEach((elem, index) => {
         elem.actions = `<div class="btn-group">
         <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
-        <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
+        <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
     </div>`;
       });
 
@@ -385,7 +385,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function deleteConfirmation(usuario) {
-    confirmationAlert("Se desabilitará el usuario seleccionado.", () => {
+    confirmationAlert("Se deshabilitará el usuario seleccionado.", () => {
       destroy(usuario);
     });
   }
@@ -422,6 +422,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML = "Agregar nuevo usuario";
+    disabledCheckDiv.classList.add("d-none");
     $("#main_modal").modal("show");
   }
 
@@ -451,7 +452,6 @@ window.addEventListener("DOMContentLoaded", () => {
   $("#main_modal").on("hidden.bs.modal", function (e) {
     resetFormValidation();
     resetForm("usuariosForm");
-    disabledCheckDiv.classList.add("d-none");
   });
 
   //Initial actions

@@ -13,7 +13,7 @@ const createBrand = async (req, res) => {
 
   try {
     let brand = new Brand(req.body);
-    
+
     await brand.save();
     res.json({
       error: false,
@@ -105,7 +105,7 @@ const deleteBrand = async (req, res) => {
 
     res.json({
       error: false,
-      message: "La marca fue eliminada correctamente",
+      message: "La marca fue desabilitada correctamente",
       response: null,
     });
   } catch (error) {
@@ -130,13 +130,13 @@ const deleteBrand = async (req, res) => {
 };
 
 const searchBrands = async (req, res) => {
-  const { name } = req.body;
+  const { name, disabled } = req.body;
   try {
     console.log("before search");
     const brands = await Brand.find({
       name: { $regex: `.*${name}.*`, $options: "i" },
-      disabled: false,
-    }).sort({name: "asc"})
+      disabled,
+    }).sort({ name: "asc" });
 
     console.log(brands);
     res.json({

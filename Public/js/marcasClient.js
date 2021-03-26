@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
   //Variables & Elements
-  let $fields = ["_id", "name"];
+  let $fields = ["_id", "name", "disabled"];
   let routes = {
     get: "/getBrands",
     add: "/addBrand",
@@ -21,6 +21,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.querySelector("#btnAdd");
   const addBrandBtn = document.querySelector("#btnAddBrand");
   const updateBrandBtn = document.querySelector("#btnUpdateBrand");
+  const disabledCheckDiv = document.querySelector("#disabledCheckDiv");
   const mainTableBody = document.querySelector("#mainTable tbody.list");
 
   //Listeners
@@ -39,9 +40,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
     $fields.forEach((elem) => {
       let elemData = document.querySelector(`[data-search="${elem}"]`);
+
       if (elemData != undefined) {
-        let data = elemData.value.trim();
-        body[elem] = data;
+        switch (elem) {
+          case "disabled":
+            body[elem] = elemData.checked;
+            break;
+
+          default:
+            let data = elemData.value.trim();
+            body[elem] = data;
+            break;
+        }
       }
     });
 
@@ -85,7 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
       brandsData.forEach((elem, index) => {
         elem.actions = `<div class="btn-group">
         <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
-        <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
+        <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
     </div>`;
       });
 
@@ -239,7 +249,10 @@ window.addEventListener("DOMContentLoaded", () => {
           }
           body[elem] = data.value;
           break;
-
+        case "disabled":
+          data = document.querySelector(`#${elem}`);
+          body[elem] = data.checked;
+          break;
         default:
           break;
       }
@@ -294,7 +307,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function deleteConfirmation(brand) {
-    confirmationAlert("Se eliminará la marca seleccionada", () => {
+    confirmationAlert("Se deshabilitará la marca seleccionada", () => {
       destroy(brand);
     });
   }
@@ -332,15 +345,25 @@ window.addEventListener("DOMContentLoaded", () => {
   function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML =
       "Agregar una nueva marca";
+    disabledCheckDiv.classList.add("d-none");
     $("#main_modal").modal("show");
   }
 
   function showMainModalEdit(brand) {
     addBrandBtn.classList.add("d-none");
     updateBrandBtn.classList.remove("d-none");
+    disabledCheckDiv.classList.remove("d-none");
 
     $fields.forEach((elem) => {
-      document.querySelector(`#${elem}`).value = brand[elem];
+      switch (elem) {
+        case "disabled":
+          document.querySelector(`#${elem}`).checked = brand[elem];
+          break;
+
+        default:
+          document.querySelector(`#${elem}`).value = brand[elem];
+          break;
+      }
     });
 
     document.querySelector("#modal_title").innerHTML = "Editar marca";

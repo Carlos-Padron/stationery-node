@@ -15,14 +15,19 @@
     <div class="card-body">
         <form id="searchForm">
             <div class="row">
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <div class="form-group">
                         <label class="form-control-label">Nombre de la marca:</label>
                         <input class="form-control form-control-sm form-control-alternative" placeholder="Marca"
                             type="text" data-search="name">
                     </div>
                 </div>
-            </div>
+                <div class="col-6 col-md-6 col-lg-4 mt-auto mb-auto">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" data-search="disabled" id="sDisabled">
+                        <label class="custom-control-label" for="sDisabled">Desabilidato</label>
+                    </div>
+                </div>
         </form>
     </div>
     <div class="card-footer text-right">
@@ -78,6 +83,12 @@
                                         <label class="form-control-label">Nombre:</label>
                                         <input class="form-control form-control-sm form-control-alternative"
                                             placeholder="Marca" type="text" id="name">
+                                    </div>
+                                </div>
+                                <div id="disabledCheckDiv" class="col-6 col-md-6 col-lg-4 mt-auto mb-auto">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="disabled">
+                                        <label class="custom-control-label" for="disabled">Desabilitar</label>
                                     </div>
                                 </div>
                             </div>

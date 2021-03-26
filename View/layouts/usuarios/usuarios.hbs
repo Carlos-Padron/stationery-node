@@ -1,131 +1,148 @@
 {{#extend "master"}}
-    {{#content "body" mode="append"}}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between">
-            <h3 class="mb-0">¡Filtra los usuarios del sistema!</h3>
-            <div class="d-flex justify-content-between">
-                <button id="btnAdd" type="button" class="btn btn-sm btn-outline-secondary" style="width:150px"><i
+{{#content "body" mode="append"}}
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h3 class="mb-0">¡Filtra los usuarios del sistema!</h3>
+        <div class="d-flex justify-content-between">
+            <button id="btnAdd" type="button" class="btn btn-sm btn-outline-secondary" style="width:150px"><i
                     class="uil uil-plus-circle"></i>
                 Agregar</button>
-                <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary"><i
+            <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary"><i
                     class="uil uil-redo"></i>
-                </button>
-            </div>
+            </button>
         </div>
-        <div class="card-body">
-            <form id="searchForm">
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="form-group">
-                            <label class="form-control-label">Nombre del usuario:</label>
-                            <input class="form-control form-control-sm form-control-alternative" placeholder="Usuario"
-                                type="text" data-search="name">
-                        </div>
+    </div>
+    <div class="card-body">
+        <form id="searchForm">
+            <div class="row">
+                <div class="col-6 col-md-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Nombre del usuario:</label>
+                        <input class="form-control form-control-sm form-control-alternative" placeholder="Usuario"
+                            type="text" data-search="name">
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="card-footer text-right">
-            <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width:150px"><i
-                    class="uil uil-search"></i> Buscar</button>
-        </div>
-    </div>
 
-    <div class="card">
-        <div class="card-body" style="padding-bottom: 0;">
-            <div class="table-responsive">
-                <table id="mainTable" class="table align-items-center">
-                    <thead class="thead-light">
-                        <tr>
-                            <th class="text-center">Usuario</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="list"></tbody>
-                </table>
+                <div class="col-6 col-md-6 col-lg-4 mt-auto mb-auto">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" data-search="disabled" id="sDisabled">
+                        <label class="custom-control-label" for="sDisabled">Desabilidato</label>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="card-footer text-right">
-            <button type="button" id="btnPrev" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
-                &lt;</button>
-            <span id="pageCounter"></span>
-            <button type="button" id="btnNext" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">&gt;</button>
-            <div id="pagination" class="d-flex justify-content-end"></div>
+        </form>
+    </div>
+    <div class="card-footer text-right">
+        <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width:150px"><i
+                class="uil uil-search"></i> Buscar</button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding-bottom: 0;">
+        <div class="table-responsive">
+            <table id="mainTable" class="table align-items-center">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="text-center">Usuario</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="list"></tbody>
+            </table>
         </div>
     </div>
-    {{/content}}
+    <div class="card-footer text-right">
+        <button type="button" id="btnPrev" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
+            &lt;</button>
+        <span id="pageCounter"></span>
+        <button type="button" id="btnNext" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">&gt;</button>
+        <div id="pagination" class="d-flex justify-content-end"></div>
+    </div>
+</div>
+{{/content}}
 
-    {{#content "modals" mode="append"}}
-    <div class="row">
-        <div class="col-md-4">
-            <div class="modal fade" id="main_modal" tabindex="-1" role="dialog" aria-labelledby="main_modal"
-                aria-hidden="true" data-backdrop="static" data-keyboard="false">
-                <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h6 class="modal-title" id="modal-title-default"> <i id="modal_icon"></i> <span
-                                    id="modal_title"></span></h6>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body pb-0">
-                            <form id="usuariosForm">
-                                <div class="row">
-                                    <input id="_id" type="hidden">
-                                    <div class="col-6 col-md-6 col-lg-6">
-                                        <small id="nameMsg"></small>
-                                        <div class="form-group">
-                                            <label class="form-control-label">Nombre:</label>
-                                            <input class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Usuario" type="text" id="name">
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-6 col-lg-6">
-                                        <small id="motherSurnameMsg"></small>
-                                        <div class="form-group">
-                                            <label class="form-control-label">Apellido materno:</label>
-                                            <input class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Apellido materno" type="text" id="motherSurname">
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-6 col-lg-6">
-                                        <small id="fatherSurnameMsg"></small>
-                                        <div class="form-group">
-                                            <label class="form-control-label">Apellido paterno:</label>
-                                            <input class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Apellido paterno" type="text" id="fatherSurname">
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-6 col-lg-6">
-                                        <small id="emailMsg"></small>
-                                        <div class="form-group">
-                                            <label class="form-control-label">Email:</label>
-                                            <input class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Email" type="text" id="email">
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-6 col-lg-6">
-                                        <small id="passwordMsg"></small>
-                                        <div class="form-group">
-                                            <label class="form-control-label">Contraseña:</label>
-                                            <input class="form-control form-control-sm form-control-alternative"
-                                                placeholder="Contraseña" type="password" id="password">
-                                        </div>
+{{#content "modals" mode="append"}}
+<div class="row">
+    <div class="col-md-4">
+        <div class="modal fade" id="main_modal" tabindex="-1" role="dialog" aria-labelledby="main_modal"
+            aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="modal-title-default"> <i id="modal_icon"></i> <span
+                                id="modal_title"></span></h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body pb-0">
+                        <form id="usuariosForm">
+                            <div class="row">
+                                <input id="_id" type="hidden">
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <small id="nameMsg"></small>
+                                    <div class="form-group">
+                                        <label class="form-control-label">Nombre:</label>
+                                        <input class="form-control form-control-sm form-control-alternative"
+                                            placeholder="Usuario" type="text" id="name">
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer pt-0">
-                            <button type="button" class="btn btn-secondary text-danger ml-auto"
-                                data-dismiss="modal">Cerrar</button>
-                            <button type="button" id="btnAddUser" class="btn btn-primary">Agregar</button>
-                            <button type="button" id="btnUpdateUser" class="btn btn-primary d-none">Actualizar</button>
-                        </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <small id="motherSurnameMsg"></small>
+                                    <div class="form-group">
+                                        <label class="form-control-label">Apellido materno:</label>
+                                        <input class="form-control form-control-sm form-control-alternative"
+                                            placeholder="Apellido materno" type="text" id="motherSurname">
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <small id="fatherSurnameMsg"></small>
+                                    <div class="form-group">
+                                        <label class="form-control-label">Apellido paterno:</label>
+                                        <input class="form-control form-control-sm form-control-alternative"
+                                            placeholder="Apellido paterno" type="text" id="fatherSurname">
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <small id="emailMsg"></small>
+                                    <div class="form-group">
+                                        <label class="form-control-label">Email:</label>
+                                        <input class="form-control form-control-sm form-control-alternative"
+                                            placeholder="Email" type="text" id="email">
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <small id="passwordMsg"></small>
+                                    <div class="form-group">
+                                        <label class="form-control-label">Contraseña:</label>
+                                        <input class="form-control form-control-sm form-control-alternative"
+                                            placeholder="Contraseña" type="password" id="password">
+                                    </div>
+                                </div>
+
+
+                                <div id="disabledCheckDiv" class="col-6 col-md-6 col-lg-4 mt-auto mb-auto">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="disabled">
+                                        <label class="custom-control-label" for="disabled">Desabilidato</label>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer pt-0">
+                        <button type="button" class="btn btn-secondary text-danger ml-auto"
+                            data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="btnAddUser" class="btn btn-primary">Agregar</button>
+                        <button type="button" id="btnUpdateUser" class="btn btn-primary d-none">Actualizar</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    {{/content}}
+</div>
+{{/content}}
 {{/extend}}

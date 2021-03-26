@@ -10,7 +10,7 @@ const index = (req, res) => {
 
 const createUser = async (req, res) => {
   delete req.body._id;
-  
+
   try {
     const user = new User(req.body);
 
@@ -44,7 +44,7 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const _id = req.body._id;
   delete req.body._id;
-
+console.log(req.body);
   try {
     let user = await User.findById(_id).exec();
 
@@ -105,7 +105,7 @@ const deleteUser = async (req, res) => {
     await user.save();
     res.json({
       error: false,
-      message: "El usuario eliminado correctamente.",
+      message: "El usuario se desabilitó correctamente.",
       response: null,
     });
   } catch (error) {
@@ -130,13 +130,13 @@ const deleteUser = async (req, res) => {
 };
 
 const searchUsers = async (req, res) => {
-  const { name } = req.body;
+  const { name, disabled } = req.body;
 
   try {
     const users = await User.find({
       name: { $regex: `.*${name}.*`, $options: "i" },
-      disabled: false,
-    }).sort({name: "asc"})
+      disabled,
+    }).sort({ name: "asc" });
 
     res.json({
       error: false,

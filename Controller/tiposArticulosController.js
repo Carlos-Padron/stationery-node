@@ -131,7 +131,43 @@ const deleteArticleType = async (req, res) => {
   }
 };
 
-const searchArticleType = (req, res) => {};
+const searchArticleType = async (req, res) => {
+  const { name } = req.body;
+
+  try {
+    const articleTypes = await ArticleType.find({
+      name: {
+        regex: `*.${name}.*`,
+        $options: "i",
+      },
+      disabled: false,
+    }).sort({ name: "asc" });
+
+    res.json({
+      error: false,
+      message: "",
+      response: articleTypes,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res
+        .json({
+          error: true,
+          message: error,
+          response: null,
+        })
+        .status(500);
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
 
 module.exports = {
   index,

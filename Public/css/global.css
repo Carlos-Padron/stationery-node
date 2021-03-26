@@ -2,6 +2,12 @@
   border: 1px red solid;
 }
 
+/* Invisible  */
+.invisible{
+  color: transparent
+}
+
+
 /*** Spinner Overlay ***/
 
 .overlay {

@@ -3,6 +3,7 @@ window.addEventListener("DOMContentLoaded", () => {
   let $fields = [
     "_id",
     "name",
+    "disabled",
     "motherSurname",
     "fatherSurname",
     "email",
@@ -27,6 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.querySelector("#btnAdd");
   const addUserBtn = document.querySelector("#btnAddUser");
   const updateUserBtn = document.querySelector("#btnUpdateUser");
+  const disabledCheckDiv = document.querySelector("#disabledCheckDiv");
   const mainTableBody = document.querySelector("#mainTable tbody.list");
 
   //Listeners
@@ -45,9 +47,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
     $fields.forEach((elem) => {
       let elemData = document.querySelector(`[data-search="${elem}"]`);
+
       if (elemData != undefined) {
-        let data = elemData.value.trim();
-        body[elem] = data;
+        switch (elem) {
+          case "disabled":
+            body[elem] = elemData.checked;
+            break;
+
+          default:
+            let data = elemData.value.trim();
+            body[elem] = data;
+            break;
+        }
       }
     });
 
@@ -291,6 +302,12 @@ window.addEventListener("DOMContentLoaded", () => {
           body[elem] = data.value;
           break;
 
+        case "disabled":
+          data = document.querySelector(`#${elem}`);
+
+          body[elem] = data.checked;
+          break;
+
         case "password":
           if (!update) {
             data = document.querySelector(`#${elem}`);
@@ -368,7 +385,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function deleteConfirmation(usuario) {
-    confirmationAlert("Se eliminará el usuario seleccionado.", () => {
+    confirmationAlert("Se desabilitará el usuario seleccionado.", () => {
       destroy(usuario);
     });
   }
@@ -411,10 +428,19 @@ window.addEventListener("DOMContentLoaded", () => {
   function showMainModalEdit(usuario) {
     addUserBtn.classList.add("d-none");
     updateUserBtn.classList.remove("d-none");
+    disabledCheckDiv.classList.remove("d-none");
 
     $fields.forEach((elem) => {
       if (elem != "password") {
-        document.querySelector(`#${elem}`).value = usuario[elem];
+        switch (elem) {
+          case "disabled":
+            document.querySelector(`#${elem}`).checked = usuario[elem];
+            break;
+
+          default:
+            document.querySelector(`#${elem}`).value = usuario[elem];
+            break;
+        }
       }
     });
 
@@ -425,6 +451,7 @@ window.addEventListener("DOMContentLoaded", () => {
   $("#main_modal").on("hidden.bs.modal", function (e) {
     resetFormValidation();
     resetForm("usuariosForm");
+    disabledCheckDiv.classList.add("d-none");
   });
 
   //Initial actions

@@ -5,6 +5,8 @@ const index = (req, res) => {
   res.render("inventario/marcas", {
     sectionName: "Marcas",
     script: "marcasClient",
+    activeMenu: "INVTRO",
+    activeSubmenu: "MRCS",
   });
 };
 

@@ -6,6 +6,8 @@ const index = (req, res) => {
   res.render("inventario/tiposArticulos", {
     sectionName: "Tipos de Artículos",
     script: "tiposArticulosClient",
+    activeMenu: "INVTRO",
+    activeSubmenu: "TPARTS"
   });
 };
 

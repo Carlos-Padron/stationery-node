@@ -1,0 +1,39 @@
+{{#extend "master"}}
+{{#content "body" mode="append"}}
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h3 class="mb-0">¡Filtra los productos!</h3>
+        <div class="d-flex justify-content-between">
+            <button id="btnAdd" type="button" class="btn btn-sm btn-outline-secondary" style="width:150px"><i
+                    class="uil uil-plus-circle"></i>
+                Agregar</button>
+            <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary"><i
+                    class="uil uil-redo"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <form id="searchForm">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Nombre del producto:</label>
+                        <input class="form-control form-control-sm form-control-alternative"
+                            placeholder="Tipo de artículo" type="text" data-search="name">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-right">
+        <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width:150px"><i
+                class="uil uil-search"></i> Buscar</button>
+    </div>
+</div>
+
+<div class="card">
+    tabla mamalona para mostrar productos
+</div>
+{{/content}}
+
+{{/extend}}

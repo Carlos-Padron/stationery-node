@@ -29,10 +29,9 @@ const createBrand = async (req, res) => {
       res
         .json({
           error: true,
-          message: error,
+          message: error.message,
           response: null,
         })
-        .status(500);
     } else {
       res.json({
         error: true,
@@ -73,10 +72,9 @@ const updateBrand = async (req, res) => {
       res
         .json({
           error: true,
-          message: error,
+          message: error.message,
           response: null,
         })
-        .status(500);
     } else {
       res.json({
         error: true,
@@ -117,10 +115,9 @@ const deleteBrand = async (req, res) => {
       res
         .json({
           error: true,
-          message: error,
+          message: error.message,
           response: null,
         })
-        .status(500);
     } else {
       res.json({
         error: true,
@@ -132,15 +129,14 @@ const deleteBrand = async (req, res) => {
 };
 
 const searchBrands = async (req, res) => {
-  const { name, disabled } = req.body;
+  const { name } = req.body;
   try {
     console.log("before search");
     const brands = await Brand.find({
       name: { $regex: `.*${name}.*`, $options: "i" },
-      disabled,
+      disabled: false,
     }).sort({ name: "asc" });
 
-    console.log(brands);
     res.json({
       error: false,
       message: null,
@@ -156,7 +152,6 @@ const searchBrands = async (req, res) => {
           message: error,
           response: null,
         })
-        .status(500);
     } else {
       res.json({
         error: true,

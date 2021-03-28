@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
   //Variables & Elements
-  let $fields = ["_id", "name", "disabled"];
+  let $fields = ["_id", "name"];
   let routes = {
     get: "/getBrands",
     add: "/addBrand",
@@ -21,7 +21,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.querySelector("#btnAdd");
   const addBrandBtn = document.querySelector("#btnAddBrand");
   const updateBrandBtn = document.querySelector("#btnUpdateBrand");
-  const disabledCheckDiv = document.querySelector("#disabledCheckDiv");
   const mainTableBody = document.querySelector("#mainTable tbody.list");
 
   //Listeners
@@ -171,9 +170,9 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function destroy(brand) {
+  async function destroy(_id) {
     blockElem(mainTableBody);
-    let body = JSON.stringify({ brand });
+    let body = JSON.stringify({ _id });
 
     try {
       let request = await fetch(routes.delete, {
@@ -306,9 +305,9 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function deleteConfirmation(brand) {
+  function deleteConfirmation(_id) {
     confirmationAlert("Se deshabilitará la marca seleccionada", () => {
-      destroy(brand);
+      destroy(_id);
     });
   }
 
@@ -333,11 +332,11 @@ window.addEventListener("DOMContentLoaded", () => {
       if (e.target.tagName === "I") {
         let button = e.target.parentElement;
         let index = button.getAttribute("data-index");
-        deleteConfirmation(brandsData[index]);
+        deleteConfirmation(brandsData[index]._id);
       } else {
         let button = e.target;
         let index = button.getAttribute("data-index");
-        deleteConfirmation(brandsData[index]);
+        deleteConfirmation(brandsData[index]._id);
       }
     }
   }
@@ -345,14 +344,12 @@ window.addEventListener("DOMContentLoaded", () => {
   function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML =
       "Agregar una nueva marca";
-    disabledCheckDiv.classList.add("d-none");
     $("#main_modal").modal("show");
   }
 
   function showMainModalEdit(brand) {
     addBrandBtn.classList.add("d-none");
     updateBrandBtn.classList.remove("d-none");
-    disabledCheckDiv.classList.remove("d-none");
 
     $fields.forEach((elem) => {
       switch (elem) {

@@ -3,7 +3,6 @@ window.addEventListener("DOMContentLoaded", () => {
   let $fields = [
     "_id",
     "name",
-    "disabled",
     "motherSurname",
     "fatherSurname",
     "email",
@@ -28,7 +27,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.querySelector("#btnAdd");
   const addUserBtn = document.querySelector("#btnAddUser");
   const updateUserBtn = document.querySelector("#btnUpdateUser");
-  const disabledCheckDiv = document.querySelector("#disabledCheckDiv");
   const mainTableBody = document.querySelector("#mainTable tbody.list");
 
   //Listeners
@@ -177,9 +175,9 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function destroy(usuario) {
+  async function destroy(_id) {
     blockElem(mainTableBody);
-    let body = JSON.stringify({ usuario });
+    let body = JSON.stringify({ _id });
 
     try {
       let request = await fetch(routes.delete, {
@@ -384,9 +382,9 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function deleteConfirmation(usuario) {
+  function deleteConfirmation(_id) {
     confirmationAlert("Se deshabilitará el usuario seleccionado.", () => {
-      destroy(usuario);
+      destroy(_id);
     });
   }
 
@@ -411,25 +409,23 @@ window.addEventListener("DOMContentLoaded", () => {
       if (e.target.tagName === "I") {
         let button = e.target.parentElement;
         let index = button.getAttribute("data-index");
-        deleteConfirmation(usuariosData[index]);
+        deleteConfirmation(usuariosData[index]._id);
       } else {
         let button = e.target;
         let index = button.getAttribute("data-index");
-        deleteConfirmation(usuariosData[index]);
+        deleteConfirmation(usuariosData[index]._id);
       }
     }
   }
 
   function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML = "Agregar nuevo usuario";
-    disabledCheckDiv.classList.add("d-none");
     $("#main_modal").modal("show");
   }
 
   function showMainModalEdit(usuario) {
     addUserBtn.classList.add("d-none");
     updateUserBtn.classList.remove("d-none");
-    disabledCheckDiv.classList.remove("d-none");
 
     $fields.forEach((elem) => {
       if (elem != "password") {

@@ -1,5 +1,4 @@
 const ArticleType = require("../Model/ArticleType");
-const ArtycleType = require("../Model/ArticleType");
 const errorHandler = require("../Utils/Helpers/errorHandler");
 
 const index = (req, res) => {
@@ -7,7 +6,7 @@ const index = (req, res) => {
     sectionName: "Tipos de Artículos",
     script: "tiposArticulosClient",
     activeMenu: "INVTRO",
-    activeSubmenu: "TPARTS"
+    activeSubmenu: "TPARTS",
   });
 };
 
@@ -28,13 +27,11 @@ const createArticleType = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error,
-          response: null,
-        })
-        .status(500);
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,
@@ -47,10 +44,10 @@ const createArticleType = async (req, res) => {
 
 const updateArticleType = async (req, res) => {
   const _id = req.body._id;
-  delete req.body;
+  delete req.body._id;
 
   try {
-    let articleType = ArtycleType.findById(_id).exec();
+    let articleType = await ArtycleType.findById(_id).exec();
 
     if (!articleType) {
       res.json({
@@ -72,13 +69,11 @@ const updateArticleType = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error,
-          response: null,
-        })
-        .status(500);
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,
@@ -90,8 +85,9 @@ const updateArticleType = async (req, res) => {
 };
 
 const deleteArticleType = async (req, res) => {
-  const _id = req.body;
+  const _id = req.body._id;
 
+  console.log(req.body);
   try {
     let articleType = await ArticleType.findById(_id);
 
@@ -104,6 +100,7 @@ const deleteArticleType = async (req, res) => {
 
       return;
     }
+
     articleType.disabled = true;
     await articleType.save();
 
@@ -116,13 +113,11 @@ const deleteArticleType = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error,
-          response: null,
-        })
-        .status(500);
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,
@@ -139,7 +134,7 @@ const searchArticleType = async (req, res) => {
   try {
     const articleTypes = await ArticleType.find({
       name: {
-        regex: `*.${name}.*`,
+        $regex: `.*${name}.*`,
         $options: "i",
       },
       disabled: false,
@@ -154,13 +149,11 @@ const searchArticleType = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error,
-          response: null,
-        })
-        .status(500);
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,

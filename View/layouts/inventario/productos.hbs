@@ -32,7 +32,22 @@
 </div>
 
 <div class="card">
-    tabla mamalona para mostrar productos
+    <div class="card-body" style="padding-bottom: 0">
+        <div class="table-responsive">
+            <table id="mainTable" class="table align-items-center">
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-right">
+        <button type="button" id="btnPrev" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
+            &lt;
+        </button>
+        <span id="pageCounter"></span>
+        <button type="button" id="btnNext" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
+            &gt;
+        </button>
+        <div id="pagination" class="d-flex justify-content-end"></div>
+    </div>
 </div>
 {{/content}}
 

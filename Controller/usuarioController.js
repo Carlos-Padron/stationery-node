@@ -24,13 +24,11 @@ const createUser = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error,
-          response: null,
-        })
-        .status(500);
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,
@@ -44,7 +42,7 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const _id = req.body._id;
   delete req.body._id;
-console.log(req.body);
+  console.log(req.body);
   try {
     let user = await User.findById(_id).exec();
 
@@ -69,13 +67,11 @@ console.log(req.body);
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error,
-          response: null,
-        })
-        .status(500);
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,
@@ -112,13 +108,11 @@ const deleteUser = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error,
-          response: null,
-        })
-        .status(500);
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,
@@ -130,12 +124,12 @@ const deleteUser = async (req, res) => {
 };
 
 const searchUsers = async (req, res) => {
-  const { name, disabled } = req.body;
+  const { name } = req.body;
 
   try {
     const users = await User.find({
       name: { $regex: `.*${name}.*`, $options: "i" },
-      disabled,
+      disabled: false,
     }).sort({ name: "asc" });
 
     res.json({
@@ -147,13 +141,11 @@ const searchUsers = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error,
-          response: null,
-        })
-        .status(500);
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,

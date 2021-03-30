@@ -18,12 +18,26 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let productsData = [];
 
+  //Img elements
+  const imgFileInput = document.createElement("type");
+  const imgOverlay = document.querySelector("#imgOverlay");
+  const reuploadImgElem = document.querySelector("#reuploadImgElem");
+  const removeImgElem = document.querySelector("#removeImgElem");
+
+  imgFileInput.type = "file";
+  imgFileInput.accept = "image/png, image/jpeg";
+
+  imgFileInput.addEventListener('change', inputChanged)
+
+  //Seach and main form elements
   const searchBtn = document.querySelector("#btnSearch");
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
+  const addBtn = document.querySelector("#btnAdd");
 
   //Listeners
   searchBtn.addEventListener("click", search);
+  addBtn.addEventListener("click", showMainModalAdd);
   btnClearSearch.addEventListener("click", clearSearch);
 
   //functions
@@ -326,7 +340,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML =
-      "Agregar una nueva marca";
+      "Agregar un nuevo producto";
     $("#main_modal").modal("show");
   }
 
@@ -354,6 +368,16 @@ window.addEventListener("DOMContentLoaded", () => {
     resetFormValidation();
     resetForm("brandsForm");
   });
+
+
+  //imgFile input functinos
+
+  function inputChanged(e){
+    let file = imgFileInput.files
+    console.log('se agregó archivoo');
+    console.log(file);
+  }
+
 
   //Initial actions
   let mainTable = new CardTable(

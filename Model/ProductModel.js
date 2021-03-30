@@ -39,7 +39,6 @@ let prodcutSchema = new mongoose.Schema({
       },
       quantity: {
         type: Number,
-        require: [true, "La cantidad ingresada es requerida"],
       },
       madeBy: {
         type: mongoose.Schema.Types.ObjectId,

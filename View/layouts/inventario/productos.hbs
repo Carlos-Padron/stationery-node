@@ -156,17 +156,24 @@
                         class="col-md-4 d-flex flex-column align-items-center justify-content-between"
                       >
                         <img
-                          class="rounded-circle img-fluid mb-4"
-                          src="https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/team-4.jpg"
-                          alt="profile picture"
+                          id="picture"
+                          class="dropZone rounded-circle img-fluid mb-4"
+                          src=""
+                          alt=""
                           srcset=""
+                          style="
+                            object-fit: cover;
+                            height: 100%;
+                            width: 100%;
+                            border: 4px solid #5e72e4;
+                          "
                         />
                         <div
                           id="imgOverlay"
-                          class="rounded-circle bg-primary d-flex flex-column align-items-center justify-content-center"
+                          class="dropZone rounded-circle bg-primary d-flex flex-column align-items-center justify-content-center"
                           style="
                             position: absolute;
-                            height: 83%;
+                            height: 81%;
                             width: 88%;
                             background-color: #f6f9fc !important;
                             opacity: 0.8;
@@ -175,7 +182,7 @@
                           <small class="text-center"
                             >Arrastra una imagen o <br />
                             <span
-                              id="reuploadImgElem"
+                              id="uploadImgElem"
                               style="cursor: pointer"
                               class="text-info"
                               ><u>haz click</u></span
@@ -184,7 +191,7 @@
                         </div>
                         <i
                           id="removeImgElem"
-                          class="uil uil-times-circle text-primary"
+                          class="uil uil-times-circle text-primary visibility"
                           style="cursor: pointer; font-size: 1.2em"
                         ></i>
                       </div>

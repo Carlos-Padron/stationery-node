@@ -16,18 +16,27 @@ window.addEventListener("DOMContentLoaded", () => {
     delete: "/deleteProduct",
   };
 
+  const DEFAULT_ROUTE = "http://localhost:3000/inventario/productos";
   let productsData = [];
 
   //Img elements
-  const imgFileInput = document.createElement("type");
+  const imgFileInput = document.createElement("input");
+  const picuture = document.querySelector("#picture");
+  const dropZone = document.querySelectorAll(".dropZone");
   const imgOverlay = document.querySelector("#imgOverlay");
-  const reuploadImgElem = document.querySelector("#reuploadImgElem");
+  const uploadImgElem = document.querySelector("#uploadImgElem");
   const removeImgElem = document.querySelector("#removeImgElem");
 
-  imgFileInput.type = "file";
-  imgFileInput.accept = "image/png, image/jpeg";
-
-  imgFileInput.addEventListener('change', inputChanged)
+  // Img Listeners
+  imgFileInput.addEventListener("change", inputChanged);
+  removeImgElem.addEventListener("click", clearImg);
+  uploadImgElem.addEventListener("click", openFileExplorer);
+  dropZone.forEach((elem) => {
+    elem.addEventListener("dragenter", preventtDefault);
+    elem.addEventListener("dragleave", preventtDefault);
+    elem.addEventListener("dragover", preventtDefault);
+    elem.addEventListener("drop", dropZoneDrop);
+  });
 
   //Seach and main form elements
   const searchBtn = document.querySelector("#btnSearch");
@@ -369,15 +378,80 @@ window.addEventListener("DOMContentLoaded", () => {
     resetForm("brandsForm");
   });
 
-
   //imgFile input functinos
 
-  function inputChanged(e){
-    let file = imgFileInput.files
-    console.log('se agregó archivoo');
-    console.log(file);
+  function inputChanged(e) {
+    let image = imgFileInput.files;
+    console.log("se agregó archivoo");
+    console.log(image);
+    showImage(image[0]);
   }
 
+  function openFileExplorer() {
+    console.log("click");
+    console.log(imgFileInput);
+    imgFileInput.click();
+  }
+
+  function preventtDefault(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  function dropZoneDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    console.log("drop");
+    let data = e.dataTransfer,
+      image = data.files;
+
+    console.log(data);
+    console.log(image);
+
+    showImage(image[0]);
+  }
+
+  function showImage(image) {
+    if (validateImgage(image)) {
+      var reader = new FileReader();
+      reader.onload = (e) => (picuture.src = e.target.result);
+
+      reader.readAsDataURL(image);
+      imgOverlay.classList.remove("d-flex");
+      imgOverlay.classList.add("d-none");
+      removeImgElem.classList.remove("invisible");
+    } else {
+      imgOverlay.classList.remove("d-none");
+      imgOverlay.style.display = "flex";
+
+      removeImgElem.classList.add("invisible");
+    }
+  }
+
+  function validateImgage(image) {
+    let validTypes = ["image/jpeg", "image/png"];
+
+    console.log(image.type);
+    console.log(validTypes.indexOf(image.type));
+    if (validTypes.indexOf(image.type) == -1) {
+      alert("invalid file");
+      return false;
+    }
+
+    var maxSizeInBytes = 2097152; // 2MB
+    if (image.size > maxSizeInBytes) {
+      alert("File too large");
+      return false;
+    }
+    return true;
+  }
+
+  function clearImg() {
+    picuture.src = "";
+    imgOverlay.classList.add("d-flex");
+    removeImgElem.classList.add("invisible");
+  }
 
   //Initial actions
   let mainTable = new CardTable(
@@ -388,4 +462,15 @@ window.addEventListener("DOMContentLoaded", () => {
     "pageCounter"
   );
   mainTable.reloadCardTable(productsData);
+
+  imgFileInput.type = "file";
+  imgFileInput.accept = "image/png, image/jpeg";
+
+  if (picuture.src != DEFAULT_ROUTE) {
+    imgOverlay.classList.add("d-none");
+    imgOverlay.classList.remove("d-flex");
+  } else {
+    imgOverlay.classList.add("d-flex");
+    removeImgElem.classList.add("invisible");
+  }
 });

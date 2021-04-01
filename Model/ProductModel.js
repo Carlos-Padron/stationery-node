@@ -40,6 +40,12 @@ let prodcutSchema = new mongoose.Schema({
       quantity: {
         type: Number,
       },
+      action: {
+        type: String,
+      },
+      description: {
+        type: String,
+      },
       madeBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -48,6 +54,6 @@ let prodcutSchema = new mongoose.Schema({
   ],
 });
 
-let productModel = new mongoose.model("Product", productModel);
+let productModel = new mongoose.model("Product", prodcutSchema);
 
 module.exports = productModel;

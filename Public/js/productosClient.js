@@ -6,7 +6,7 @@ window.addEventListener("DOMContentLoaded", () => {
     "image",
     "price",
     "quantity",
-    "type",
+    "brand",
     "articleType",
   ];
   let routes = {
@@ -21,14 +21,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //Img elements
   const imgFileInput = document.createElement("input");
-  const picuture = document.querySelector("#picture");
+  const image = document.querySelector("#image");
   const dropZone = document.querySelectorAll(".dropZone");
   const imgOverlay = document.querySelector("#imgOverlay");
   const uploadImgElem = document.querySelector("#uploadImgElem");
   const removeImgElem = document.querySelector("#removeImgElem");
 
   // Img Listeners
-  imgFileInput.addEventListener("change", inputChanged);
+  imgFileInput.addEventListener("input", inputChanged);
   removeImgElem.addEventListener("click", clearImg);
   uploadImgElem.addEventListener("click", openFileExplorer);
   dropZone.forEach((elem) => {
@@ -43,16 +43,18 @@ window.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
   const addBtn = document.querySelector("#btnAdd");
+  const btnAddProduct = document.querySelector("#btnAddProduct");
+  const btnUpdateProduct = document.querySelector("#btnUpdateProduct");
 
   //Listeners
   searchBtn.addEventListener("click", search);
   addBtn.addEventListener("click", showMainModalAdd);
   btnClearSearch.addEventListener("click", clearSearch);
+  btnAddProduct.addEventListener("click", addProductBtnClick);
 
   //functions
   async function search() {
     blockElem(searchForm);
-
     let body = {};
 
     $fields.forEach((elem) => {
@@ -130,11 +132,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let response = validateForm();
 
+    console.log(response);
     if (response.valid === false) {
       return;
     }
 
-    disableButton(addBrandBtn, "Agregando");
+    disableButton(btnAddProduct, "Agregando");
+
 
     try {
       let body = JSON.stringify(response.body);
@@ -157,7 +161,7 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
-          enableButton(addBrandBtn, "Agregar");
+          enableButton(btnAddProduct, "Agregar");
 
           modalAlert("warning", "Aviso", messages);
           return;
@@ -170,7 +174,7 @@ window.addEventListener("DOMContentLoaded", () => {
           return;
         }
       }
-      enableButton(addBrandBtn, "Agregar");
+      enableButton(btnAddProduct, "Agregar");
 
       modalAlert(
         "success",
@@ -183,7 +187,7 @@ window.addEventListener("DOMContentLoaded", () => {
       );
     } catch (error) {
       warningNotification("Error interno del servidor");
-      enableButton(addBrandBtn, "Agregar");
+      enableButton(btnAddProduct, "Agregar");
       console.error(error);
     }
   }
@@ -266,10 +270,61 @@ window.addEventListener("DOMContentLoaded", () => {
           }
           body[elem] = data.value;
           break;
-        case "disabled":
+        case "image":
           data = document.querySelector(`#${elem}`);
-          body[elem] = data.checked;
+
+          body[elem] =
+            data.src === "" || data.src === undefined ? null : data.src;
           break;
+        case "price":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (data.value === "") {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "El precio es requerido.";
+            msg.classList.add("text-danger");
+            valid = false;
+          }
+          body[elem] = data.value;
+          break;
+        case "quantity":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (data.value === "") {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "La cantidad total de producto es requerida.";
+            msg.classList.add("text-danger");
+            valid = false;
+          }
+          body[elem] = data.value;
+          break;
+        case "brand":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (data.value === "") {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "La marca es requerida.";
+            msg.classList.add("text-danger");
+            valid = false;
+          }
+          body[elem] = data.value;
+          break;
+        case "articleType":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (data.value === "") {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "El tipo de artículo es requerido.";
+            msg.classList.add("text-danger");
+            valid = false;
+          }
+          body[elem] = data.value;
+          break;
+
         default:
           break;
       }
@@ -283,10 +338,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
   async function resetForm(form) {
     switch (form) {
-      case "brandsForm":
-        document.querySelector("#brandsForm").reset();
-        addBrandBtn.classList.remove("d-none");
-        updateBrandBtn.classList.add("d-none");
+      case "productoForm":
+        document.querySelector("#productoForm").reset();
+        btnAddProduct.classList.remove("d-none");
+        btnUpdateProduct.classList.add("d-none");
         break;
       case "searchForm":
         document.querySelector("#searchForm").reset();
@@ -308,6 +363,12 @@ window.addEventListener("DOMContentLoaded", () => {
         msg.innerHTML = "";
         msg.classList.remove("text-danger");
       }
+    });
+  }
+
+  function addProductBtnClick() {
+    confirmationAlert("Se registrará el producto.", () => {
+      save(routes.add);
     });
   }
 
@@ -375,21 +436,20 @@ window.addEventListener("DOMContentLoaded", () => {
 
   $("#main_modal").on("hidden.bs.modal", function (e) {
     resetFormValidation();
-    resetForm("brandsForm");
+    resetForm("productoForm");
+    image.src = "";
+    imgOverlay.classList.remove("d-none");
+    imgOverlay.classList.add("d-flex");
+    removeImgElem.classList.add("invisible");
   });
 
   //imgFile input functinos
-
   function inputChanged(e) {
     let image = imgFileInput.files;
-    console.log("se agregó archivoo");
-    console.log(image);
     showImage(image[0]);
   }
 
   function openFileExplorer() {
-    console.log("click");
-    console.log(imgFileInput);
     imgFileInput.click();
   }
 
@@ -406,21 +466,21 @@ window.addEventListener("DOMContentLoaded", () => {
     let data = e.dataTransfer,
       image = data.files;
 
-    console.log(data);
-    console.log(image);
-
     showImage(image[0]);
   }
 
-  function showImage(image) {
-    if (validateImgage(image)) {
+  function showImage(imageToRead) {
+    if (validateImgage(imageToRead)) {
       var reader = new FileReader();
-      reader.onload = (e) => (picuture.src = e.target.result);
+      reader.onload = (e) => {
+        image.src = e.target.result;
 
-      reader.readAsDataURL(image);
-      imgOverlay.classList.remove("d-flex");
-      imgOverlay.classList.add("d-none");
-      removeImgElem.classList.remove("invisible");
+        imgOverlay.classList.remove("d-flex");
+        imgOverlay.classList.add("d-none");
+        removeImgElem.classList.remove("invisible");
+      };
+
+      reader.readAsDataURL(imageToRead);
     } else {
       imgOverlay.classList.remove("d-none");
       imgOverlay.style.display = "flex";
@@ -435,22 +495,35 @@ window.addEventListener("DOMContentLoaded", () => {
     console.log(image.type);
     console.log(validTypes.indexOf(image.type));
     if (validTypes.indexOf(image.type) == -1) {
-      alert("invalid file");
+      warningNotification("Solo se aceptan imágenes png y jpg");
+
       return false;
     }
 
-    var maxSizeInBytes = 2097152; // 2MB
+    /* var maxSizeInBytes = 2097152; // 2MB
     if (image.size > maxSizeInBytes) {
       alert("File too large");
       return false;
-    }
+    } */
     return true;
   }
 
   function clearImg() {
-    picuture.src = "";
+    image.src = "";
     imgOverlay.classList.add("d-flex");
     removeImgElem.classList.add("invisible");
+  }
+
+  //Mask
+
+  function currencyMask() {
+    //let value = e.target.value
+
+    console.log("as");
+  }
+
+  function myFunction() {
+    console.log("perrp");
   }
 
   //Initial actions
@@ -463,10 +536,11 @@ window.addEventListener("DOMContentLoaded", () => {
   );
   mainTable.reloadCardTable(productsData);
 
+  //?Se van a mover
   imgFileInput.type = "file";
   imgFileInput.accept = "image/png, image/jpeg";
 
-  if (picuture.src != DEFAULT_ROUTE) {
+  if (image.src != DEFAULT_ROUTE) {
     imgOverlay.classList.add("d-none");
     imgOverlay.classList.remove("d-flex");
   } else {

@@ -1,9 +1,63 @@
 const SITE = "localhost:3000/";
 
-const isEmail = (email) =>{
+const isEmail = (email) => {
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
-}
+};
+
+const currencyMask = () => {
+  let e = event;
+  let target = e.target;
+  let value = target.value;
+
+  let charArray = Array.from(value);
+  let arrayLength = charArray.length;
+
+  if (arrayLength > 0) {
+    if (
+      charArray[arrayLength - 1] == "." &&
+      getRepeatedEntriesFromArray(charArray, ".") >= 2
+    ) {
+      value = value.substring(0, arrayLength - 1);
+      target.value = value;
+      return;
+    }
+
+    if (
+      charArray[arrayLength - 1] != "." &&
+      isNaN(parseInt(charArray[arrayLength - 1]))
+    ) {
+      value = value.substring(0, arrayLength - 1);
+      target.value = value;
+      return;
+    }
+  }
+};
+
+const numericMask = () => {
+  let e = event;
+  let target = e.target;
+  let value = target.value;
+
+  let charArray = Array.from(value);
+  let arrayLength = charArray.length;
+
+  if (arrayLength > 0) {
+    if (isNaN(parseInt(charArray[arrayLength - 1]))) {
+      value = value.substring(0, arrayLength - 1);
+      target.value = value;
+      return;
+    }
+  }
+};
+
+const getRepeatedEntriesFromArray = (array, elementToSearch) => {
+  let count = 0;
+  array.forEach((element) => {
+    count += element == elementToSearch ? 1 : 0;
+  });
+  return count;
+};
 
 //butons
 const disableButton = (btn, msg) => {
@@ -18,13 +72,13 @@ const disableButton = (btn, msg) => {
     <span>${msg}</span>
   </div>
   `;
-}
+};
 
 const enableButton = (btn, msg) => {
   btn.removeAttribute("disabled");
   btn.classList.remove("disabled-btn");
   btn.innerHTML = msg;
-}
+};
 
 //SweetAlert
 var modalAlert = (type, title, html, func) => {

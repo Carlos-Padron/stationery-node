@@ -4,19 +4,10 @@
   <div class="card-header d-flex justify-content-between">
     <h3 class="mb-0">¡Filtra los productos!</h3>
     <div class="d-flex justify-content-between">
-      <button
-        id="btnAdd"
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-        style="width: 150px"
-      >
+      <button id="btnAdd" type="button" class="btn btn-sm btn-outline-secondary" style="width: 150px">
         <i class="uil uil-plus-circle"></i> Agregar
       </button>
-      <button
-        id="btnClearSearch"
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-      >
+      <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary">
         <i class="uil uil-redo"></i>
       </button>
     </div>
@@ -27,24 +18,15 @@
         <div class="col-12 col-md-6 col-lg-4">
           <div class="form-group">
             <label class="form-control-label">Nombre del producto:</label>
-            <input
-              class="form-control form-control-sm form-control-alternative"
-              placeholder="Tipo de artículo"
-              type="text"
-              data-search="name"
-            />
+            <input class="form-control form-control-sm form-control-alternative" placeholder="Tipo de artículo"
+              type="text" data-search="name" />
           </div>
         </div>
       </div>
     </form>
   </div>
   <div class="card-footer text-right">
-    <button
-      id="btnSearch"
-      type="button"
-      class="btn btn-sm btn-primary"
-      style="width: 150px"
-    >
+    <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width: 150px">
       <i class="uil uil-search"></i> Buscar
     </button>
   </div>
@@ -57,19 +39,11 @@
     </div>
   </div>
   <div class="card-footer text-right">
-    <button
-      type="button"
-      id="btnPrev"
-      class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle"
-    >
+    <button type="button" id="btnPrev" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
       &lt;
     </button>
     <span id="pageCounter"></span>
-    <button
-      type="button"
-      id="btnNext"
-      class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle"
-    >
+    <button type="button" id="btnNext" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
       &gt;
     </button>
     <div id="pagination" class="d-flex justify-content-end"></div>
@@ -80,205 +54,137 @@
 {{#content "modals" mode="append"}}
 <div class="row">
   <div class="col-md-4">
-    <div
-      class="modal fade"
-      id="main_modal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="main_modal"
-      aria-hidden="true"
-      data-backdrop="static"
-      data-keyboard="false"
-    >
-      <div
-        class="modal-dialog modal-lg modal-dialog-centered modal-"
-        role="document"
-      >
+    <div class="modal fade" id="main_modal" tabindex="-1" role="dialog" aria-labelledby="main_modal" aria-hidden="true"
+      data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h6 class="modal-title" id="modal-title-default">
               <i id="modal_icon"></i> <span id="modal_title"></span>
             </h6>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
           <div class="modal-body py-0">
             <div class="nav-wrapper pt-0">
-              <ul
-                class="nav nav-pills nav-fill flex-column flex-md-row"
-                role="tablist"
-              >
+              <ul class="nav nav-pills nav-fill flex-column flex-md-row" role="tablist">
                 <li class="nav-item">
-                  <a
-                    class="nav-link mb-sm-3 mb-md-0 active"
-                    id="productos-tab"
-                    data-toggle="tab"
-                    href="#productos"
-                    role="tab"
-                    aria-controls="productos"
-                    aria-selected="true"
-                    ><i class="uil uil-archive ni ni-cloud-upload-96 mr-2"></i
-                    >Producto</a
-                  >
+                  <a class="nav-link mb-sm-3 mb-md-0 active" id="productos-tab" data-toggle="tab" href="#productos"
+                    role="tab" aria-controls="productos" aria-selected="true"><i
+                      class="uil uil-archive ni ni-cloud-upload-96 mr-2"></i>Producto</a>
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="nav-link mb-sm-3 mb-md-0"
-                    id="historial-tab"
-                    data-toggle="tab"
-                    href="#historial"
-                    role="tab"
-                    aria-controls="historial"
-                    aria-selected="false"
-                    ><i class="uil uil-receipt ni ni-bell-55 mr-2"></i
-                    >Historial</a
-                  >
+                  <a class="nav-link mb-sm-3 mb-md-0" id="historial-tab" data-toggle="tab" href="#historial" role="tab"
+                    aria-controls="historial" aria-selected="false"><i
+                      class="uil uil-receipt ni ni-bell-55 mr-2"></i>Historial</a>
                 </li>
               </ul>
             </div>
             <div class="card shadow">
               <div class="card-body">
                 <div class="tab-content">
-                  <div
-                    class="tab-pane fade show active"
-                    id="productos"
-                    role="tabpanel"
-                    aria-labelledby="productos-tab"
-                  >
-                    <div class="row">
-                      <div
-                        class="col-md-4 d-flex flex-column align-items-center justify-content-between"
-                      >
-                        <img
-                          id="picture"
-                          class="dropZone rounded-circle img-fluid mb-4"
-                          src=""
-                          alt=""
-                          srcset=""
-                          style="
+                  <div class="tab-pane fade show active" id="productos" role="tabpanel" aria-labelledby="productos-tab">
+                    <form id="productoForm">
+                      <div class="row">
+                        <input id="_id" type="hidden">
+                        <div class="col-md-4 d-flex flex-column align-items-center justify-content-between">
+                          <img id="image" class="dropZone rounded-circle img-fluid mb-4" src="" alt="" srcset=""
+                            style="
                             object-fit: cover;
-                            height: 100%;
-                            width: 100%;
+                            height: 206px;
+                            width: 206px;
                             border: 4px solid #5e72e4;
-                          "
-                        />
-                        <div
-                          id="imgOverlay"
-                          class="dropZone rounded-circle bg-primary d-flex flex-column align-items-center justify-content-center"
-                          style="
+                          " />
+                          <div id="imgOverlay"
+                            class="dropZone rounded-circle bg-primary d-flex flex-column align-items-center justify-content-center"
+                            style="
                             position: absolute;
-                            height: 81%;
-                            width: 88%;
+                            height: 206px;
+                            width: 206px;
                             background-color: #f6f9fc !important;
                             opacity: 0.8;
-                          "
-                        >
-                          <small class="text-center"
-                            >Arrastra una imagen o <br />
-                            <span
-                              id="uploadImgElem"
-                              style="cursor: pointer"
-                              class="text-info"
-                              ><u>haz click</u></span
-                            ></small
-                          >
+                          ">
+                            <small class="text-center">Arrastra una imagen o <br />
+                              <span id="uploadImgElem" style="cursor: pointer" class="text-info"><u>haz
+                                  click</u></span></small>
+                          </div>
+                          <i id="removeImgElem" class="uil uil-times-circle text-primary visibility"
+                            style="cursor: pointer; font-size: 1.2em"></i>
                         </div>
-                        <i
-                          id="removeImgElem"
-                          class="uil uil-times-circle text-primary visibility"
-                          style="cursor: pointer; font-size: 1.2em"
-                        ></i>
-                      </div>
 
-                      <div class="col-md-8">
-                        <div class="row">
-                          <div class="col-6">
-                            <small id="nameMsg"></small>
-                            <div class="form-group">
-                              <label class="form-control-label">Nombre:</label>
-                              <input
-                                class="form-control form-control-sm form-control-alternative"
-                                placeholder="Nombre"
-                                type="text"
-                                id="name"
-                              />
+                        <div class="col-md-8">
+                          <div class="row">
+                            <div class="col-6">
+                              <small id="nameMsg"></small>
+                              <div class="form-group">
+                                <label class="form-control-label">Nombre:</label>
+                                <input class="form-control form-control-sm form-control-alternative"
+                                  placeholder="Nombre" type="text" id="name" />
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <small id="priceMsg"></small>
+                              <div class="form-group">
+                                <label class="form-control-label">Precio:</label>
+                                <input class="form-control form-control-sm form-control-alternative" placeholder="$"
+                                  oninput="currencyMask()" type="text" id="price" />
+                              </div>
                             </div>
                           </div>
-                          <div class="col-6">
-                            <small id="priceMsg"></small>
-                            <div class="form-group">
-                              <label class="form-control-label">Precio:</label>
-                              <input
-                                class="form-control form-control-sm form-control-alternative"
-                                placeholder="$"
-                                type="text"
-                                id="price"
-                              />
+                          <div class="row">
+                            <div class="col-6">
+                              <small id="quantityMsg"></small>
+                              <div class="form-group">
+                                <label class="form-control-label">Cantidad:</label>
+                                <input class="form-control form-control-sm form-control-alternative"
+                                  placeholder="Cantidad" type="text" id="quantity" oninput="numericMask()" />
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <small id="articleTypeMsg"></small>
+                              <div class="form-group">
+                                <label class="form-control-label">Tipo de Artículo:</label>
+                                <select class="form-control form-control-sm form-control-alternative" id="articleType">
+                                  <option value="" selected="true">Seleccione</option>
+                                  {{#each articleTypes}}
+                                  <option value="{{this._id}}">{{this.name}}</option>
+                                  {{/each}}
+                                </select>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-6">
-                            <small id="quantityMsg"></small>
-                            <div class="form-group">
-                              <label class="form-control-label"
-                                >Cantidad:</label
-                              >
-                              <input
-                                class="form-control form-control-sm form-control-alternative"
-                                placeholder="Cantidad"
-                                type="text"
-                                id="quantity"
-                              />
-                            </div>
-                          </div>
-                          <div class="col-6">
-                            <small id="articleTypeMsg"></small>
-                            <div class="form-group">
-                              <label class="form-control-label"
-                                >Tipo de Artículo:</label
-                              >
-                              <select
-                                class="form-control form-control-sm form-control-alternative"
-                                id="articleType"
-                              ></select>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-md-6">
-                            <small id="brandMsg"></small>
-                            <div class="form-group">
-                              <label class="form-control-label">Marca:</label>
-                              <select
-                                class="form-control form-control-sm form-control-alternative"
-                                id="brand"
-                              ></select>
+                          <div class="row">
+                            <div class="col-md-6">
+                              <small id="brandMsg"></small>
+                              <div class="form-group">
+                                <label class="form-control-label">Marca:</label>
+                                <select class="form-control form-control-sm form-control-alternative" id="brand">
+                                  <option value="" selected="true">Seleccione</option>
+                                  {{#each brands}}
+                                  <option value="{{this._id}}">{{this.name}}</option>
+                                  {{/each}}
+                                </select>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
+                    </form>
                   </div>
-                  <div
-                    class="tab-pane fade"
-                    id="historial"
-                    role="tabpanel"
-                    aria-labelledby="historial-tab"
-                  >
-                    <p class="description">
-                      Cosby sweater eu banh mi, qui irure terry richardson ex
-                      squid. Aliquip placeat salvia cillum iphone. Seitan
-                      aliquip quis cardigan american apparel, butcher voluptate
-                      nisi qui.
-                    </p>
+                  <div class="row">
+                    <button type="button" class="btn btn-secondary text-danger ml-auto"
+                      data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btnAddProduct" class="btn btn-primary">Agregar</button>
+                    <button type="button" id="btnUpdateProduct" class="btn btn-primary d-none">Actualizar</button>
                   </div>
+                </div>
+                <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab">
+                  <p class="description">
+                    Cosby sweater eu banh mi, qui irure terry richardson ex
+                    squid. Aliquip placeat salvia cillum iphone. Seitan
+                    aliquip quis cardigan american apparel, butcher voluptate
+                    nisi qui.
+                  </p>
                 </div>
               </div>
             </div>
@@ -287,6 +193,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 {{/content}}
 

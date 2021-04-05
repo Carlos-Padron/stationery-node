@@ -145,6 +145,7 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    console.log(response.body);
     disableButton(
       btnAddProduct,
       route == "/updateProduct" ? "Actualizando" : "Agregando"
@@ -298,7 +299,11 @@ window.addEventListener("DOMContentLoaded", () => {
           data = document.querySelector(`#${elem}`);
 
           body[elem] =
-            data.src === "" || data.src === undefined ? null : data.src;
+            data.src === "" ||
+            data.src === undefined ||
+            data.src === DEFAULT_ROUTE
+              ? null
+              : data.src;
           break;
         case "price":
           data = document.querySelector(`#${elem}`);
@@ -538,18 +543,6 @@ window.addEventListener("DOMContentLoaded", () => {
     removeImgElem.classList.add("invisible");
   }
 
-  //Mask
-
-  function currencyMask() {
-    //let value = e.target.value
-
-    console.log("as");
-  }
-
-  function myFunction() {
-    console.log("perrp");
-  }
-
   //Initial actions
   let mainTable = new CardTable(
     "mainTable",
@@ -575,6 +568,8 @@ window.addEventListener("DOMContentLoaded", () => {
   imgFileInput.type = "file";
   imgFileInput.accept = "image/png, image/jpeg";
 
+  console.log(image);
+  console.log(image.src);
   if (image.src != DEFAULT_ROUTE) {
     imgOverlay.classList.add("d-none");
     imgOverlay.classList.remove("d-flex");

@@ -28,10 +28,6 @@ class CardTable {
   };
 
   reloadCardTable(newData) {
-    /* if (newData != undefined) {
-      this.data = newData;
-    } */
-
     this.data = newData.length > 0 ? newData : [];
 
     // Validate page
@@ -49,7 +45,12 @@ class CardTable {
         i++
       ) {
         let cardContainer = document.createElement("div");
-        cardContainer.classList.add("col-md-4", "col-sm-8", "col-12");
+        cardContainer.classList.add(
+          "col-12",
+          "col-sm-6",
+          "col-md-4",
+          "col-lg-3"
+        );
 
         let card = document.createElement("div");
         card.classList.add("card");
@@ -57,7 +58,7 @@ class CardTable {
         let image = document.createElement("img");
         image.classList.add("card-img-top");
         image.setAttribute("src", `${this.data[i]?.imageRelativePath}`);
-        image.style.height    = "200px";
+        image.style.height = "200px";
         image.style.objectFit = "cover";
 
         let cardBody = document.createElement("div");
@@ -108,7 +109,7 @@ class CardTable {
 
         cardRow.push(cardContainer);
 
-        if (cardRow.length == 3) {
+        if (cardRow.length == 4) {
           let row = document.createElement("div");
           row.classList.add("row");
           cardRow.forEach((elem) => {

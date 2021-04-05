@@ -121,7 +121,10 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    disableButton(addUserBtn, "Agregando");
+    disableButton(
+      addUserBtn,
+      route == "/updateUser" ? "Actualizando" : "Agregando"
+    );
 
     try {
       let body = JSON.stringify(response.body);
@@ -144,7 +147,10 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
-          enableButton(addUserBtn, "Agregar");
+          enableButton(
+            addUserBtn,
+            route == "/updateUser" ? "Actualizar" : "Agregar"
+          );
 
           modalAlert("warning", "Aviso", messages);
           return;
@@ -154,10 +160,18 @@ window.addEventListener("DOMContentLoaded", () => {
             "Aviso",
             `<strong>${json.message}</strong> <br>`
           );
+          enableButton(
+            addUserBtn,
+            route == "/updateUser" ? "Actualizar" : "Agregar"
+          );
+
           return;
         }
       }
-      enableButton(addUserBtn, "Agregar");
+      enableButton(
+        addUserBtn,
+        route == "/updateUser" ? "Actualizar" : "Agregar"
+      );
 
       modalAlert(
         "success",
@@ -170,7 +184,10 @@ window.addEventListener("DOMContentLoaded", () => {
       );
     } catch (error) {
       warningNotification("Error interno del servidor");
-      enableButton(addUserBtn, "Agregar");
+      enableButton(
+        addUserBtn,
+        route == "/updateUser" ? "Actualizar" : "Agregar"
+      );
       console.error(error);
     }
   }

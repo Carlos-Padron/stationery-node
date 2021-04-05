@@ -112,12 +112,25 @@ const createProduct = async (req, res) => {
 };
 
 const searchProducts = async (req, res) => {
-  const { name } = req.body;
+  const { name, brand, articleType } = req.body;
+
+  console.log(req.body);
+
+  let filter = {
+    name: { $regex: `.*${name}.*` },
+    disabled: false,
+  };
+
+  if (brand != "") {
+    filter.brand = brand;
+  }
+
+  if (articleType != "") {
+    filter.articleType = articleType;
+  }
+
   try {
-    let products = await Product.find({
-      name: { $regex: `.*${name}.*` },
-      disabled: false,
-    })
+    let products = await Product.find(filter)
       .populate({ path: "articleType", select: "name" })
       .populate({ path: "brand", select: "name" })
       .select("name price quantity imageRelativePath articleType brand")

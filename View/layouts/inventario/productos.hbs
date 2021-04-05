@@ -15,11 +15,33 @@
   <div class="card-body">
     <form id="searchForm">
       <div class="row">
-        <div class="col-12 col-md-6 col-lg-4">
+        <div class="col-12 col-sm-4 col-md-4 col-lg-4">
           <div class="form-group">
             <label class="form-control-label">Nombre del producto:</label>
-            <input class="form-control form-control-sm form-control-alternative" placeholder="Producto"
-              type="text" data-search="name" />
+            <input class="form-control form-control-sm form-control-alternative" placeholder="Producto" type="text"
+              data-search="name" />
+          </div>
+        </div>
+        <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+          <div class="form-group">
+            <label class="form-control-label">Tipo de Artículo:</label>
+            <select class="form-control form-control-sm form-control-alternative" data-search="articleType">
+              <option value="" selected="true">Seleccione</option>
+              {{#each articleTypes}}
+              <option value="{{this._id}}">{{this.name}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+        <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+          <div class="form-group">
+            <label class="form-control-label">Marca:</label>
+            <select class="form-control form-control-sm form-control-alternative" data-search="brand">
+              <option value="" selected="true">Seleccione</option>
+              {{#each brands}}
+              <option value="{{this._id}}">{{this.name}}</option>
+              {{/each}}
+            </select>
           </div>
         </div>
       </div>

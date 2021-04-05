@@ -173,7 +173,7 @@ window.addEventListener("DOMContentLoaded", () => {
           });
           enableButton(
             btnAddProduct,
-            route == "/updateProduct" ? "Actualizar" : "Agragar"
+            route == "/updateProduct" ? "Actualizar" : "Agregar"
           );
 
           modalAlert("warning", "Aviso", messages);

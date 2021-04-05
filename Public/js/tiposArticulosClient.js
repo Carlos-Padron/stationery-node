@@ -116,7 +116,10 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    disableButton(addArticleTypeBtn, "Agregando");
+    disableButton(
+      addArticleTypeBtn,
+      route == "/updateArticleType" ? "Actualizando" : "Agregando"
+    );
 
     try {
       console.log(response.body);
@@ -140,7 +143,10 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
-          enableButton(addArticleTypeBtn, "Agregar");
+          enableButton(
+            addArticleTypeBtn,
+            route == "/updateArticleType" ? "Actualizar" : "Agregar"
+          );
 
           modalAlert("warning", "Aviso", messages);
           return;
@@ -150,10 +156,17 @@ window.addEventListener("DOMContentLoaded", () => {
             "Aviso",
             `<strong>${json.message}</strong> <br>`
           );
+          enableButton(
+            addArticleTypeBtn,
+            route == "/updateArticleType" ? "Actualizar" : "Agregar"
+          );
           return;
         }
       }
-      enableButton(addArticleTypeBtn, "Agregar");
+      enableButton(
+        addArticleTypeBtn,
+        route == "/updateArticleType" ? "Actualizar" : "Agregar"
+      );
 
       modalAlert(
         "success",
@@ -166,7 +179,10 @@ window.addEventListener("DOMContentLoaded", () => {
       );
     } catch (error) {
       warningNotification("Error interno del servidor");
-      enableButton(addArticleTypeBtn, "Agregar");
+      enableButton(
+        addArticleTypeBtn,
+        route == "/updateArticleType" ? "Actualizar" : "Agregar"
+      );
       console.error(error);
     }
   }

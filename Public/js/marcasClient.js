@@ -116,7 +116,10 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    disableButton(addBrandBtn, "Agregando");
+    disableButton(
+      addBrandBtn,
+      route == "/updateBrand" ? "Actualizando" : "Agregando"
+    );
 
     try {
       let body = JSON.stringify(response.body);
@@ -139,7 +142,10 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
-          enableButton(addBrandBtn, "Agregar");
+          enableButton(
+            addBrandBtn,
+            route == "/updateBrand" ? "Actualizar" : "Agregar"
+          );
 
           modalAlert("warning", "Aviso", messages);
           return;
@@ -149,10 +155,17 @@ window.addEventListener("DOMContentLoaded", () => {
             "Aviso",
             `<strong>${json.message}</strong> <br>`
           );
+          enableButton(
+            addBrandBtn,
+            route == "/updateBrand" ? "Actualizar" : "Agregar"
+          );
           return;
         }
       }
-      enableButton(addBrandBtn, "Agregar");
+      enableButton(
+        addBrandBtn,
+        route == "/updateBrand" ? "Actualizar" : "Agregar"
+      );
 
       modalAlert(
         "success",
@@ -165,7 +178,10 @@ window.addEventListener("DOMContentLoaded", () => {
       );
     } catch (error) {
       warningNotification("Error interno del servidor");
-      enableButton(addBrandBtn, "Agregar");
+      enableButton(
+        addBrandBtn,
+        route == "/updateBrand" ? "Actualizar" : "Agregar"
+      );
       console.error(error);
     }
   }

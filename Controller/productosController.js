@@ -265,4 +265,5 @@ module.exports = {
   index,
   createProduct,
   searchProducts,
+  updateProduct
 };

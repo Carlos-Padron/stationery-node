@@ -18,6 +18,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const DEFAULT_ROUTE = "http://localhost:3000/inventario/productos";
   let productsData = [];
+  let historialColumns = [
+    { column: "action", class: "text-center" },
+    { column: "quantity", class: "text-center" },
+    { column: "description", class: "text-center" },
+    { column: "madeBy", class: "text-center" },
+  ];
 
   //Img elements
   const imgFileInput = document.createElement("input");
@@ -109,16 +115,18 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      brandsData = json.response;
+      productsData = json.response;
 
-      brandsData.forEach((elem, index) => {
-        elem.actions = `<div class="btn-group">
-          <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
-          <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
-      </div>`;
+      console.log(productsData);
+
+      productsData.forEach((elem, index) => {
+        elem.actions = `
+          <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"     data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> Editar</button>
+          <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete"   data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> Deshabilitar</button>
+      `;
       });
 
-      mainTable.reloadTable(brandsData);
+      mainTable.reloadCardTable(productsData);
       unblockElem(searchForm);
     } catch (error) {
       unblockElem(searchForm);
@@ -137,8 +145,10 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    disableButton(btnAddProduct, "Agregando");
-
+    disableButton(
+      btnAddProduct,
+      route == "/updateProduct" ? "Actualizando" : "Agregando"
+    );
 
     try {
       let body = JSON.stringify(response.body);
@@ -161,7 +171,10 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
-          enableButton(btnAddProduct, "Agregar");
+          enableButton(
+            btnAddProduct,
+            route == "/updateProduct" ? "Actualizar" : "Agragar"
+          );
 
           modalAlert("warning", "Aviso", messages);
           return;
@@ -171,10 +184,18 @@ window.addEventListener("DOMContentLoaded", () => {
             "Aviso",
             `<strong>${json.message}</strong> <br>`
           );
+          enableButton(
+            btnAddProduct,
+            route == "/updateProduct" ? "Actualizar" : "Agregar"
+          );
+
           return;
         }
       }
-      enableButton(btnAddProduct, "Agregar");
+      enableButton(
+        btnAddProduct,
+        route == "/updateProduct" ? "Actualizar" : "Agregar"
+      );
 
       modalAlert(
         "success",
@@ -187,7 +208,10 @@ window.addEventListener("DOMContentLoaded", () => {
       );
     } catch (error) {
       warningNotification("Error interno del servidor");
-      enableButton(btnAddProduct, "Agregar");
+      enableButton(
+        btnAddProduct,
+        route == "/updateProduct" ? "Actualizar" : "Agregar"
+      );
       console.error(error);
     }
   }
@@ -535,6 +559,17 @@ window.addEventListener("DOMContentLoaded", () => {
     "pageCounter"
   );
   mainTable.reloadCardTable(productsData);
+
+  let historialTable = new NormalTable(
+    "historialTable",
+    [],
+    historialColumns,
+    "btnNext",
+    "btnPrev",
+    "pageCounter",
+    "4"
+  );
+  historialTable.reloadTable([]);
 
   //?Se van a mover
   imgFileInput.type = "file";

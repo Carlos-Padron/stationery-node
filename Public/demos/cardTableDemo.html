@@ -50,8 +50,7 @@
       <div class="card">
         <div class="card-body" style="padding-bottom: 0">
           <div class="table-responsive">
-            <table id="mainTable" class="table align-items-center">
-            </table>
+            <table id="mainTable" class="table align-items-center"></table>
           </div>
         </div>
         <div class="card-footer text-right">
@@ -110,11 +109,11 @@
       //data-id = guardará el id
       //data-algo = guardará algo que le definadmos
       //data-index='1' data-id='1'
-      /* let usuariosData = [
+      let usuariosData = [
         {
           name: "Producto1 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -122,7 +121,7 @@
         {
           name: "Producto2 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -130,7 +129,7 @@
         {
           name: "Producto3 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -138,7 +137,7 @@
         {
           name: "Producto4 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -146,7 +145,7 @@
         {
           name: "Producto5 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -154,7 +153,7 @@
         {
           name: "Producto6 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -162,7 +161,7 @@
         {
           name: "Producto7 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -170,7 +169,7 @@
         {
           name: "Producto8 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -178,7 +177,7 @@
         {
           name: "Producto9 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -186,7 +185,7 @@
         {
           name: "Producto0 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -194,7 +193,7 @@
         {
           name: "Producto11 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -202,7 +201,7 @@
         {
           name: "Producto12 ",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -210,7 +209,7 @@
         {
           name: "Producto 13",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -218,7 +217,7 @@
         {
           name: "Producto 14",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -226,7 +225,7 @@
         {
           name: "Producto 15",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -234,7 +233,7 @@
         {
           name: "Producto 16",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -242,7 +241,7 @@
         {
           name: "Producto 17",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -250,7 +249,7 @@
         {
           name: "Producto 18",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -258,7 +257,7 @@
         {
           name: "Producto 19",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -266,7 +265,7 @@
         {
           name: "Producto 20",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -274,7 +273,7 @@
         {
           name: "Producto 31",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -282,7 +281,7 @@
         {
           name: "Producto 32",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -290,7 +289,7 @@
         {
           name: "Producto 33",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -298,7 +297,7 @@
         {
           name: "Producto 34",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -306,7 +305,7 @@
         {
           name: "Producto 35",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -314,7 +313,7 @@
         {
           name: "Producto 36",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -322,7 +321,7 @@
         {
           name: "Producto 37",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -330,7 +329,7 @@
         {
           name: "Producto 38",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -338,7 +337,7 @@
         {
           name: "Producto 39",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -346,7 +345,7 @@
         {
           name: "Producto 40",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -354,7 +353,7 @@
         {
           name: "Producto 41",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -362,7 +361,7 @@
         {
           name: "Producto 42",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -370,7 +369,7 @@
         {
           name: "Producto 43",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -378,7 +377,7 @@
         {
           name: "Producto 44",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -386,7 +385,7 @@
         {
           name: "Producto 45",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -394,7 +393,7 @@
         {
           name: "Producto 46",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
@@ -402,15 +401,13 @@
         {
           name: "Producto 47",
           description: "Description ",
-          imgURL:
+          image:
             "https://demos.creative-tim.com/argon-dashboard-pro/assets/img/theme/img-1-1000x600.jpg",
           actions:
             "<i title='Agregar' class='uil uil-plus text-danger hover show'></i> <i title='Agregar' class='uil uil-minus text-info hover delete'></i>",
         },
       ];
- */
-      
-        let usuariosData = []
+
       //Se obtiene la referencia del cuerpo de la tabla que está en el DOM.
       //En este caso tomamos la tabla completa
       const mainTableBody = document.querySelector("#mainTable");
@@ -427,13 +424,11 @@
 
       mainTable.reloadCardTable(usuariosData);
 
-
       //Se valida que el elemento que se está haciendo click sea
       //un elemento de los del boton.
       //Se desean cambiar los botones, deben ajustar está validacion
       //para que busque lo que tenga el botón nuevo
       function rowClicked(e) {
-
         //Se busca que el elemento tenga la clase show
         if (e.target && e.target.classList.contains("show")) {
           //la tiene una I
@@ -456,7 +451,6 @@
           }
         }
       }
-
     </script>
   </body>
 </html>

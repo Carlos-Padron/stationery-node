@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
-let prodcutSchema = new mongoose.Schema({
+let productSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    auto: true,
+  },
   name: {
     type: String,
     required: [true, "El nombre del producto es requerido"],
@@ -21,12 +25,15 @@ let prodcutSchema = new mongoose.Schema({
     default: false,
     required: true,
   },
-  image: {
-    type: Buffer,
+  imageAbsolutePath: {
+    type: String,
+  },
+  imageRelativePath: {
+    type: String,
   },
   articleType: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "articleType",
+    ref: "ArticleType",
   },
   brand: {
     type: mongoose.Schema.Types.ObjectId,
@@ -54,6 +61,6 @@ let prodcutSchema = new mongoose.Schema({
   ],
 });
 
-let productModel = new mongoose.model("Product", prodcutSchema);
+let productModel = new mongoose.model("Product", productSchema);
 
 module.exports = productModel;

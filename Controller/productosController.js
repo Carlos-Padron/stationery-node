@@ -3,6 +3,10 @@ const Product = require("../Model/ProductModel");
 const Brand = require("../Model/BrandModel");
 const ArticleType = require("../Model/ArticleType");
 
+const fs = require("fs");
+const imgHelper = require("../Utils/Helpers/imageHelper");
+const mongoose = require("mongoose");
+
 //!Bajó la mercancía
 //!Devolucion de mercanía
 //!Périda de mercancía
@@ -26,9 +30,17 @@ const index = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  delete req.body._id;
-
+  let base64Data = req.body.image;
   let productBody = req.body;
+  let _id = mongoose.Types.ObjectId();
+
+  req.body._id = _id;
+  delete req.body.image;
+
+  let imageRelativePath = `${req.protocol}://${req.get(
+    "host"
+  )}/images/productos/`;
+  let imageAbsolutePath = `${__dirname}/Public/images/productos/`;
   productBody.history = [
     {
       date: new Date(),
@@ -38,8 +50,37 @@ const createProduct = async (req, res) => {
       madeBy: req.user._id,
     },
   ];
-
   try {
+    const imageName = `${_id}.png`;
+    imageAbsolutePath += imageName;
+    imageRelativePath += imageName;
+
+    if (base64Data != undefined) {
+      let base64Image = base64Data.split(";base64,").pop();
+      let buffer = Buffer.from(base64Image, "base64");
+
+      let resultingBuffer = await imgHelper.resizeImgBuffer(buffer);
+      if (resultingBuffer.error) {
+        res.json({
+          error: true,
+          message: `Ocurrió un error al procesar la imagen: ${resultingBuffer.result}`,
+          response: null,
+        });
+
+        return;
+      }
+
+      fs.writeFileSync(
+        `Public/images/productos/${_id}.png`,
+        resultingBuffer.result,
+        {
+          encoding: "base64",
+        }
+      );
+      productBody.imageAbsolutePath = imageAbsolutePath;
+      productBody.imageRelativePath = imageRelativePath;
+    }
+
     let product = Product(productBody);
     await product.save();
 
@@ -47,6 +88,45 @@ const createProduct = async (req, res) => {
       error: false,
       message: "El producto se agregó correctamente",
       response: null,
+    });
+  } catch (error) {
+    if (fs.existsSync(imageAbsolutePath)) {
+      fs.unlink(imageAbsolutePath);
+    }
+
+    let errors = errorHandler(error);
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
+const searchProducts = async (req, res) => {
+  const { name } = req.body;
+  try {
+    let products = await Product.find({
+      name: { $regex: `.*${name}.*` },
+      disabled: false,
+    })
+      .populate({ path: "articleType", select: "name" })
+      .populate({ path: "brand", select: "name" })
+      .select("name price quantity imageRelativePath articleType brand")
+      .exec();
+
+    res.json({
+      error: false,
+      message: null,
+      response: products,
     });
   } catch (error) {
     let errors = errorHandler(error);
@@ -70,4 +150,5 @@ const createProduct = async (req, res) => {
 module.exports = {
   index,
   createProduct,
+  searchProducts,
 };

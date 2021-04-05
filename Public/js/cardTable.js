@@ -49,38 +49,56 @@ class CardTable {
         i++
       ) {
         let cardContainer = document.createElement("div");
-        cardContainer.classList.add("col-md-3", "col-sm-6", "col-12");
+        cardContainer.classList.add("col-md-4", "col-sm-8", "col-12");
 
         let card = document.createElement("div");
         card.classList.add("card");
 
         let image = document.createElement("img");
         image.classList.add("card-img-top");
-        image.setAttribute("src", this.data[i].imgURL);
+        image.setAttribute("src", `${this.data[i]?.imageRelativePath}`);
+        image.style.height    = "200px";
+        image.style.objectFit = "cover";
 
         let cardBody = document.createElement("div");
         cardBody.classList.add("card-body");
 
-        let h4 = document.createElement("h4");
-        h4.classList.add("card-tile");
-        h4.innerHTML = this.data[i].name ?? "";
+        let productName = document.createElement("h4");
+        productName.classList.add("card-tile");
+        productName.innerHTML = this.data[i].name ?? "";
 
-        let desc = document.createElement("p");
-        desc.classList.add("card-text");
-        desc.innerHTML = this.data[i].description ?? "";
+        let containerInfo = document.createElement("div");
+        let quantityPriceRow = document.createElement("div");
+        let brandTypeRow = document.createElement("div");
 
-        let price = document.createElement("p");
-        price.classList.add("card-text");
-        price.innerHTML = this.data[i].price ?? "";
+        quantityPriceRow.classList.add("d-flex", "justify-content-between");
+        quantityPriceRow.innerHTML = `
+          <p><strong>Cantidad:</strong> ${
+            this.data[i]?.quantity ?? "cantidad"
+          } </p>
+          <p><strong>Precio:</strong>   $${
+            this.data[i]?.price ?? "precio"
+          } </p>`;
+
+        brandTypeRow.classList.add("d-flex", "justify-content-between");
+        brandTypeRow.innerHTML = `
+          <p><strong>Tipo de artículo:</strong> ${
+            this.data[i]?.articleType?.name ?? "tipo"
+          } </p>
+          <p><strong>Marca:</strong>   ${
+            this.data[i]?.brand?.name ?? "marca"
+          } </p>`;
+
+        containerInfo.appendChild(quantityPriceRow);
+        containerInfo.appendChild(brandTypeRow);
 
         let btnContainer = document.createElement("div");
-        btnContainer.classList.add("d-flex", "justify-content-around");
+        btnContainer.classList.add("d-flex", "justify-content-between");
 
         btnContainer.innerHTML = this.data[i].actions ?? "";
 
-        cardBody.appendChild(h4);
-        cardBody.appendChild(desc);
-        cardBody.appendChild(price);
+        cardBody.appendChild(productName);
+        cardBody.appendChild(containerInfo);
         cardBody.appendChild(btnContainer);
 
         card.appendChild(image);
@@ -90,7 +108,7 @@ class CardTable {
 
         cardRow.push(cardContainer);
 
-        if (cardRow.length == 4) {
+        if (cardRow.length == 3) {
           let row = document.createElement("div");
           row.classList.add("row");
           cardRow.forEach((elem) => {
@@ -116,9 +134,10 @@ class CardTable {
       }
     } else {
       let div = document.createElement("div");
-      div.innerHTML = "<p class='d-flex justify-content-center'>No se encontró información para mostrar. </p>";
+      div.innerHTML =
+        "<p class='d-flex justify-content-center'>No se encontró información para mostrar. </p>";
 
-      this.table.appendChild(div)
+      this.table.appendChild(div);
     }
 
     this.pageCounter.innerHTML = this.currentPage + "/" + this.numPages();

@@ -19,7 +19,8 @@
     "hbs": "^4.1.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.8",
-    "redis": "^3.0.2"
+    "redis": "^3.0.2",
+    "sharp": "^0.28.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.5"

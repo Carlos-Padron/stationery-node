@@ -6,7 +6,7 @@ const { authViews, authRoute } = require("../Utils/Middlewares/authMiddleware");
 
 router.get('/inventario/productos', authViews, productosController.index )
 
-//router.post('/getProducts', authRoute, productosController.createProduct )
+router.post('/getProducts', authRoute, productosController.searchProducts )
 
 router.post('/addProduct', authRoute, productosController.createProduct )
 

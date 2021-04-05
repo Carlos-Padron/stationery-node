@@ -18,7 +18,7 @@
         <div class="col-12 col-md-6 col-lg-4">
           <div class="form-group">
             <label class="form-control-label">Nombre del producto:</label>
-            <input class="form-control form-control-sm form-control-alternative" placeholder="Tipo de artículo"
+            <input class="form-control form-control-sm form-control-alternative" placeholder="Producto"
               type="text" data-search="name" />
           </div>
         </div>
@@ -89,8 +89,7 @@
                       <div class="row">
                         <input id="_id" type="hidden">
                         <div class="col-md-4 d-flex flex-column align-items-center justify-content-between">
-                          <img id="image" class="dropZone rounded-circle img-fluid mb-4" src="" alt="" srcset=""
-                            style="
+                          <img id="image" class="dropZone rounded-circle img-fluid mb-4" src="" alt="" srcset="" style="
                             object-fit: cover;
                             height: 206px;
                             width: 206px;
@@ -179,12 +178,19 @@
                   </div>
                 </div>
                 <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab">
-                  <p class="description">
-                    Cosby sweater eu banh mi, qui irure terry richardson ex
-                    squid. Aliquip placeat salvia cillum iphone. Seitan
-                    aliquip quis cardigan american apparel, butcher voluptate
-                    nisi qui.
-                  </p>
+                  <div class="table-responsive">
+                    <table id="historialTable" class="table align-items-center">
+                      <thead class="thead-light">
+                        <tr>
+                          <th class="text-center">Acción</th>
+                          <th class="text-center">Cantidad</th>
+                          <th class="text-center">Descripción</th>
+                          <th class="text-center">Usuario que realizó la actualización</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list"></tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -193,7 +199,6 @@
       </div>
     </div>
   </div>
-</div>
 </div>
 {{/content}}
 

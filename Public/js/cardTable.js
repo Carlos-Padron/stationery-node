@@ -60,6 +60,7 @@ class CardTable {
         image.setAttribute("src", `${this.data[i]?.imageRelativePath}`);
         image.style.height = "200px";
         image.style.objectFit = "cover";
+        image.setAttribute('alt', " ")
 
         let cardBody = document.createElement("div");
         cardBody.classList.add("card-body");

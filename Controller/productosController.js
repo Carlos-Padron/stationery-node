@@ -141,7 +141,10 @@ const updateProduct = async (req, res) => {
       return;
     }
 
-    if (req.body.image == null) {
+    if (
+      req.body.image == null ||
+      req.body.image == process.env.DEFAULT_PRODUCTS_ROUTE
+    ) {
       product.imageAbsolutePath = null;
       product.imageRelativePath = null;
 
@@ -178,11 +181,21 @@ const updateProduct = async (req, res) => {
     product.articleType = req.body.articleType;
     product.brand = req.body.brand;
 
-    product.history.append({
+    let action = "";
+    if (newStock > product.quantity) {
+      action = "add";
+    } else if (newStock < product.quantity) {
+      action = "subtract";
+    } else {
+      action = "same";
+      //sale
+    }
+
+    product.history.push({
       date: new Date(),
       quantity: req.body.quantity,
-      action: newStock > product.quantity ? "add" : "subtract",
-      description: "Se ctualizó mercancia",
+      action,
+      description: "Se actualizó mercancia",
       madeBy: req.user._id,
     });
 
@@ -190,8 +203,59 @@ const updateProduct = async (req, res) => {
 
     res.json({
       error: false,
-      message: "La marca fue actualizada correctamente.",
+      message: "El producto fue actualizado correctamente.",
       response: null,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
+const showProduct = async (req, res) => {
+  const _id = req.body._id;
+
+  try {
+    let product = await Product.findById(_id)
+      .populate({ path: "brand", select: "name" })
+      .populate({ path: "articleType", select: "name" })
+      .populate({
+        path: "history.madeBy",
+        select: "name fatherSurname",
+      })
+      .select("name price quantity imageRelativePath articleType brand history")
+      .exec();
+
+    if (!product) {
+      res.json({
+        error: true,
+        message: "No se encontró el producto solicitado.",
+        response: null,
+      });
+      return;
+    }
+
+    product.history.sort(
+      (hist1, hist2) => new Date(hist2.date) - new Date(hist1.date)
+    );
+
+    res.json({
+      error: false,
+      message: null,
+      response: product,
     });
   } catch (error) {
     let errors = errorHandler(error);
@@ -215,8 +279,6 @@ const updateProduct = async (req, res) => {
 const searchProducts = async (req, res) => {
   const { name, brand, articleType } = req.body;
 
-  console.log(req.body);
-
   let filter = {
     name: { $regex: `.*${name}.*` },
     disabled: false,
@@ -235,6 +297,7 @@ const searchProducts = async (req, res) => {
       .populate({ path: "articleType", select: "name" })
       .populate({ path: "brand", select: "name" })
       .select("name price quantity imageRelativePath articleType brand")
+      .sort({ name: "asc", articleType: "asc", brand: "asc" })
       .exec();
 
     res.json({
@@ -265,5 +328,6 @@ module.exports = {
   index,
   createProduct,
   searchProducts,
-  updateProduct
+  showProduct,
+  updateProduct,
 };

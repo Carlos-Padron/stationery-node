@@ -12,14 +12,17 @@ window.addEventListener("DOMContentLoaded", () => {
   let routes = {
     get: "/getProducts",
     add: "/addProduct",
+    show: "/showProduct",
     update: "/updateProduct",
     delete: "/deleteProduct",
   };
 
-  const DEFAULT_ROUTE = "http://localhost:3000/inventario/productos";
+  const DEFAULT_ROUTE = `${window.location.protocol}://${window.location.hostname}:3000/inventario/productos`;
   let productsData = [];
+  let historialData = [];
   let historialColumns = [
     { column: "action", class: "text-center" },
+    { column: "date", class: "text-center" },
     { column: "quantity", class: "text-center" },
     { column: "description", class: "text-center" },
     { column: "madeBy", class: "text-center" },
@@ -51,12 +54,15 @@ window.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.querySelector("#btnAdd");
   const btnAddProduct = document.querySelector("#btnAddProduct");
   const btnUpdateProduct = document.querySelector("#btnUpdateProduct");
+  const mainCardTable = document.querySelector("#mainTable");
 
   //Listeners
   searchBtn.addEventListener("click", search);
   addBtn.addEventListener("click", showMainModalAdd);
   btnClearSearch.addEventListener("click", clearSearch);
   btnAddProduct.addEventListener("click", addProductBtnClick);
+  btnUpdateProduct.addEventListener("click", updateProductClick);
+  mainCardTable.addEventListener("click", rowClicked);
 
   //functions
   async function search() {
@@ -94,7 +100,6 @@ window.addEventListener("DOMContentLoaded", () => {
       });
 
       let json = await request.json();
-      console.log(json);
       if (json.error) {
         if (Array.isArray(json.message)) {
           let messages = "";
@@ -117,8 +122,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
       productsData = json.response;
 
-      console.log(productsData);
-
       productsData.forEach((elem, index) => {
         elem.actions = `
           <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"     data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> Editar</button>
@@ -140,12 +143,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let response = validateForm();
 
-    console.log(response);
     if (response.valid === false) {
       return;
     }
-
-    console.log(response.body);
+console.log(response.body);
     disableButton(
       btnAddProduct,
       route == "/updateProduct" ? "Actualizando" : "Agregando"
@@ -371,6 +372,9 @@ window.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#productoForm").reset();
         btnAddProduct.classList.remove("d-none");
         btnUpdateProduct.classList.add("d-none");
+        imgOverlay.classList.add("d-flex");
+        removeImgElem.classList.add("invisible");
+        image.src = null;
         break;
       case "searchForm":
         document.querySelector("#searchForm").reset();
@@ -401,6 +405,12 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function updateProductClick() {
+    confirmationAlert("Se actualizará el producto.", () => {
+      save(routes.update);
+    });
+  }
+
   function deleteConfirmation(_id) {
     confirmationAlert("Se deshabilitará la marca seleccionada", () => {
       destroy(_id);
@@ -416,11 +426,11 @@ window.addEventListener("DOMContentLoaded", () => {
       if (e.target.tagName === "I") {
         let button = e.target.parentElement;
         let index = button.getAttribute("data-index");
-        showMainModalEdit(brandsData[index]);
+        getSelectedProduct(productsData[index]);
       } else {
         let button = e.target;
         let index = button.getAttribute("data-index");
-        showMainModalEdit(brandsData[index]);
+        getSelectedProduct(productsData[index]);
       }
     }
 
@@ -428,48 +438,180 @@ window.addEventListener("DOMContentLoaded", () => {
       if (e.target.tagName === "I") {
         let button = e.target.parentElement;
         let index = button.getAttribute("data-index");
-        deleteConfirmation(brandsData[index]._id);
+        deleteConfirmation(productsData[index]._id);
       } else {
         let button = e.target;
         let index = button.getAttribute("data-index");
-        deleteConfirmation(brandsData[index]._id);
+        deleteConfirmation(productsData[index]._id);
       }
     }
   }
 
+  async function getSelectedProduct(product) {
+    //showMainModalEdit(productsData[index]);
+    blockElem(mainCardTable);
+
+    let body = JSON.stringify({ _id: product._id });
+
+    try {
+      let request = await fetch(routes.show, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          credentials: "same-origin",
+        },
+        body,
+      });
+
+      let json = await request.json();
+      if (json.error) {
+        if (Array.isArray(json.message)) {
+          let messages = "";
+          json.message.forEach((msg) => {
+            messages += `<strong>*${msg}</strong> <br>`;
+          });
+          modalAlert("warning", "Aviso", messages);
+          unblockElem(mainCardTable);
+          return;
+        } else {
+          modalAlert(
+            "warning",
+            "Aviso",
+            `<strong>*${json.message}</strong> <br>`
+          );
+          unblockElem(mainCardTable);
+          return;
+        }
+      }
+      unblockElem(mainCardTable);
+
+      //Seetear info
+      showMainModalEdit(json.response);
+    } catch (error) {
+      //unblockElem(mainCardTable);
+      warningNotification("Error interno del servidor");
+      console.error(error);
+    }
+  }
+
   function showMainModalAdd() {
+    //limpiar
+    //TODO
+    document
+      .querySelector("#historial-tab")
+      .parentElement.classList.add("d-none");
+
     document.querySelector("#modal_title").innerHTML =
       "Agregar un nuevo producto";
+
+    image.src = null;
+    imgOverlay.classList.add("d-flex");
+    imgOverlay.classList.remove("d-none");
+    removeImgElem.classList.add("invisible");
+
     $("#main_modal").modal("show");
   }
 
-  function showMainModalEdit(brand) {
-    addBrandBtn.classList.add("d-none");
-    updateBrandBtn.classList.remove("d-none");
-
+  function showMainModalEdit(product) {
+    btnAddProduct.classList.add("d-none");
+    btnUpdateProduct.classList.remove("d-none");
+    console.log(product);
     $fields.forEach((elem) => {
       switch (elem) {
         case "disabled":
-          document.querySelector(`#${elem}`).checked = brand[elem];
+          document.querySelector(`#${elem}`).checked = product[elem];
           break;
 
+        case "articleType":
+        case "brand":
+          document.querySelector(`#${elem}`).value = product[elem]._id;
+          break;
+
+        case "image":
+          document.querySelector(`#${elem}`).src = product.imageRelativePath;
+
         default:
-          document.querySelector(`#${elem}`).value = brand[elem];
+          document.querySelector(`#${elem}`).value = product[elem];
           break;
       }
     });
 
-    document.querySelector("#modal_title").innerHTML = "Editar marca";
+    if (
+      product.imageRelativePath != DEFAULT_ROUTE &&
+      product.imageRelativePath != null &&
+      product.imageRelativePath != undefined &&
+      product.imageRelativePath != ""
+    ) {
+      console.log(product.imageRelativePath);
+      imgOverlay.classList.add("d-none");
+      imgOverlay.classList.remove("d-flex");
+      removeImgElem.classList.remove("invisible");
+    } else {
+      imgOverlay.classList.add("d-flex");
+      removeImgElem.classList.add("invisible");
+    }
+
+    document
+      .querySelector("#historial-tab")
+      .parentElement.classList.remove("d-none");
+
+    product.history.forEach((elem) => {
+      switch (elem.action) {
+        case "add":
+          elem.action = `<i class="uil uil-arrow-growth text-success" style="font-size: 1.3rem"></i>`;
+          break;
+        case "subtract":
+          elem.action = `<i class="uil uil-chart-down text-danger" style="font-size: 1.3rem"></i>`;
+          break;
+        case "same":
+          elem.action = `<i class="uil uil-exchange text-primary" style="font-size: 1.3rem"></i>`;
+          break;
+        case "sale":
+          elem.action = `<i class="uil uil-chart-down text-info" style="font-size: 1.3rem"></i>`;
+          break;
+
+        default:
+          break;
+      }
+      historialData.push({
+        action: elem.action,
+        date: elem.date.replace(/T.*/, "").split("-").reverse().join("-"),
+        quantity: elem.quantity,
+        description: elem.description,
+        madeBy: elem.madeBy.name.split(" ")[0] + elem.madeBy.fatherSurname,
+      });
+    });
+
+    historialTable.reloadTable(historialData);
+
+    document.querySelector("#modal_title").innerHTML = "Editar Producto";
     $("#main_modal").modal("show");
   }
 
   $("#main_modal").on("hidden.bs.modal", function (e) {
     resetFormValidation();
     resetForm("productoForm");
+
     image.src = "";
     imgOverlay.classList.remove("d-none");
     imgOverlay.classList.add("d-flex");
     removeImgElem.classList.add("invisible");
+
+    let historialTab = document.querySelector("#historial-tab");
+    let productosTab = document.querySelector("#productos-tab");
+
+    historialTab.classList.remove("active");
+    productosTab.classList.add("active");
+
+    historialTab.setAttribute("aria-selected", "false");
+    productosTab.setAttribute("aria-selected", "true");
+
+    document.querySelector("#productos").classList.add("active", "show");
+    document.querySelector("#historial").classList.remove("active", "show");
+
+    historialData = [];
+    historialTable.reloadTable(historialData);
   });
 
   //imgFile input functinos
@@ -491,7 +633,6 @@ window.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("drop");
     let data = e.dataTransfer,
       image = data.files;
 
@@ -521,8 +662,6 @@ window.addEventListener("DOMContentLoaded", () => {
   function validateImgage(image) {
     let validTypes = ["image/jpeg", "image/png"];
 
-    console.log(image.type);
-    console.log(validTypes.indexOf(image.type));
     if (validTypes.indexOf(image.type) == -1) {
       warningNotification("Solo se aceptan imágenes png y jpg");
 
@@ -562,19 +701,16 @@ window.addEventListener("DOMContentLoaded", () => {
     "pageCounter",
     "4"
   );
-  historialTable.reloadTable([]);
+  historialTable.reloadTable(historialData);
 
-  //?Se van a mover
   imgFileInput.type = "file";
   imgFileInput.accept = "image/png, image/jpeg";
 
-  console.log(image);
-  console.log(image.src);
-  if (image.src != DEFAULT_ROUTE) {
+  /* if (image.src != DEFAULT_ROUTE) {
     imgOverlay.classList.add("d-none");
     imgOverlay.classList.remove("d-flex");
   } else {
     imgOverlay.classList.add("d-flex");
     removeImgElem.classList.add("invisible");
-  }
+  } */
 });

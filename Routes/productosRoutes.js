@@ -8,7 +8,7 @@ router.get("/inventario/productos", authViews, productosController.index);
 
 router.post("/getProducts", authRoute, productosController.searchProducts);
 
-router.post("/addProduct", authRoute, productosController.createProduct);
+router.post("/showProduct", authRoute, productosController.showProduct);
 
 router.post("/updateProduct", authRoute, productosController.updateProduct);
 

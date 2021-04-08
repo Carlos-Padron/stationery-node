@@ -48,7 +48,7 @@ hbs.registerHelper("customIf", (val1, operator, val2, options) => {
 });
 
 //JSON config
-app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.json({ limit: "100mb" }));
 
 //Sets static directory
 app.use(express.static(publicDirectoryPath));

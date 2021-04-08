@@ -113,9 +113,14 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   const _id = req.body._id;
-  let newQuainity = req.body.quantity;
+  let newStock = req.body.quantity;
+  let currentStock = 0;
 
-  let newStock;
+  let imageRelativePath = `${req.protocol}://${req.get(
+    "host"
+  )}/images/productos/`;
+  let imageAbsolutePath = `${__dirname}/Public/images/productos/`;
+
   delete req.body._id;
 
   try {
@@ -130,7 +135,7 @@ const updateProduct = async (req, res) => {
       return;
     }
 
-    newStock = product.quantity - newQuainity;
+    currentStock = product.quantity;
 
     if (parseInt(newStock) < 0) {
       res.json({
@@ -145,6 +150,7 @@ const updateProduct = async (req, res) => {
       req.body.image == null ||
       req.body.image == process.env.DEFAULT_PRODUCTS_ROUTE
     ) {
+      console.log("sin imagen");
       product.imageAbsolutePath = null;
       product.imageRelativePath = null;
 
@@ -152,6 +158,8 @@ const updateProduct = async (req, res) => {
         fs.unlinkSync(product.imageAbsolutePath);
       }
     } else if (req.body.image != null && req.body.image.includes("base64")) {
+      console.log("con imagen nueva");
+
       let base64Image = req.body.image.split(";base64,").pop();
       let buffer = Buffer.from(base64Image, "base64");
 
@@ -173,6 +181,12 @@ const updateProduct = async (req, res) => {
           encoding: "base64",
         }
       );
+      let imageName = `${product._id}.png`;
+      imageAbsolutePath += imageName;
+      imageRelativePath += imageName;
+
+      product.imageAbsolutePath = imageAbsolutePath;
+      product.imageRelativePath = imageRelativePath;
     }
 
     product.name = req.body.name;
@@ -181,14 +195,16 @@ const updateProduct = async (req, res) => {
     product.articleType = req.body.articleType;
     product.brand = req.body.brand;
 
+    console.log(newStock);
+    console.log(currentStock);
+
     let action = "";
-    if (newStock > product.quantity) {
+    if (newStock > currentStock) {
       action = "add";
-    } else if (newStock < product.quantity) {
+    } else if (newStock < currentStock) {
       action = "subtract";
     } else {
       action = "same";
-      //sale
     }
 
     product.history.push({
@@ -276,6 +292,47 @@ const showProduct = async (req, res) => {
   }
 };
 
+const deleteProduct = async (req, res) => {
+  const { _id } = req.body;
+
+  try {
+    let product = await Product.findById(_id);
+
+    if (!product) {
+      res.json({
+        error: true,
+        message: "No se encontró el producto solicitada.",
+        response: null,
+      });
+      return;
+    }
+
+    product.disabled = true;
+    await product.save();
+    res.json({
+      error: false,
+      message: "El producto fue desabilitado correctamente",
+      response: null,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 const searchProducts = async (req, res) => {
   const { name, brand, articleType } = req.body;
 
@@ -330,4 +387,5 @@ module.exports = {
   searchProducts,
   showProduct,
   updateProduct,
+  deleteProduct,
 };

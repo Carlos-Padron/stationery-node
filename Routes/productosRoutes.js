@@ -12,6 +12,6 @@ router.post("/showProduct", authRoute, productosController.showProduct);
 
 router.post("/updateProduct", authRoute, productosController.updateProduct);
 
-//router.post('/deleteProduct', authRoute, productosController.createProduct )
+router.post('/deleteProduct', authRoute, productosController.deleteProduct )
 
 module.exports = router;

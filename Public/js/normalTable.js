@@ -6,10 +6,10 @@ class NormalTable {
     btnNextID,
     btnPrevID,
     pageCounterID,
-    colspan
+    colspan,
+    nRows
   ) {
     this.currentPage = 1;
-    this.rows = 10;
 
     this.table = document.querySelector(`#${tableID}`);
     this.headers = headers;
@@ -20,6 +20,9 @@ class NormalTable {
     this.next.addEventListener("click", this.nextPage);
     this.prev.addEventListener("click", this.prevPage);
     this.colspan = colspan
+
+    this.rows = nRows ?? 10;
+
   }
 
   nextPage = () => {

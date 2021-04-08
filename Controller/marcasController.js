@@ -110,7 +110,7 @@ const deleteBrand = async (req, res) => {
     });
   } catch (error) {
     let errors = errorHandler(error);
-    console.log(error);
+
     if (errors.length === 0) {
       res
         .json({

@@ -135,7 +135,7 @@ var successNotification = (message) => {
     {
       type: "success",
       allow_dismiss: true,
-      z_index: 1031,
+      z_index: 16777271,
       delay: 2000,
       offset: {
         x: 20,
@@ -159,7 +159,7 @@ var errorNotification = (message) => {
     {
       type: "danger",
       allow_dismiss: true,
-      z_index: 1031,
+      z_index: 16777271,
       delay: 2000,
       offset: {
         x: 20,
@@ -183,7 +183,7 @@ var warningNotification = (message) => {
     {
       type: "warning",
       allow_dismiss: true,
-      z_index: 1031,
+      z_index: 16777271,
       delay: 2000,
       offset: {
         x: 20,

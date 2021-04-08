@@ -121,6 +121,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       productsData = json.response;
+      console.log(productsData);
 
       productsData.forEach((elem, index) => {
         elem.actions = `
@@ -146,7 +147,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (response.valid === false) {
       return;
     }
-console.log(response.body);
+    console.log(response.body);
     disableButton(
       btnAddProduct,
       route == "/updateProduct" ? "Actualizando" : "Agregando"
@@ -219,7 +220,7 @@ console.log(response.body);
   }
 
   async function destroy(_id) {
-    blockElem(mainTableBody);
+    blockElem(mainCardTable);
     let body = JSON.stringify({ _id });
 
     try {
@@ -241,12 +242,11 @@ console.log(response.body);
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong>`;
           });
-          unblockElem(mainTableBody);
+          unblockElem(mainCardTable);
           modalAlert("warning", "Aviso", messages);
           return;
         } else {
-          unblockElem(mainTableBody);
-
+          unblockElem(mainCardTable);
           modalAlert(
             "warning",
             "Aviso",
@@ -265,8 +265,9 @@ console.log(response.body);
         }
       );
     } catch (error) {
+      alert(error);
       warningNotification(error);
-      unblockElem(mainTableBody);
+      unblockElem(mainCardTable);
       console.error(error);
     }
   }
@@ -412,7 +413,7 @@ console.log(response.body);
   }
 
   function deleteConfirmation(_id) {
-    confirmationAlert("Se deshabilitará la marca seleccionada", () => {
+    confirmationAlert("Se deshabilitará el producto seleccionado", () => {
       destroy(_id);
     });
   }
@@ -696,21 +697,14 @@ console.log(response.body);
     "historialTable",
     [],
     historialColumns,
-    "btnNext",
-    "btnPrev",
-    "pageCounter",
-    "4"
+    "btnNextModal",
+    "btnPrevModal",
+    "pageCounterModal",
+    "5",
+    "5"
   );
   historialTable.reloadTable(historialData);
 
   imgFileInput.type = "file";
   imgFileInput.accept = "image/png, image/jpeg";
-
-  /* if (image.src != DEFAULT_ROUTE) {
-    imgOverlay.classList.add("d-none");
-    imgOverlay.classList.remove("d-flex");
-  } else {
-    imgOverlay.classList.add("d-flex");
-    removeImgElem.classList.add("invisible");
-  } */
 });

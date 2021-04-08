@@ -60,12 +60,12 @@ const getRepeatedEntriesFromArray = (array, elementToSearch) => {
 };
 
 //butons
-const disableButton = (btn, msg) => {
+const disableButton = (btn, msg, justify = "justify-content-between") => {
   btn.setAttribute("disabled", true);
   btn.classList.add("disabled-btn");
   btn.innerHTML = `
   
-  <div class="d-flex justify-content-between align-items-center">
+  <div class="d-flex ${justify} align-items-center">
     <div class="spinner-border spinner-border-sm text-light" role="status">
       <span class="sr-only">Loading...</span>
     </div>

@@ -59,6 +59,7 @@ const dashboardhRoutes = require("./Routes/dashboardRoutes");
 const marcasRoutes = require("./Routes/marcasRoutes");
 const tiposArticulosRoutes = require("./Routes/tiposArticulosRoutes");
 const productosRoutes = require("./Routes/productosRoutes");
+const ventasRoutes = require("./Routes/ventasRoutes");
 const usuariosRoutes = require("./Routes/usuariosRoutes");
 
 app.use(authRoutes);
@@ -66,6 +67,7 @@ app.use(dashboardhRoutes);
 app.use(marcasRoutes);
 app.use(tiposArticulosRoutes);
 app.use(productosRoutes);
+app.use(ventasRoutes);
 app.use(usuariosRoutes);
 
 app.get("*", (req, res) => {

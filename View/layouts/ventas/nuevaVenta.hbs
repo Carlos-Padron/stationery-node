@@ -1,0 +1,68 @@
+{{#extend "master"}}
+{{#content "body" mode="append"}}
+<div class="row px-0 py-0 mx-0">
+    <div class="col-md-8 px-0 pr-md-3 pr-lg-3">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="mb-0">¡Registra una nueva venta!</h3>
+                <div class="d-flex justify-content-between">
+                    <button id="btnAdd" type="button" class="btn btn-sm btn-outline-secondary" style="width:150px"><i
+                            class="uil uil-plus-circle"></i>
+                        Agregar</button>
+                    <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary"><i
+                            class="uil uil-redo"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form id="searchForm">
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Filtro pendiente:</label>
+                                <input class="form-control form-control-sm form-control-alternative"
+                                    placeholder="Usuario" type="text" data-search="name">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-right">
+                <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width:150px"><i
+                        class="uil uil-search"></i> Buscar</button>
+            </div>
+        </div>
+        <div class="card">
+            Contendio
+        </div>
+    </div>
+
+    <div class="col-md-4 px-0">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Venta</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 px-0">
+                        <div class="d-flex">
+                            <label class="form-control-label mt-auto mb-auto mr-3">Concepto:</label>
+                            <input class="form-control form-control-sm form-control-alternative" placeholder="Concepto"
+                                type="text" data-search="concept">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-md btn-success w-100">
+                    <span>Realizar</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{{/content}}
+
+{{/extend}}

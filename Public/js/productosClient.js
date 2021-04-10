@@ -17,7 +17,6 @@ window.addEventListener("DOMContentLoaded", () => {
     delete: "/deleteProduct",
   };
 
-  const DEFAULT_ROUTE = `${window.location.protocol}://${window.location.hostname}:3000/inventario/productos`;
   let productsData = [];
   let historialData = [];
   let historialColumns = [
@@ -497,8 +496,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function showMainModalAdd() {
-    //limpiar
-    //TODO
     document
       .querySelector("#historial-tab")
       .parentElement.classList.add("d-none");
@@ -669,11 +666,6 @@ window.addEventListener("DOMContentLoaded", () => {
       return false;
     }
 
-    /* var maxSizeInBytes = 2097152; // 2MB
-    if (image.size > maxSizeInBytes) {
-      alert("File too large");
-      return false;
-    } */
     return true;
   }
 
@@ -695,7 +687,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let historialTable = new NormalTable(
     "historialTable",
-    [],
+    historialData,
     historialColumns,
     "btnNextModal",
     "btnPrevModal",

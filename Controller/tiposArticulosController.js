@@ -14,7 +14,7 @@ const createArticleType = async (req, res) => {
   delete req.body._id;
 
   try {
-    let articleType = ArtycleType(req.body);
+    let articleType = ArticleType(req.body);
 
     await articleType.save();
 
@@ -25,7 +25,7 @@ const createArticleType = async (req, res) => {
     });
   } catch (error) {
     let errors = errorHandler(error);
-
+console.log(error);
     if (errors.length === 0) {
       res.json({
         error: true,
@@ -47,7 +47,7 @@ const updateArticleType = async (req, res) => {
   delete req.body._id;
 
   try {
-    let articleType = await ArtycleType.findById(_id).exec();
+    let articleType = await ArticleType.findById(_id).exec();
 
     if (!articleType) {
       res.json({

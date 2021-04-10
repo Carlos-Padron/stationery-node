@@ -60,7 +60,7 @@ class CardTable {
         image.setAttribute("src", `${this.data[i]?.imageRelativePath}`);
         image.style.height = "200px";
         image.style.objectFit = "cover";
-        image.setAttribute('alt', " ")
+        image.setAttribute("alt", " ");
 
         let cardBody = document.createElement("div");
         cardBody.classList.add("card-body");
@@ -137,7 +137,7 @@ class CardTable {
     } else {
       let div = document.createElement("div");
       div.innerHTML =
-        "<p class='d-flex justify-content-center'>No se encontró información para mostrar. </p>";
+        "<p class='d-flex justify-content-center'>No se encontró información para mostrar 😢. </p>";
 
       this.table.appendChild(div);
     }

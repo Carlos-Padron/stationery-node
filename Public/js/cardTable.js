@@ -1,5 +1,12 @@
 class CardTable {
-  constructor(tableID, initialData, btnNextID, btnPrevID, pageCounterID) {
+  constructor(
+    tableID,
+    initialData,
+    btnNextID,
+    btnPrevID,
+    pageCounterID,
+    fourCols = true
+  ) {
     this.currentPage = 1;
     this.rows = 12;
 
@@ -11,6 +18,8 @@ class CardTable {
 
     this.next.addEventListener("click", this.nextCardPage);
     this.prev.addEventListener("click", this.prevCardPage);
+
+    this.fourCols = fourCols ? true : false;
   }
 
   nextCardPage = () => {
@@ -45,12 +54,21 @@ class CardTable {
         i++
       ) {
         let cardContainer = document.createElement("div");
-        cardContainer.classList.add(
-          "col-12",
-          "col-sm-6",
-          "col-md-4",
-          "col-lg-3"
-        );
+        if (this.fourCols == true) {
+          cardContainer.classList.add(
+            "col-12",
+            "col-sm-6",
+            "col-md-4",
+            "col-lg-3"
+          );
+        } else {
+          cardContainer.classList.add(
+            "col-12",
+            "col-sm-6",
+            "col-md-4",
+            "col-lg-4"
+          );
+        }
 
         let card = document.createElement("div");
         card.classList.add("card");

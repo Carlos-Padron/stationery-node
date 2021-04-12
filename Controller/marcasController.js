@@ -26,12 +26,11 @@ const createBrand = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error.message,
-          response: null,
-        })
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,
@@ -69,12 +68,11 @@ const updateBrand = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error.message,
-          response: null,
-        })
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,
@@ -112,12 +110,11 @@ const deleteBrand = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error.message,
-          response: null,
-        })
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
     } else {
       res.json({
         error: true,
@@ -133,7 +130,7 @@ const searchBrands = async (req, res) => {
   try {
     console.log("before search");
     const brands = await Brand.find({
-      name: { $regex: `.*${name}.*`, $options: "i" },
+      name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
       disabled: false,
     }).sort({ name: "asc" });
 
@@ -146,12 +143,11 @@ const searchBrands = async (req, res) => {
     let errors = errorHandler(error);
 
     if (errors.length === 0) {
-      res
-        .json({
-          error: true,
-          message: error,
-          response: null,
-        })
+      res.json({
+        error: true,
+        message: error,
+        response: null,
+      });
     } else {
       res.json({
         error: true,

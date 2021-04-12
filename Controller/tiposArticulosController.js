@@ -25,7 +25,7 @@ const createArticleType = async (req, res) => {
     });
   } catch (error) {
     let errors = errorHandler(error);
-console.log(error);
+    console.log(error);
     if (errors.length === 0) {
       res.json({
         error: true,
@@ -134,7 +134,7 @@ const searchArticleType = async (req, res) => {
   try {
     const articleTypes = await ArticleType.find({
       name: {
-        $regex: `.*${name}.*`,
+        $regex: `.*${changeVowelsForRegex(name)}.*`,
         $options: "i",
       },
       disabled: false,

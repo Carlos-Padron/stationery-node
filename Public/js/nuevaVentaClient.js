@@ -1,5 +1,5 @@
 window.addEventListener("DOMContentLoaded", () => {
-  let $fields = [];
+  let $fields = ["name", "brand", "articleType"];
 
   let routes = {
     showProducts: "/getProducts",
@@ -130,7 +130,8 @@ window.addEventListener("DOMContentLoaded", () => {
     productsData,
     "btnNext",
     "btnPrev",
-    "pageCounter"
+    "pageCounter",
+    false
   );
   productsTable.reloadCardTable(productsData);
 });

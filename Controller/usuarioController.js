@@ -128,7 +128,7 @@ const searchUsers = async (req, res) => {
 
   try {
     const users = await User.find({
-      name: { $regex: `.*${name}.*`, $options: "i" },
+      name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
       disabled: false,
     }).sort({ name: "asc" });
 

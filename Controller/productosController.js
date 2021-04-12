@@ -2,10 +2,11 @@ const errorHandler = require("../Utils/Helpers/errorHandler");
 const Product = require("../Model/ProductModel");
 const Brand = require("../Model/BrandModel");
 const ArticleType = require("../Model/ArticleType");
+const mongoose = require("mongoose");
 
 const fs = require("fs");
 const imgHelper = require("../Utils/Helpers/imageHelper");
-const mongoose = require("mongoose");
+const { changeVowelsForRegex } = require("../Utils/Helpers/regrexHelper");
 
 //!actualizacion la mercancía
 //!Devolucion de mercanía
@@ -13,8 +14,10 @@ const mongoose = require("mongoose");
 
 const index = async (req, res) => {
   try {
-    let brands = await Brand.find({ disabled: false });
-    let articleTypes = await ArticleType.find({ disabled: false });
+    let brands = await Brand.find({ disabled: false }).sort({ name: "asc" });
+    let articleTypes = await ArticleType.find({ disabled: false }).sort({
+      name: "asc",
+    });
 
     res.render("inventario/productos", {
       sectionName: "Productos",
@@ -55,7 +58,11 @@ const createProduct = async (req, res) => {
     imageAbsolutePath += imageName;
     imageRelativePath += imageName;
 
-    if (base64Data != undefined) {
+    if (
+      base64Data != null &&
+      base64Data != `${process.env.DEFAULT_PRODUCTS_ROUTE}productos` &&
+      base64Data != `${process.env.DEFAULT_PRODUCTS_ROUTE}null`
+    ) {
       let base64Image = base64Data.split(";base64,").pop();
       let buffer = Buffer.from(base64Image, "base64");
 
@@ -93,7 +100,7 @@ const createProduct = async (req, res) => {
     if (fs.existsSync(imageAbsolutePath)) {
       fs.unlinkSync(imageAbsolutePath);
     }
-
+    console.log(error.message);
     let errors = errorHandler(error);
     if (errors.length === 0) {
       res.json({
@@ -337,7 +344,7 @@ const searchProducts = async (req, res) => {
   const { name, brand, articleType } = req.body;
 
   let filter = {
-    name: { $regex: `.*${name}.*` },
+    name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
     disabled: false,
   };
 
@@ -349,12 +356,15 @@ const searchProducts = async (req, res) => {
     filter.articleType = articleType;
   }
 
+  //console.log(filter);
   try {
     let products = await Product.find(filter)
+      .collation({ locale: "es", strength: 2 })
       .populate({ path: "articleType", select: "name" })
       .populate({ path: "brand", select: "name" })
       .select("name price quantity imageRelativePath articleType brand")
       .sort({ name: "asc", articleType: "asc", brand: "asc" })
+
       .exec();
 
     res.json({

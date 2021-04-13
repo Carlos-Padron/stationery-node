@@ -7,6 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let productsData = [];
   let shoppingCart = [];
+  let subTotal = 0;
 
   const searchBtn = document.querySelector("#btnSearch");
   const searchForm = document.querySelector("#searchForm");
@@ -14,13 +15,16 @@ window.addEventListener("DOMContentLoaded", () => {
   const registerSaleBtn = document.querySelector("#registerSale");
   const mainCardTable = document.querySelector("#productsTable");
   const cartTable = document.querySelector("#cart-table");
+  const discountInput = document.querySelector("#discount");
 
   searchBtn.addEventListener("click", search);
   btnClearSearch.addEventListener("click", clearSearch);
   registerSaleBtn.addEventListener("click", registerSaleBtnClick);
+  discountInput.addEventListener("input", validateDiscount);
   mainCardTable.addEventListener("click", mainCardTableRowClicked);
   cartTable.addEventListener("click", cartTableRowClicked);
 
+  //Search products
   async function search() {
     blockElem(searchForm);
     let body = {};
@@ -111,6 +115,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  //Listen when an element from the tablie is clicked
   function mainCardTableRowClicked(e) {
     if (e.target && e.target.classList.contains("add")) {
       if (e.target.tagName === "I") {
@@ -127,6 +132,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  //Listen when an element from the tablie is clicked
   function cartTableRowClicked(e) {
     if (e.target.classList.contains("add")) {
       if (e.target.tagName === "I") {
@@ -152,6 +158,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  //Increases the number of products of the same article
   function addMoreProduct(productIndex) {
     if (
       shoppingCart[productIndex].quantity ==
@@ -165,6 +172,7 @@ window.addEventListener("DOMContentLoaded", () => {
     populateTable();
   }
 
+  //reduces or removes products
   function removeProduct(productIndex) {
     shoppingCart[productIndex].quantity--;
     shoppingCart[productIndex].total -= shoppingCart[productIndex].unitPrice;
@@ -176,6 +184,7 @@ window.addEventListener("DOMContentLoaded", () => {
     populateTable();
   }
 
+  //add products to the cart
   function addToCart(product) {
     if (shoppingCart.length == 0) {
       shoppingCart.push({
@@ -214,6 +223,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   //cartTableFunction
+  //populate the cart table
   function populateTable() {
     if (shoppingCart.length == 0) {
       cartTable.innerHTML = `<tr>
@@ -221,6 +231,9 @@ window.addEventListener("DOMContentLoaded", () => {
               venta  😊
           </td>
       </tr>`;
+      updateSaleTotals();
+      validateDiscount();
+
       return;
     }
 
@@ -244,6 +257,56 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     cartTable.innerHTML = tableBody;
+    updateSaleTotals();
+    validateDiscount();
+  }
+
+  function updateSaleTotals() {
+    let subTotal = 0;
+    let discount = document.querySelector("#discount");
+    shoppingCart.forEach((prod) => (subTotal += prod.total));
+    let total = subTotal - discount.value;
+    console.log(subTotal);
+    console.log(discount.value);
+    console.log(total);
+
+    document.querySelector("#subTotal").innerHTML = `$${subTotal.toFixed(2)}`;
+    document.querySelector("#total").innerHTML = `$${total.toFixed(2)}`;
+  }
+
+  //Validators
+  //Prevent the discount to be greater than the sale
+  function validateDiscount() {
+    let subTotal = document.querySelector("#subTotal").innerHTML;
+    let discount = document.querySelector("#discount");
+    let discountMsg = document.querySelector("#discountMsg");
+
+    subTotal = subTotal.includes("$")
+      ? subTotal.substr(1, subTotal.length - 1)
+      : subTotal;
+    console.log(subTotal);
+    subTotal = isNaN(parseFloat(subTotal)) ? 0 : parseFloat(subTotal);
+
+    console.log("subTotal", subTotal);
+    console.log("discount.value", discount.value);
+    console.log("subtract", subTotal - discount.value);
+
+    if (
+      subTotal - (discount.value ?? 0) < 0 ||
+      isNaN(subTotal - (discount.value ?? 0))
+    ) {
+      discountMsg.innerHTML =
+        "El subtotal menos el descuento no debe ser menor a 0.";
+      discount.classList.add("border", "border-danger");
+      updateSaleTotals();
+      return false;
+    } else {
+      discountMsg.innerHTML = "";
+      discount.classList.remove("border", "border-danger");
+      updateSaleTotals();
+
+      return true;
+    }
   }
 
   //Initial Actions

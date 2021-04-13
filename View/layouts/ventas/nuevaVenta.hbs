@@ -149,22 +149,24 @@
                 <div class="row mb-3">
                     <div class="col-12 mb-2">
                         <div class="d-flex justify-content-between">
-                            <label class="form-control-label mt-auto mb-auto mr-3">Total:</label>
-                            <label class="form-control-label mt-auto mb-auto">$10.00</label>
+                            <label class="form-control-label mt-auto mb-auto mr-3">SubTotal:</label>
+                            <label id="subTotal" class="form-control-label mt-auto mb-auto">$0.00</label>
                         </div>
                     </div>
                     <div class="col-12 mb-2">
                         <div class="d-flex">
                             <label class="form-control-label mt-auto mb-auto mr-3">Descuento:</label>
-                            <input class="form-control form-control-sm form-control-alternative text-right"
-                                placeholder="Descuento" type="text" data-search="discount">
+                            <input id="discount"
+                                class="form-control form-control-sm form-control-alternative text-right"
+                                placeholder="Descuento" oninput="currencyMask()" type="text" data-save="discount">
                         </div>
+                        <small id="discountMsg" class="text-danger"></small>
                         <hr class="my-2">
                     </div>
                     <div class="col-12 mb-2">
                         <div class="d-flex justify-content-between">
                             <label class="form-control-label mt-auto mb-auto mr-3">Total:</label>
-                            <label class="form-control-label mt-auto mb-auto ">$10.00</label>
+                            <label id="total" class="form-control-label mt-auto mb-auto">$0.00</label>
                         </div>
                     </div>
                 </div>

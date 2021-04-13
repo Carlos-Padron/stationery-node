@@ -356,10 +356,8 @@ const searchProducts = async (req, res) => {
     filter.articleType = articleType;
   }
 
-  //console.log(filter);
   try {
     let products = await Product.find(filter)
-      .collation({ locale: "es", strength: 2 })
       .populate({ path: "articleType", select: "name" })
       .populate({ path: "brand", select: "name" })
       .select("name price quantity imageRelativePath articleType brand")

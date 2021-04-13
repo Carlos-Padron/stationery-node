@@ -25,12 +25,10 @@
         clear: both;
     }
 
-
     tbody {
-        height: 75vh !important;
+        height: 50vh !important;
         overflow-y: auto;
     }
-
 
     tbody td,
     thead th {
@@ -113,7 +111,7 @@
         </div>
     </div>
 
-    <div class="col-md-4 px-0" style="max-height: 100vh !important;">
+    <div class="col-md-4 px-0" style="max-height: 75vh !important;">
         <div class="card mb-0 h-100">
             <div class="card-header">
                 <h3 class="mb-0">Venta</h3>
@@ -136,31 +134,40 @@
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody class="list">
+                            <tbody id="cart-table" class="list">
                                 <tr>
                                     <td class="text-center w-100"> Aun no tienes productos. <br> Agrega productos a la
                                         venta  😊
                                     </td>
                                 </tr>
-                                {{!-- <tr>
-                                    <td style="white-space:normal"> 2 x Productos asdas
-                                        asd
-                                        das
-                                        sadsa kasdsadsadsadssab jsadsadsakh
-                                    </td>
-                                    <td style="">$20.00</td>
-                                    <td style=""> <button type="button"
-                                            class="btn btn-sm btn-outline-secondary text-info">+</button>
-                                        <button type="button"
-                                            class="btn btn-sm btn-outline-secondary text-danger">-</button>
-                                    </td>
-                                </tr> --}}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="card-footer">
+                <div class="row mb-3">
+                    <div class="col-12 mb-2">
+                        <div class="d-flex justify-content-between">
+                            <label class="form-control-label mt-auto mb-auto mr-3">Total:</label>
+                            <label class="form-control-label mt-auto mb-auto">$10.00</label>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="d-flex">
+                            <label class="form-control-label mt-auto mb-auto mr-3">Descuento:</label>
+                            <input class="form-control form-control-sm form-control-alternative text-right"
+                                placeholder="Descuento" type="text" data-search="discount">
+                        </div>
+                        <hr class="my-2">
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="d-flex justify-content-between">
+                            <label class="form-control-label mt-auto mb-auto mr-3">Total:</label>
+                            <label class="form-control-label mt-auto mb-auto ">$10.00</label>
+                        </div>
+                    </div>
+                </div>
                 <button type="button" id="registerSale" class="btn btn-md btn-success w-100">
                     <span>Realizar Venta</span>
                 </button>

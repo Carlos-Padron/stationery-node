@@ -5,10 +5,11 @@ class CardTable {
     btnNextID,
     btnPrevID,
     pageCounterID,
+    rows = 12,
     fourCols = true
   ) {
     this.currentPage = 1;
-    this.rows = 12;
+    this.rows = rows;
 
     this.table = document.querySelector(`#${tableID}`);
     this.data = initialData;
@@ -128,16 +129,30 @@ class CardTable {
 
         cardRow.push(cardContainer);
 
-        if (cardRow.length == 4) {
-          let row = document.createElement("div");
-          row.classList.add("row");
-          cardRow.forEach((elem) => {
-            row.appendChild(elem);
-          });
+        if (this.fourCols == true) {
+          if (cardRow.length == 4) {
+            let row = document.createElement("div");
+            row.classList.add("row");
+            cardRow.forEach((elem) => {
+              row.appendChild(elem);
+            });
 
-          cardRow = [];
+            cardRow = [];
 
-          this.table.appendChild(row);
+            this.table.appendChild(row);
+          }
+        } else {
+          if (cardRow.length == 3) {
+            let row = document.createElement("div");
+            row.classList.add("row");
+            cardRow.forEach((elem) => {
+              row.appendChild(elem);
+            });
+
+            cardRow = [];
+
+            this.table.appendChild(row);
+          }
         }
 
         if (i + 1 == this.data.length) {

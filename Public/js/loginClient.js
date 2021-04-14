@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (json.error) {
-        warningNotification(json.message);
+        errorNotification(json.message);
       } else {
         successNotification(json.message);
 

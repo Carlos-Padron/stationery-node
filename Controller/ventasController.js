@@ -23,6 +23,17 @@ const index = async (req, res) => {
   }
 };
 
+
+const registerSale = async(req,res) =>{
+
+}
+
+const saleDetail = async(req,res) =>{
+
+}
+
 module.exports = {
   index,
+  registerSale,
+  saleDetail
 };

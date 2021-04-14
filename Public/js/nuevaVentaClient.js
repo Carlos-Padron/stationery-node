@@ -1,13 +1,15 @@
 window.addEventListener("DOMContentLoaded", () => {
-  let $fields = ["name", "brand", "articleType"];
+  let $fields = ["name", "brand", "articleType", "discount", "concept"];
 
   let routes = {
     showProducts: "/getProducts",
+    registerSale: "/ventas/registrar-venta",
   };
 
   let productsData = [];
   let shoppingCart = [];
   let subTotal = 0;
+  let total = 0;
 
   const searchBtn = document.querySelector("#btnSearch");
   const searchForm = document.querySelector("#searchForm");
@@ -85,12 +87,77 @@ window.addEventListener("DOMContentLoaded", () => {
       unblockElem(searchForm);
     } catch (error) {
       unblockElem(searchForm);
-      warningNotification("Error interno del servidor");
+      errorNotification("Error interno del servidor");
       console.error(error);
     }
   }
 
-  function registerSale() {}
+  async function registerSale(saleInfo) {
+    try {
+      disableButton(
+        registerSaleBtn,
+        "Registrando venta",
+        "justify-content-center"
+      );
+
+      console.log(saleInfo);
+      let body = JSON.stringify(saleInfo);
+
+      let request = await fetch(routes.registerSale, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          credentials: "same-origin",
+        },
+        body,
+      });
+
+      let json = await request.json();
+
+      if (json.error) {
+        if (Array.isArray(json.message)) {
+          let messages = "";
+          json.message.forEach((msg) => {
+            messages += `<strong>*${msg}</strong> <br>`;
+          });
+          enableButton(registerSaleBtn, "Realizar venta");
+
+          modalAlert("warning", "Aviso", messages);
+          return;
+        } else {
+          modalAlert(
+            "warning",
+            "Aviso",
+            `<strong>${json.message}</strong> <br>`
+          );
+          enableButton(registerSaleBtn, "Realizar venta");
+
+          return;
+        }
+      }
+      enableButton(registerSaleBtn, "Realizar venta");
+
+      modalAlert(
+        "success",
+        "Aviso ",
+        `<strong>${json.message}</strong> <br>`,
+        () => {
+          $("#main_modal").modal("hide");
+        }
+      );
+
+      setTimeout(() => {
+        window.location = '/ventas/detalle/id'
+        
+      }, 1500);
+
+    } catch (error) {
+      errorNotification("Error interno del servidor");
+      enableButton(registerSaleBtn, "Realizar venta");
+      console.error(error);
+    }
+  }
 
   function resetForm(form) {
     switch (form) {
@@ -107,11 +174,102 @@ window.addEventListener("DOMContentLoaded", () => {
     resetForm("searchForm");
   }
 
-  function registerSaleBtnClick() {}
+  function registerSaleBtnClick() {
+    if (shoppingCart.length === 0) {
+      errorNotification(
+        "No tienes productos en la venta. Agrega productos para realizar la venta"
+      );
+      return;
+    }
 
-  function registerSaleConfirmation() {
+    if (total < 0) {
+      errorNotification(
+        "El total de la venta no puede ser menor a 0. Revisa la venta y el descuento que hayas ingresado."
+      );
+      return;
+    }
+
+    resetCartFormValidation();
+    let response = validateCartForm();
+
+    if (response.valid === false) {
+      return;
+    }
+
+    registerSaleConfirmation(response.body);
+  }
+
+  function registerSaleConfirmation(saleInfo) {
     confirmationAlert("Se registrará la venta", () => {
-      registerSale();
+      registerSale(saleInfo);
+    });
+  }
+
+  function validateCartForm() {
+    let body = {};
+    let valid = true;
+
+    $fields.forEach((elem) => {
+      let data;
+      let msg;
+
+      switch (elem) {
+        case "discount":
+          data = document.querySelector(`#${elem}`);
+          body[elem] = data.value ?? 0;
+          break;
+
+        case "concept":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value) {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "El concepto es requerido.";
+            valid = false;
+          }
+          body[elem] = data.value;
+
+          break;
+      }
+    });
+
+    let saleDetail = [];
+
+    console.log(shoppingCart);
+    shoppingCart.forEach((elem) => {
+      saleDetail.push({
+        productID: elem.id,
+        quantity: elem.quantity,
+        unitPrice: elem.unitPrice,
+        changed: false,
+        add: false,
+      });
+    });
+
+    body.saleDetail = saleDetail;
+    body.total = total;
+
+    return {
+      valid,
+      body,
+    };
+  }
+
+  function resetCartFormValidation() {
+    $fields.forEach((elem) => {
+      switch (elem) {
+        case "concept":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value) {
+            data.classList.remove("invalid-input");
+            msg.innerHTML = "";
+          }
+
+          break;
+      }
     });
   }
 
@@ -228,9 +386,12 @@ window.addEventListener("DOMContentLoaded", () => {
     if (shoppingCart.length == 0) {
       cartTable.innerHTML = `<tr>
           <td class="text-center w-100"> Aun no tienes productos. <br> Agrega productos a la
-              venta  😊
+              venta   🛍
           </td>
       </tr>`;
+      total = 0;
+      subTotal = 0;
+      document.querySelector("#discount").value = "";
       updateSaleTotals();
       validateDiscount();
 
@@ -243,7 +404,7 @@ window.addEventListener("DOMContentLoaded", () => {
           <td style="white-space:normal"> 
             ${product.quantity} x  ${product.productName}
           </td>
-          <td>$${product.total.toFixed(2)}</td>
+          <td class="text-center">$${product.total.toFixed(2)}</td>
           <td> <button type="button"
                   class="btn btn-sm btn-outline-secondary text-info add" data-index="${index}"  data-id="${
         product._id
@@ -262,10 +423,10 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateSaleTotals() {
-    let subTotal = 0;
+    subTotal = 0;
     let discount = document.querySelector("#discount");
     shoppingCart.forEach((prod) => (subTotal += prod.total));
-    let total = subTotal - discount.value;
+    total = subTotal - discount.value;
     console.log(subTotal);
     console.log(discount.value);
     console.log(total);

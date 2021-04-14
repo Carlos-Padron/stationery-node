@@ -133,7 +133,7 @@ window.addEventListener("DOMContentLoaded", () => {
       unblockElem(searchForm);
     } catch (error) {
       unblockElem(searchForm);
-      warningNotification("Error interno del servidor");
+      errorNotification("Error interno del servidor");
       console.error(error);
     }
   }
@@ -209,7 +209,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       );
     } catch (error) {
-      warningNotification("Error interno del servidor");
+      errorNotification("Error interno del servidor");
       enableButton(
         btnAddProduct,
         route == "/updateProduct" ? "Actualizar" : "Agregar"
@@ -265,7 +265,7 @@ window.addEventListener("DOMContentLoaded", () => {
       );
     } catch (error) {
       alert(error);
-      warningNotification(error);
+      errorNotification(error);
       unblockElem(mainCardTable);
       console.error(error);
     }
@@ -490,7 +490,7 @@ window.addEventListener("DOMContentLoaded", () => {
       showMainModalEdit(json.response);
     } catch (error) {
       //unblockElem(mainCardTable);
-      warningNotification("Error interno del servidor");
+      errorNotification("Error interno del servidor");
       console.error(error);
     }
   }
@@ -661,7 +661,7 @@ window.addEventListener("DOMContentLoaded", () => {
     let validTypes = ["image/jpeg", "image/png"];
 
     if (validTypes.indexOf(image.type) == -1) {
-      warningNotification("Solo se aceptan imágenes png y jpg");
+      errorNotification("Solo se aceptan imágenes png y jpg");
 
       return false;
     }

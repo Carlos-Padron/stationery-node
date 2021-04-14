@@ -77,7 +77,7 @@ class CardTable {
         let image = document.createElement("img");
         image.classList.add("card-img-top");
         image.setAttribute("src", `${this.data[i]?.imageRelativePath}`);
-        image.style.height = "200px";
+        image.style.height = "150px";
         image.style.objectFit = "cover";
         image.setAttribute("alt", " ");
 

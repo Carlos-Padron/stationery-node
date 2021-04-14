@@ -102,7 +102,7 @@ window.addEventListener("DOMContentLoaded", () => {
       unblockElem(searchForm);
     } catch (error) {
       unblockElem(searchForm);
-      warningNotification("Error interno del servidor");
+      errorNotification("Error interno del servidor");
       console.error(error);
     }
   }
@@ -178,7 +178,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       );
     } catch (error) {
-      warningNotification("Error interno del servidor");
+      errorNotification("Error interno del servidor");
       enableButton(
         addArticleTypeBtn,
         route == "/updateArticleType" ? "Actualizar" : "Agregar"
@@ -234,7 +234,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       );
     } catch (error) {
-      warningNotification(error);
+      errorNotification(error);
       unblockElem(mainTableBody);
       console.error(error);
     }

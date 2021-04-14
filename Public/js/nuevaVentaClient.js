@@ -148,10 +148,8 @@ window.addEventListener("DOMContentLoaded", () => {
       );
 
       setTimeout(() => {
-        window.location = '/ventas/detalle/id'
-        
+        window.location = `/ventas/detalle/${json.response}`;
       }, 1500);
-
     } catch (error) {
       errorNotification("Error interno del servidor");
       enableButton(registerSaleBtn, "Realizar venta");
@@ -240,6 +238,7 @@ window.addEventListener("DOMContentLoaded", () => {
     shoppingCart.forEach((elem) => {
       saleDetail.push({
         productID: elem.id,
+        productName: elem.productName,
         quantity: elem.quantity,
         unitPrice: elem.unitPrice,
         changed: false,

@@ -103,6 +103,8 @@ window.addEventListener("DOMContentLoaded", () => {
       console.log(saleInfo);
       let body = JSON.stringify(saleInfo);
 
+      console.log(routes.registerSale);
+
       let request = await fetch(routes.registerSale, {
         method: "POST",
         headers: {
@@ -115,6 +117,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       let json = await request.json();
 
+      console.log("json", json);
       if (json.error) {
         if (Array.isArray(json.message)) {
           let messages = "";
@@ -138,18 +141,21 @@ window.addEventListener("DOMContentLoaded", () => {
       }
       enableButton(registerSaleBtn, "Realizar venta");
 
+      resetForm("shopping-cart");
+
       modalAlert(
         "success",
         "Aviso ",
         `<strong>${json.message}</strong> <br>`,
         () => {
           $("#main_modal").modal("hide");
+          window.location = `/ventas/detalle/${json.response}`;
         }
       );
 
-      setTimeout(() => {
+      /*  setTimeout(() => {
         window.location = `/ventas/detalle/${json.response}`;
-      }, 1500);
+      }, 1500); */
     } catch (error) {
       errorNotification("Error interno del servidor");
       enableButton(registerSaleBtn, "Realizar venta");
@@ -161,6 +167,11 @@ window.addEventListener("DOMContentLoaded", () => {
     switch (form) {
       case "shopping-cart":
         //clear shopping card
+        shoppingCart = [];
+        populateTable();
+        search();
+        document.querySelector(`#concept`).value = "";
+        document.querySelector(`#discount`).value = "";
         break;
       case "searchForm":
         document.querySelector("#searchForm").reset();
@@ -262,10 +273,8 @@ window.addEventListener("DOMContentLoaded", () => {
           data = document.querySelector(`#${elem}`);
           msg = document.querySelector(`#${elem}Msg`);
 
-          if (!data.value) {
-            data.classList.remove("invalid-input");
-            msg.innerHTML = "";
-          }
+          data.classList.remove("invalid-input");
+          msg.innerHTML = "";
 
           break;
       }
@@ -426,6 +435,7 @@ window.addEventListener("DOMContentLoaded", () => {
     let discount = document.querySelector("#discount");
     shoppingCart.forEach((prod) => (subTotal += prod.total));
     total = subTotal - discount.value;
+    console.log(total);
     console.log(subTotal);
     console.log(discount.value);
     console.log(total);

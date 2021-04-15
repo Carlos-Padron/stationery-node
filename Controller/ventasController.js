@@ -1,5 +1,5 @@
 const errorHandler = require("../Utils/Helpers/errorHandler");
-const Sale = require("../Model/ProductModel");
+const Sale = require("../Model/SaleModel");
 const Brand = require("../Model/BrandModel");
 const ArticleType = require("../Model/ArticleType");
 const Product = require("../Model/ProductModel");
@@ -29,27 +29,29 @@ const registerSale = async (req, res) => {
     let saleDetails = [];
     let outOfStock = [];
 
-    req.body.saleDetails.forEach(async (elem) => {
-      let product = await Product.findById(elem.productID);
+    for (const prod of req.body.saleDetail) {
+      let product = await Product.findById(prod.productID).select(
+        "_id name price quantity"
+      );
 
       if (!product) {
         outOfStock.push(
-          `No se encontró ${elem.productName} en el catálogo de productos.`
+          `No se encontró ${prod.productName} en el catálogo de productos.`
         );
       } else {
-        if (elem.quantity > product.quantity) {
+        if (prod.quantity > product.quantity) {
           outOfStock.push(
-            `La cantidad agregada de ${elem.productName} supera a la cantidad de stock del inventario.`
+            `La cantidad agregada de ${prod.productName} supera a la cantidad de stock del inventario.`
           );
         } else {
           saleDetails.push({
-            productID: elem.productID,
-            quantity: elem.quantity,
-            unitPrice: elem.unitPrice,
+            productID: prod.productID,
+            quantity: prod.quantity,
+            unitPrice: prod.unitPrice,
           });
         }
       }
-    });
+    }
 
     if (outOfStock.length > 0) {
       return res.json({
@@ -63,17 +65,26 @@ const registerSale = async (req, res) => {
       concept: req.body.concept,
       date: new Date(),
       total: req.body.total,
-      discount: req.body.discount,
+      discount: req.body.discount != null ? req.body.discount : 0,
       madeBy: req.user._id,
       saleDetail: saleDetails,
     });
 
     await sale.save();
 
+    for (const prod of req.body.saleDetail) {
+      console.log({ _id: prod.productID });
+
+      await Product.findOneAndUpdate(
+        { _id: prod.productID },
+        { $inc: { quantity: -prod.quantity } }
+      ).exec();
+    }
+
     res.json({
       error: false,
       response: sale._id,
-      message: null,
+      message: "Venta registrada",
     });
   } catch (error) {
     let errors = errorHandler(error);
@@ -93,7 +104,18 @@ const registerSale = async (req, res) => {
   }
 };
 
-const saleDetail = async (req, res) => {};
+const saleDetail = async (req, res) => {
+  try {
+    res.render("ventas/detalleVenta", {
+      sectionName: "Detalle de la venta",
+      script: "detalleVentaClient",
+      activeMenu: "VNTS",
+      activeSubmenu: "HSVNTS",
+    });
+  } catch (error) {
+    res.send("Ocurrió un error al mostrar la página.");
+  }
+};
 
 module.exports = {
   index,

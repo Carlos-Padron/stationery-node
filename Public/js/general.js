@@ -5,8 +5,11 @@ const isEmail = (email) => {
   return re.test(email);
 };
 
-//Input Events
+const isDate = (date) => {
+  return date.toString() == "Invalid Date";
+};
 
+//Input Events
 const currencyMask = () => {
   let e = event;
   let target = e.target;
@@ -56,41 +59,28 @@ const numericMask = () => {
 const dateMask = () => {
   let e = event;
   let input = e.target;
-  let value = e.target.value;
+  let length = input.value.length;
 
-  numericMask();
-  switch (value.length) {
-    case 1:
-      if (parseInt(value) >= 4) {
-        value = value.substring(0, value.length - 1);
-        e.target.value = value;
-        return;
-      }
-      break;
-    case 2:
-      if (parseInt(value) > 31) {
-        value = value.substring(0, value.length - 1);
-        e.target.value = value;
-      } else {
-        value += "/";
-        e.target.value = value;
-      }
-      break;
-    case 4:
-      break;
-    case 5:
-      break;
-    case 7:
-      break;
-    case 8:
-      break;
-    case 9:
-      break;
-    case 10:
-      break;
+  if (e.keyCode < 47 || e.keyCode > 57) {
+    e.preventDefault();
+  }
 
-    default:
-      break;
+  // If we're at a particular place, let the user type the slash
+  // i.e., 12/12/1212
+  if (length !== 1 || length !== 3) {
+    if (e.keyCode == 47) {
+      e.preventDefault();
+    }
+  }
+
+  // If they don't add the slash, do it for them...
+  if (length === 2) {
+    input.value += "/";
+  }
+
+  // If they don't add the slash, do it for them...
+  if (length === 5) {
+    input.value += "/";
   }
 };
 

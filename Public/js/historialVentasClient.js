@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
   //Variables & Elements
-  let $fields = ["_id", "name"];
+  let $fields = ["fechaInicio", "fechaFin"];
   let routes = {
     get: "/getArticleTypes",
   };
@@ -27,6 +27,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //functions
   async function search() {
+    resetFormValidation();
+
+    let response = validateForm();
+
+    if (response.valid === false) {
+      return;
+    }
+
+    console.log(response.body);
+
+    return;
     blockElem(searchForm);
 
     let body = {};
@@ -83,22 +94,114 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      articleTypeData = json.response;
+      salesData = json.response;
 
-      articleTypeData.forEach((elem, index) => {
+      salesData.forEach((elem, index) => {
         elem.actions = `<div class="btn-group">
           <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
           <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
       </div>`;
       });
 
-      mainTable.reloadTable(articleTypeData);
+      mainTable.reloadTable(salesData);
       unblockElem(searchForm);
     } catch (error) {
       unblockElem(searchForm);
       errorNotification("Error interno del servidor");
       console.error(error);
     }
+  }
+
+  function validateForm() {
+    let body = {};
+    let valid = true;
+
+    $fields.forEach((elem) => {
+      let data;
+      let msg;
+      switch (elem) {
+        case "fechaInicio":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value) {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "La fecha de inicio es requerida para filtrar";
+            valid = false;
+            return;
+          } else {
+            //varifica la fecha
+            let dateFromInput = data.value;
+            if (dateFromInput.length < 10) {
+              console.log(dateFromInput.length);
+              msg.innerHTML +=
+                "Ingrese una fecha válida con el formato: <strong>dd/mm/aaaa</strong>";
+              valid = false;
+              return;
+            } else {
+              let day = dateFromInput.substring(0, 2);
+              let month = dateFromInput.substring(3, 5);
+              let year = dateFromInput.substring(6, 10);
+
+              let newDate = new Date(year, month - 1, day);
+              console.log("fecha inicio", newDate);
+              let invalidDate = isDate(newDate);
+
+              if (invalidDate) {
+                msg.innerHTML +=
+                  "Ingrese una fecha válida con el formato: <strong>dd/mm/aaaa</strong>";
+                valid = false;
+                return;
+              }
+              body[elem] = newDate;
+            }
+          }
+          break;
+
+        case "fechaFin":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value) {
+            data.value;
+            data.classList.add("invalid-input");
+            msg.innerHTML += "La fecha de fin es requerida para filtrar";
+            valid = false;
+            return;
+          } else {
+            //varifica la fecha
+            let dateFromInput = data.value;
+            if (dateFromInput.length < 10) {
+              msg.innerHTML +=
+                "Ingrese una fecha válida con el formato: <strong>dd/mm/aaaa</strong>";
+              valid = false;
+              return;
+            } else {
+              let day = dateFromInput.substring(0, 2);
+              let month = dateFromInput.substring(3, 5);
+              let year = dateFromInput.substring(6, 10);
+
+              let newDate = new Date(year, month - 1, day);
+              console.log("fecha fin", newDate);
+              let invalidDate = isDate(newDate);
+
+              if (invalidDate) {
+                msg.innerHTML +=
+                  "Ingrese una fecha válida con el formato: <strong>dd/mm/aaaa</strong>";
+                valid = false;
+                return;
+              }
+              body[elem] = newDate;
+            }
+          }
+          break;
+      }
+    });
+
+    return {
+      valid,
+      body,
+    };
   }
 
   async function resetForm(form) {
@@ -109,6 +212,20 @@ window.addEventListener("DOMContentLoaded", () => {
       default:
         break;
     }
+  }
+
+  function resetFormValidation() {
+    $fields.forEach((elem) => {
+      let msg = document.querySelector(`#${elem}Msg`);
+      let field = document.querySelector(`#${elem}`);
+
+      if (field) {
+        field.classList.remove("invalid-input");
+      }
+      if (msg) {
+        msg.innerHTML = "";
+      }
+    });
   }
 
   function clearSearch() {
@@ -137,11 +254,9 @@ window.addEventListener("DOMContentLoaded", () => {
     "btnNext",
     "btnPrev",
     "pageCounter",
-    "2"
+    "5"
   );
   mainTable.reloadTable(salesData);
-
-  
 
   $(".datepicker-es").datepicker({
     language: "es",

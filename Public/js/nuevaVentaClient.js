@@ -152,10 +152,6 @@ window.addEventListener("DOMContentLoaded", () => {
           window.location = `/ventas/detalle/${json.response}`;
         }
       );
-
-      /*  setTimeout(() => {
-        window.location = `/ventas/detalle/${json.response}`;
-      }, 1500); */
     } catch (error) {
       errorNotification("Error interno del servidor");
       enableButton(registerSaleBtn, "Realizar venta");

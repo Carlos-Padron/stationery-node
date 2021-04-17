@@ -9,32 +9,36 @@
                 <i class="uil uil-plus-circle"></i>
                 Nueva Venta
             </button>
+            <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary"><i
+                    class="uil uil-redo"></i>
         </div>
     </div>
     <div class="card-body">
         <form id="searchForm">
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-4">
+                    <small id="fechaInicioMsg" class="text-danger"></small>
                     <div class="form-group">
                         <label class="form-control-label">Fecha de inicio:</label>
                         <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <span class="input-group-text py-0"><i class="uil uil-calendar-alt"></i></span>
                             </div>
-                            <input class="form-control datepicker-es" placeholder="dd/mm/yyyy" type="text"
-                                maxlength="10" oninput="dateMask()">
+                            <input id="fechaInicio" class="form-control datepicker-es" placeholder="dd/mm/yyyy"
+                                type="text" maxlength="10" onkeypress="dateMask()">
                         </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
+                    <small id="fechaFinMsg" class="text-danger"></small>
                     <div class="form-group">
                         <label class="form-control-label">Fecha fin:</label>
                         <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <span class="input-group-text py-0"><i class="uil uil-calendar-alt"></i></span>
                             </div>
-                            <input class="form-control datepicker-es" placeholder="dd/mm/yyyy" type="text"
-                                maxlength="10">
+                            <input id="fechaFin" class="form-control datepicker-es" placeholder="dd/mm/yyyy" type="text"
+                                maxlength="10" onkeypress="dateMask()">
                         </div>
                     </div>
                 </div>
@@ -44,7 +48,6 @@
     <div class="card-footer text-right">
         <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width:150px"><i
                 class="uil uil-search"></i> Buscar</button>
-        <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary"><i class="uil uil-redo"></i>
         </button>
     </div>
 </div>

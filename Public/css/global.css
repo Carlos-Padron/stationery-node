@@ -3,10 +3,9 @@
 }
 
 /* Invisible  */
-.invisible-text{
-  color: white
+.invisible-text {
+  color: white;
 }
-
 
 /*** Spinner Overlay ***/
 
@@ -230,6 +229,12 @@
   overflow: visible;
   clip: auto;
   white-space: normal;
+}
+
+/* DatePicker */
+
+.datepicker-es {
+  height: calc(0.45em + 1.25rem + 5px) !important;
 }
 
 /*** Other ***/

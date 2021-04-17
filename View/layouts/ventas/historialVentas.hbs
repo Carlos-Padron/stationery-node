@@ -1,0 +1,79 @@
+{{#extend "master"}}
+{{#content "body" mode="append"}}
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h3 class="mb-0">¡Filtra las ventas que hayas realizado!</h3>
+        <div class="d-flex justify-content-between">
+            <button id="btnAdd" onclick="location.href = '/ventas/nueva-venta';" type="button"
+                class="btn btn-sm btn-outline-secondary" style="width:150px">
+                <i class="uil uil-plus-circle"></i>
+                Nueva Venta
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <form id="searchForm">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Fecha de inicio:</label>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text py-0"><i class="uil uil-calendar-alt"></i></span>
+                            </div>
+                            <input class="form-control datepicker-es" placeholder="dd/mm/yyyy" type="text"
+                                maxlength="10" oninput="dateMask()">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Fecha fin:</label>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text py-0"><i class="uil uil-calendar-alt"></i></span>
+                            </div>
+                            <input class="form-control datepicker-es" placeholder="dd/mm/yyyy" type="text"
+                                maxlength="10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-right">
+        <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width:150px"><i
+                class="uil uil-search"></i> Buscar</button>
+        <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary"><i class="uil uil-redo"></i>
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding-bottom: 0;">
+        <div class="table-responsive">
+            <table id="mainTable" class="table align-items-center">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="text-center">Concepto</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-center">Descuento</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="list"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-right">
+        <button type="button" id="btnPrev" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
+            &lt;</button>
+        <span id="pageCounter"></span>
+        <button type="button" id="btnNext" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">&gt;</button>
+        <div id="pagination" class="d-flex justify-content-end"></div>
+    </div>
+</div>
+{{/content}}
+
+{{/extend}}

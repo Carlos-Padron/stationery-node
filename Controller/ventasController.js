@@ -4,6 +4,7 @@ const Brand = require("../Model/BrandModel");
 const ArticleType = require("../Model/ArticleType");
 const Product = require("../Model/ProductModel");
 
+//Nueva Venta
 const index = async (req, res) => {
   try {
     let brands = await Brand.find({ disabled: false }).sort({ name: "asc" });
@@ -104,6 +105,16 @@ const registerSale = async (req, res) => {
   }
 };
 
+// Historial de ventas
+const saleHistory = (req, res) => {
+  res.render("ventas/historialVentas", {
+    sectionName: "Historial de ventas",
+    script: "historialVentasClient",
+    activeMenu: "VNTS",
+    activeSubmenu: "HSVNTS",
+  });
+};
+
 const saleDetail = async (req, res) => {
   try {
     res.render("ventas/detalleVenta", {
@@ -120,5 +131,6 @@ const saleDetail = async (req, res) => {
 module.exports = {
   index,
   registerSale,
+  saleHistory,
   saleDetail,
 };

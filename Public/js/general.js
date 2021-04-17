@@ -5,6 +5,8 @@ const isEmail = (email) => {
   return re.test(email);
 };
 
+//Input Events
+
 const currencyMask = () => {
   let e = event;
   let target = e.target;
@@ -48,6 +50,47 @@ const numericMask = () => {
       target.value = value;
       return;
     }
+  }
+};
+
+const dateMask = () => {
+  let e = event;
+  let input = e.target;
+  let value = e.target.value;
+
+  numericMask();
+  switch (value.length) {
+    case 1:
+      if (parseInt(value) >= 4) {
+        value = value.substring(0, value.length - 1);
+        e.target.value = value;
+        return;
+      }
+      break;
+    case 2:
+      if (parseInt(value) > 31) {
+        value = value.substring(0, value.length - 1);
+        e.target.value = value;
+      } else {
+        value += "/";
+        e.target.value = value;
+      }
+      break;
+    case 4:
+      break;
+    case 5:
+      break;
+    case 7:
+      break;
+    case 8:
+      break;
+    case 9:
+      break;
+    case 10:
+      break;
+
+    default:
+      break;
   }
 };
 

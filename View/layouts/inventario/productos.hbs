@@ -18,14 +18,14 @@
         <div class="col-12 col-sm-4 col-md-4 col-lg-4">
           <div class="form-group">
             <label class="form-control-label">Nombre del producto:</label>
-            <input class="form-control form-control-sm form-control-alternative" placeholder="Producto" type="text"
+            <input class="form-control form-control-sm " placeholder="Producto" type="text"
               data-search="name" />
           </div>
         </div>
         <div class="col-12 col-sm-4 col-md-4 col-lg-4">
           <div class="form-group">
             <label class="form-control-label">Tipo de Artículo:</label>
-            <select class="form-control form-control-sm form-control-alternative" data-search="articleType">
+            <select class="form-control form-control-sm " data-search="articleType">
               <option value="" selected="true">Seleccione</option>
               {{#each articleTypes}}
               <option value="{{this._id}}">{{this.name}}</option>
@@ -36,7 +36,7 @@
         <div class="col-12 col-sm-4 col-md-4 col-lg-4">
           <div class="form-group">
             <label class="form-control-label">Marca:</label>
-            <select class="form-control form-control-sm form-control-alternative" data-search="brand">
+            <select class="form-control form-control-sm " data-search="brand">
               <option value="" selected="true">Seleccione</option>
               {{#each brands}}
               <option value="{{this._id}}">{{this.name}}</option>
@@ -140,7 +140,7 @@
                               <small id="nameMsg"></small>
                               <div class="form-group">
                                 <label class="form-control-label">Nombre:</label>
-                                <input class="form-control form-control-sm form-control-alternative"
+                                <input class="form-control form-control-sm "
                                   placeholder="Nombre" type="text" id="name" />
                               </div>
                             </div>
@@ -148,7 +148,7 @@
                               <small id="priceMsg"></small>
                               <div class="form-group">
                                 <label class="form-control-label">Precio:</label>
-                                <input class="form-control form-control-sm form-control-alternative" placeholder="$"
+                                <input class="form-control form-control-sm " placeholder="$"
                                   oninput="currencyMask()" type="text" id="price" />
                               </div>
                             </div>
@@ -158,7 +158,7 @@
                               <small id="quantityMsg"></small>
                               <div class="form-group">
                                 <label class="form-control-label">Cantidad:</label>
-                                <input class="form-control form-control-sm form-control-alternative"
+                                <input class="form-control form-control-sm "
                                   placeholder="Cantidad" type="text" id="quantity" oninput="numericMask()" />
                               </div>
                             </div>
@@ -166,7 +166,7 @@
                               <small id="articleTypeMsg"></small>
                               <div class="form-group">
                                 <label class="form-control-label">Tipo de Artículo:</label>
-                                <select class="form-control form-control-sm form-control-alternative" id="articleType">
+                                <select class="form-control form-control-sm " id="articleType">
                                   <option value="" selected="true">Seleccione</option>
                                   {{#each articleTypes}}
                                   <option value="{{this._id}}">{{this.name}}</option>
@@ -180,7 +180,7 @@
                               <small id="brandMsg"></small>
                               <div class="form-group">
                                 <label class="form-control-label">Marca:</label>
-                                <select class="form-control form-control-sm form-control-alternative" id="brand">
+                                <select class="form-control form-control-sm " id="brand">
                                   <option value="" selected="true">Seleccione</option>
                                   {{#each brands}}
                                   <option value="{{this._id}}">{{this.name}}</option>

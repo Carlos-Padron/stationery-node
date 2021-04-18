@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
   //Variables & Elements
-  let $fields = ["fechaInicio", "fechaFin"];
+  let $fields = ["fechaInicio", "fechaFin", "canceled"];
   let routes = {
     get: "/getSales",
   };
@@ -186,6 +186,11 @@ window.addEventListener("DOMContentLoaded", () => {
             }
           }
           break;
+
+        case "canceled":
+          data = document.querySelector(`#${elem}`);
+
+          body[elem] = data.checked;
       }
 
       if (

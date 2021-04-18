@@ -74,8 +74,6 @@ const registerSale = async (req, res) => {
     await sale.save();
 
     for (const prod of req.body.saleDetail) {
-      console.log({ _id: prod.productID });
-
       await Product.findOneAndUpdate(
         { _id: prod.productID },
         { $inc: { quantity: -prod.quantity } }
@@ -116,13 +114,12 @@ const saleHistory = (req, res) => {
 };
 
 const searchSales = async (req, res) => {
-  const { fechaInicio, fechaFin, cancelled } = req.body;
-  console.log(req.body);
-  console.log("fechaInicio", fechaInicio);
-  console.log("fechaFin", fechaFin);
+  const { fechaInicio, fechaFin, canceled } = req.body;
+
   try {
     let sales = await Sale.find({
       date: { $gte: fechaInicio, $lte: fechaFin },
+      canceled,
     })
       .select("_id concept date total canceled ")
       .sort({ date: "asc" });

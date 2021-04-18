@@ -16,7 +16,7 @@
     <div class="card-body">
         <form id="searchForm">
             <div class="row">
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-12 col-md-3 col-lg-3">
                     <small id="fechaInicioMsg" class="text-danger"></small>
                     <div class="form-group">
                         <label class="form-control-label">Fecha de inicio:</label>
@@ -29,7 +29,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-12 col-md-3 col-lg-3">
                     <small id="fechaFinMsg" class="text-danger"></small>
                     <div class="form-group">
                         <label class="form-control-label">Fecha fin:</label>
@@ -40,6 +40,12 @@
                             <input id="fechaFin" class="form-control datepicker-es" placeholder="dd/mm/yyyy" type="text"
                                 maxlength="10" onkeypress="dateMask()">
                         </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="canceled">
+                        <label class="custom-control-label" for="canceled">Ventas canceladas</label>
                     </div>
                 </div>
             </div>

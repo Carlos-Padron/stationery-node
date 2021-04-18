@@ -2,14 +2,14 @@ window.addEventListener("DOMContentLoaded", () => {
   //Variables & Elements
   let $fields = ["fechaInicio", "fechaFin"];
   let routes = {
-    get: "/getArticleTypes",
+    get: "/getSales",
   };
 
   let salesColumns = [
     { column: "concept", class: "text-center" },
     { column: "total", class: "text-center" },
-    { column: "discount", class: "text-center" },
     { column: "date", class: "text-center" },
+    { column: "canceled", class: "text-center" },
     { column: "actions", class: "text-center" },
   ];
 
@@ -35,32 +35,10 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    console.log(response.body);
-
-    return;
     blockElem(searchForm);
 
-    let body = {};
-
-    $fields.forEach((elem) => {
-      let elemData = document.querySelector(`[data-search="${elem}"]`);
-
-      if (elemData != undefined) {
-        switch (elem) {
-          case "disabled":
-            body[elem] = elemData.checked;
-            break;
-
-          default:
-            let data = elemData.value.trim();
-            body[elem] = data;
-            break;
-        }
-      }
-    });
-
     try {
-      body = JSON.stringify(body);
+      let body = JSON.stringify(response.body);
 
       let request = await fetch(routes.get, {
         method: "POST",
@@ -97,9 +75,22 @@ window.addEventListener("DOMContentLoaded", () => {
       salesData = json.response;
 
       salesData.forEach((elem, index) => {
+        elem.total = `$${elem.total.toFixed(2)}`;
+
+        let date = elem.date.substring(0, 10);
+        let day = date.substring(8, 10);
+        let month = date.substring(5, 7);
+        let year = date.substring(0, 4);
+
+        elem.date = `${day}/${month}/${year}`;
+
+        elem.canceled =
+          elem.canceled == true
+            ? `<span class="badge badge-pill badge-danger">Cancelada</span>`
+            : `<span class="badge badge-pill badge-success">Realizada</span>`;
+
         elem.actions = `<div class="btn-group">
-          <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
-          <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
+          <button title="Mostrar detalles"   type="button" class="btn btn-sm btn-icon btn-info   detail"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-eye detail"></i> </button>
       </div>`;
       });
 

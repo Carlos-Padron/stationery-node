@@ -3,7 +3,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let routes = {
     showProducts: "/getProducts",
-    registerSale: "/ventas/registrar-venta",
+    registerSale: "/registrar-venta",
   };
 
   let productsData = [];

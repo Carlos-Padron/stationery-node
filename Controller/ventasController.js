@@ -115,6 +115,40 @@ const saleHistory = (req, res) => {
   });
 };
 
+const searchSales = async (req, res) => {
+  const { fechaInicio, fechaFin, cancelled } = req.body;
+  console.log(req.body);
+  console.log("fechaInicio", fechaInicio);
+  console.log("fechaFin", fechaFin);
+  try {
+    let sales = await Sale.find({
+      date: { $gte: fechaInicio, $lte: fechaFin },
+    }).sort({ date: "asc" });
+
+    res.json({
+      error: false,
+      message: null,
+      response: sales,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 const saleDetail = async (req, res) => {
   try {
     res.render("ventas/detalleVenta", {
@@ -132,5 +166,6 @@ module.exports = {
   index,
   registerSale,
   saleHistory,
+  searchSales,
   saleDetail,
 };

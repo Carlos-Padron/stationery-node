@@ -7,10 +7,11 @@ const { authViews, authRoute } = require("../Utils/Middlewares/authMiddleware");
 //Nueva Venta
 router.get("/ventas/nueva-venta", authViews, ventasController.index);
 
-router.post("/ventas/registrar-venta",authRoute, ventasController.registerSale);
+router.post("/registrar-venta",authRoute, ventasController.registerSale);
 
 //Historial de ventas
 router.get("/ventas/historialVentas", authViews, ventasController.saleHistory);
+router.post("/getSales", authViews, ventasController.searchSales);
 
 
 //

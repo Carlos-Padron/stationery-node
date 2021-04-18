@@ -123,7 +123,9 @@ const searchSales = async (req, res) => {
   try {
     let sales = await Sale.find({
       date: { $gte: fechaInicio, $lte: fechaFin },
-    }).sort({ date: "asc" });
+    })
+      .select("_id concept date total canceled ")
+      .sort({ date: "asc" });
 
     res.json({
       error: false,

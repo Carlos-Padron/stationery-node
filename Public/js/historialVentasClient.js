@@ -90,7 +90,7 @@ window.addEventListener("DOMContentLoaded", () => {
             : `<span class="badge badge-pill badge-success">Realizada</span>`;
 
         elem.actions = `<div class="btn-group">
-          <button title="Mostrar detalles"   type="button" class="btn btn-sm btn-icon btn-info   detail"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-eye detail"></i> </button>
+          <button title="Mostrar detalles"   type="button" class="btn btn-sm btn-icon btn-info   details"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-eye details"></i> </button>
       </div>`;
       });
 
@@ -187,6 +187,17 @@ window.addEventListener("DOMContentLoaded", () => {
           }
           break;
       }
+
+      if (
+        body.fechaInicio != null &&
+        body.fechaFin != null &&
+        body.fechaInicio > body.fechaFin
+      ) {
+        warningNotification(
+          "La fecha de inicio no puede ser mayor a la fecha fin"
+        );
+        valid = false;
+      }
     });
 
     return {
@@ -229,12 +240,18 @@ window.addEventListener("DOMContentLoaded", () => {
         let button = e.target.parentElement;
         let index = button.getAttribute("data-index");
         //redirect to detail
+        redirectToDetailsShow(salesData[index]._id);
       } else {
         let button = e.target;
         let index = button.getAttribute("data-index");
         //redirect to detail
+        redirectToDetailsShow(salesData[index]._id);
       }
     }
+  }
+
+  function redirectToDetailsShow(_id) {
+    window.location = `/ventas/detalle/${_id}`;
   }
 
   //Initial actions

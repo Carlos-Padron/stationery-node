@@ -26,7 +26,7 @@
     }
 
     tbody {
-        height: 50vh !important;
+        height: 45vh !important;
         overflow-y: auto;
     }
 
@@ -55,15 +55,14 @@
                         <div class="col-12 col-sm-4 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-control-label">Nombre del producto:</label>
-                                <input class="form-control form-control-sm "
-                                    placeholder="Producto" type="text" data-search="name" />
+                                <input class="form-control form-control-sm " placeholder="Producto" type="text"
+                                    data-search="name" />
                             </div>
                         </div>
                         <div class="col-12 col-sm-4 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-control-label">Tipo de Artículo:</label>
-                                <select class="form-control form-control-sm "
-                                    data-search="articleType">
+                                <select class="form-control form-control-sm " data-search="articleType">
                                     <option value="" selected="true">Seleccione</option>
                                     {{#each articleTypes}}
                                     <option value="{{this._id}}">{{this.name}}</option>
@@ -74,8 +73,7 @@
                         <div class="col-12 col-sm-4 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-control-label">Marca:</label>
-                                <select class="form-control form-control-sm "
-                                    data-search="brand">
+                                <select class="form-control form-control-sm " data-search="brand">
                                     <option value="" selected="true">Seleccione</option>
                                     {{#each brands}}
                                     <option value="{{this._id}}">{{this.name}}</option>
@@ -122,8 +120,16 @@
                         <small id="conceptMsg" class="text-danger"></small>
                         <div class="d-flex">
                             <label class="form-control-label mt-auto mb-auto mr-3">Concepto:</label>
-                            <input id="concept" class="form-control form-control-sm " placeholder="Concepto"
-                                type="text" data-search="concept">
+                            <input id="concept" class="form-control form-control-sm " placeholder="Concepto" type="text"
+                                data-search="concept">
+                        </div>
+                    </div>
+                    <div class="col-12 mt-1">
+                        <small id="serviceMsg" class="text-danger"></small>
+                        <div class="d-flex">
+                            <label class="form-control-label mt-auto mb-auto mr-3">Servicio:</label>
+                            <input id="service" class="form-control form-control-sm " style="margin-left:11px"
+                                placeholder="Servicio" type="text" oninput="currencyMask()" data-search="service">
                         </div>
                     </div>
                     <div id="shopping-cart" class="mt-2 col-12">
@@ -157,8 +163,7 @@
                     <div class="col-12 mb-2">
                         <div class="d-flex">
                             <label class="form-control-label mt-auto mb-auto mr-3">Descuento:</label>
-                            <input id="discount"
-                                class="form-control form-control-sm  text-right"
+                            <input id="discount" class="form-control form-control-sm  text-right"
                                 placeholder="Descuento" oninput="currencyMask()" type="text" data-save="discount">
                         </div>
                         <small id="discountMsg" class="text-danger"></small>
@@ -176,7 +181,6 @@
                 </button>
             </div>
         </div>
-
     </div>
 </div>
 

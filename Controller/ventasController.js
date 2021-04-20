@@ -67,6 +67,10 @@ const registerSale = async (req, res) => {
       date: new Date(),
       total: req.body.total,
       discount: req.body.discount != null ? req.body.discount : 0,
+      service:
+        req.body.service === "." || req.body.service === null
+          ? null
+          : req.body.service,
       madeBy: req.user._id,
       saleDetail: saleDetails,
     });

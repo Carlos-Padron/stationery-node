@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 let saleSchema = new mongoose.Schema({
-    concept: {
+  concept: {
     type: String,
     trim: true,
   },
@@ -13,6 +13,9 @@ let saleSchema = new mongoose.Schema({
     required: [true, "El total de la venta es requerido"],
   },
   discount: {
+    type: Number,
+  },
+  service: {
     type: Number,
   },
   canceled: {

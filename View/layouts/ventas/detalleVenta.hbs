@@ -1,1 +1,41 @@
-<h1>detalle</h1>
+{{#extend "master"}}
+{{#content "body" mode="append"}}
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h3 class="mb-0">Detalle de la venta</h3>
+        <div class="d-flex justify-content-between">
+            <button id="btnAdd" onclick="location.href = '/ventas/nueva-venta';" type="button"
+                class="btn btn-sm btn-outline-secondary" style="width:150px">
+                <i class="uil uil-plus-circle"></i>
+                Nueva Venta
+            </button>
+            <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary"><i
+                    class="uil uil-redo"></i>
+        </div>
+    </div>
+    <div class="card-body" style="padding-bottom: 0;">
+        <div class="table-responsive">
+            <table id="mainTable" class="table align-items-center">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="text-center">Articulo</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-center">Estatus</th>
+                    </tr>
+                </thead>
+                <tbody class="list"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-right">
+        <button type="button" id="btnPrev" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
+            &lt;</button>
+        <span id="pageCounter"></span>
+        <button type="button" id="btnNext" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">&gt;</button>
+        <div id="pagination" class="d-flex justify-content-end"></div>
+    </div>
+</div>
+
+{{/content}}
+
+{{/extend}}

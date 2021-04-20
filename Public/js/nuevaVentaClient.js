@@ -1,5 +1,12 @@
 window.addEventListener("DOMContentLoaded", () => {
-  let $fields = ["name", "brand", "articleType", "discount", "concept"];
+  let $fields = [
+    "name",
+    "brand",
+    "articleType",
+    "discount",
+    "concept",
+    "service",
+  ];
 
   let routes = {
     showProducts: "/getProducts",
@@ -18,11 +25,13 @@ window.addEventListener("DOMContentLoaded", () => {
   const mainCardTable = document.querySelector("#productsTable");
   const cartTable = document.querySelector("#cart-table");
   const discountInput = document.querySelector("#discount");
+  const serviceInput = document.querySelector("#service");
 
   searchBtn.addEventListener("click", search);
   btnClearSearch.addEventListener("click", clearSearch);
   registerSaleBtn.addEventListener("click", registerSaleBtnClick);
   discountInput.addEventListener("input", validateDiscount);
+  serviceInput.addEventListener("input", validateService);
   mainCardTable.addEventListener("click", mainCardTableRowClicked);
   cartTable.addEventListener("click", cartTableRowClicked);
 
@@ -234,7 +243,11 @@ window.addEventListener("DOMContentLoaded", () => {
             valid = false;
           }
           body[elem] = data.value;
+          break;
 
+        case "service":
+          data = document.querySelector(`#${elem}`);
+          body[elem] = data.value;
           break;
       }
     });
@@ -430,12 +443,13 @@ window.addEventListener("DOMContentLoaded", () => {
     subTotal = 0;
     let discount = document.querySelector("#discount");
     shoppingCart.forEach((prod) => (subTotal += prod.total));
-    total = subTotal - discount.value;
-    console.log(total);
-    console.log(subTotal);
-    console.log(discount.value);
-    console.log(total);
+    subTotal = !isNaN(parseFloat(serviceInput.value))
+      ? subTotal + parseFloat(serviceInput.value)
+      : subTotal;
 
+    total = subTotal - discount.value;
+
+    console.log(total);
     document.querySelector("#subTotal").innerHTML = `$${subTotal.toFixed(2)}`;
     document.querySelector("#total").innerHTML = `$${total.toFixed(2)}`;
   }
@@ -450,12 +464,8 @@ window.addEventListener("DOMContentLoaded", () => {
     subTotal = subTotal.includes("$")
       ? subTotal.substr(1, subTotal.length - 1)
       : subTotal;
-    console.log(subTotal);
-    subTotal = isNaN(parseFloat(subTotal)) ? 0 : parseFloat(subTotal);
 
-    console.log("subTotal", subTotal);
-    console.log("discount.value", discount.value);
-    console.log("subtract", subTotal - discount.value);
+    subTotal = isNaN(parseFloat(subTotal)) ? 0 : parseFloat(subTotal);
 
     if (
       subTotal - (discount.value ?? 0) < 0 ||
@@ -473,6 +483,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
       return true;
     }
+  }
+
+  function validateService() {
+    validateDiscount();
   }
 
   //Initial Actions

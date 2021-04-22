@@ -28,7 +28,7 @@ const index = async (req, res) => {
       articleTypes,
     });
   } catch (error) {
-    res.send("Ocurrió un error al mostrar la página.");
+    res.render("notFound");
   }
 };
 
@@ -362,7 +362,6 @@ const searchProducts = async (req, res) => {
       .populate({ path: "brand", select: "name" })
       .select("name price quantity imageRelativePath articleType brand")
       .sort({ name: "asc", articleType: "asc", brand: "asc" })
-
       .exec();
 
     res.json({

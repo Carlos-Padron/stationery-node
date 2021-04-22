@@ -11,7 +11,8 @@ router.post("/registrar-venta",authRoute, ventasController.registerSale);
 
 //Historial de ventas
 router.get("/ventas/historialVentas", authViews, ventasController.saleHistory);
-router.post("/getSales", authViews, ventasController.searchSales);
+router.post("/getSales", authRoute, ventasController.searchSales);
+router.post("/cancelSale", authRoute, ventasController.cancelSale);
 
 
 //

@@ -47,6 +47,10 @@ hbs.registerHelper("customIf", (val1, operator, val2, options) => {
   }
 });
 
+hbs.registerHelper("toFixed", (num, options) => {
+  return parseFloat(num).toFixed(2);
+});
+
 //JSON config
 app.use(bodyParser.json({ limit: "100mb" }));
 

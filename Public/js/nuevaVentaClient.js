@@ -112,7 +112,6 @@ window.addEventListener("DOMContentLoaded", () => {
       console.log(saleInfo);
       let body = JSON.stringify(saleInfo);
 
-      console.log(routes.registerSale);
 
       let request = await fetch(routes.registerSale, {
         method: "POST",
@@ -158,7 +157,7 @@ window.addEventListener("DOMContentLoaded", () => {
         `<strong>${json.message}</strong> <br>`,
         () => {
           $("#main_modal").modal("hide");
-          window.location = `/ventas/detalle/${json.response}`;
+          //window.location = `/ventas/detalle/${json.response}`;
         }
       );
     } catch (error) {
@@ -171,7 +170,6 @@ window.addEventListener("DOMContentLoaded", () => {
   function resetForm(form) {
     switch (form) {
       case "shopping-cart":
-        //clear shopping card
         shoppingCart = [];
         populateTable();
         search();

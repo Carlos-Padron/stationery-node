@@ -27,17 +27,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //functions
   async function search() {
-    resetFormValidation();
-
-    let response = validateForm();
-
-    if (response.valid === false) {
-      return;
-    }
-
-    blockElem(searchForm);
-
     try {
+      resetFormValidation();
+
+      let response = validateForm();
+
+      if (response.valid === false) {
+        return;
+      }
+
+      blockElem(searchForm);
+
       let body = JSON.stringify(response.body);
 
       let request = await fetch(routes.get, {

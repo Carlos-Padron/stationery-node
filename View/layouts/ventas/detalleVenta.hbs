@@ -4,9 +4,19 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between">
         <div class="row">
-            <div class="col-8">
-                <h3>Concepto: {{sale.concept}}</h3>
+            <div class="col-8 d-flex align-items-center">
+                <h3 class="mr-3">Concepto: {{sale.concept}}</h3>
                 <input type="hidden" id="saleId" value="{{sale._id}}">
+
+                {{#if sale.canceled}}
+                <span class="badge badge-pill badge-error">Cancelada</span>
+                {{else}}
+                {{#if sale.changed}}
+                <span class="badge badge-pill badge-primary">Realizada con cambios</span>
+                {{else}}
+                <span class="badge badge-pill badge-success">Realizada</span>
+                {{/if}}
+                {{/if}}
             </div>
             <div class="col-4 text-right">
                 <h3>Fecha: 12/12/2021</h3>
@@ -23,6 +33,17 @@
             <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1">
                 <h4>total: ${{sale.total}}</h4>
             </div>
+
+            <div class="col-12 col-sm-6 col-md-6 col-lg-6 mt-1">
+                <h4>Realizada por: {{sale.madeBy}}</h4>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-6 mt-1">
+                {{#if sale.canceled}}
+                <h4>Cancelada por: {{sale.updatedBy}}</h4>
+                {{else}}
+                <h4>Actualizada por: {{sale.updatedBy}}</h4>
+                {{/if}}
+            </div>
         </div>
     </div>
     <div class="card-body" style="padding-bottom: 0;">
@@ -33,7 +54,6 @@
                         <th class="text-center">Articulo</th>
                         <th class="text-center">Cantidad</th>
                         <th class="text-center">Precio de venta</th>
-                        <th class="text-center">Estatus</th>
                     </tr>
                 </thead>
                 <tbody class="list">
@@ -42,20 +62,7 @@
                         <td class="text-center">{{this.productID.name}}</td>
                         <td class="text-center"> {{#toFixed this.quantity}}{{/toFixed}}</td>
                         <td class="text-center"> ${{#toFixed this.unitPrice}}{{/toFixed}} </td>
-                        {{#if this.changed}}
-                        <td class="text-center">
-                            <span class="badge badge-pill badge-warning">Cambiado</span>
-                        </td>
-                        {{else}}
-                        {{#if this.added}}
-                        <td class="text-center">
-                            <span class="badge badge-pill badge-success">Agregado</span>
-                        </td>
-                        {{/if}}
-                        <td class="text-center">
-                            <span class="badge badge-pill badge-primary">En venta inicial</span>
-                        </td>
-                        {{/if}}
+
                     </tr>
                     {{/each}}
                 </tbody>

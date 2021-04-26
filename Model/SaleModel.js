@@ -22,6 +22,10 @@ let saleSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  changed: {
+    type: Boolean,
+    default: false,
+  },
   madeBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -41,15 +45,7 @@ let saleSchema = new mongoose.Schema({
       },
       unitPrice: {
         type: Number,
-      },
-      changed: {
-        type: Boolean,
-        default: false,
-      },
-      added: {
-        type: Boolean,
-        default: false,
-      },
+      }
     },
   ],
 });

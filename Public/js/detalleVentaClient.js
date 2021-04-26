@@ -10,6 +10,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //Listeners
   cancelSaleBtn.addEventListener("click", cancelConfirmation);
+  changeSaleBtn.addEventListener("click", editConfirmation);
 
   //Functions
 
@@ -67,8 +68,14 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function cancelConfirmation() {
-    confirmationAlert("Se cancelará la venta", () => {
+    confirmationAlert("¿Desea cancelar la venta?", () => {
       cancelSale(saleID);
+    });
+  }
+
+  function editConfirmation() {
+    confirmationAlert("¿Desea editar la venta?", () => {
+      window.location = `/ventas/cambio-devolucion/${saleID}`;
     });
   }
 });

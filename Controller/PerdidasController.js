@@ -157,7 +157,7 @@ const searchLosses = async (req, res) => {
         populate: { path: "brand", select: "name" },
       })
       .select("productID  quantity unitPrice date")
-      .sort({ date: "asc" });
+      .sort({ date: "asc" })
 
     console.log(losses[0].productID);
     res.json({

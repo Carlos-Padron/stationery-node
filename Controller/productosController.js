@@ -344,15 +344,21 @@ const searchProducts = async (req, res) => {
   const { name, brand, articleType } = req.body;
 
   let filter = {
-    name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
     disabled: false,
   };
 
-  if (brand != "") {
+  if (name) {
+    filter.name = {
+      $regex: `.*${changeVowelsForRegex(name)}.*`,
+      $options: "i",
+    };
+  }
+
+  if (brand) {
     filter.brand = brand;
   }
 
-  if (articleType != "") {
+  if (articleType) {
     filter.articleType = articleType;
   }
 
@@ -388,6 +394,58 @@ const searchProducts = async (req, res) => {
   }
 };
 
+const getProductsForCombo = async (req, res) => {
+  const { name, brand, articleType } = req.body;
+
+  let filter = {
+    disabled: false,
+  };
+
+  if (name) {
+    filter.name = {
+      $regex: `.*${changeVowelsForRegex(name)}.*`,
+      $options: "i",
+    };
+  }
+
+  if (brand) {
+    filter.brand = brand;
+  }
+
+  if (articleType) {
+    filter.articleType = articleType;
+  }
+
+  try {
+    let products = await Product.find(filter)
+      .select("name")
+      .sort({ name: "asc", articleType: "asc", brand: "asc" })
+      .exec();
+
+    res.json({
+      error: false,
+      message: null,
+      response: products,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 module.exports = {
   index,
   createProduct,
@@ -395,4 +453,5 @@ module.exports = {
   showProduct,
   updateProduct,
   deleteProduct,
+  getProductsForCombo,
 };

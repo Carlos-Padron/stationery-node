@@ -1,0 +1,151 @@
+{{#extend "master"}}
+{{#content "body" mode="append"}}
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h3 class="mb-0">¡Filtra las pérdidas que hayas tenido!</h3>
+        <div class="d-flex justify-content-between">
+            <button id="btnAdd" type="button" class="btn btn-sm btn-outline-secondary" style="width:150px"><i
+                    class="uil uil-plus-circle"></i>
+                Agregar</button>
+            <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary"><i
+                    class="uil uil-redo"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <form id="searchForm">
+            <div class="row">
+                <div class="col-12 col-md-3 col-lg-3">
+                    <small id="fechaInicioMsg" class="text-danger"></small>
+                    <div class="form-group">
+                        <label class="form-control-label">Fecha de inicio:</label>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text py-0"><i class="uil uil-calendar-alt"></i></span>
+                            </div>
+                            <input id="fechaInicio" class="form-control datepicker-es" placeholder="dd/mm/yyyy"
+                                type="text" maxlength="10" onkeypress="dateMask()">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <small id="fechaFinMsg" class="text-danger"></small>
+                    <div class="form-group">
+                        <label class="form-control-label">Fecha fin:</label>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text py-0"><i class="uil uil-calendar-alt"></i></span>
+                            </div>
+                            <input id="fechaFin" class="form-control datepicker-es" placeholder="dd/mm/yyyy" type="text"
+                                maxlength="10" onkeypress="dateMask()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-right">
+        <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width:150px"><i
+                class="uil uil-search"></i> Buscar</button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding-bottom: 0;">
+        <div class="table-responsive">
+            <table id="mainTable" class="table align-items-center">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="text-center">Producto</th>
+                        <th class="text-center">Marca</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-center">Valor total</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="list"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-right">
+        <button type="button" id="btnPrev" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
+            &lt;</button>
+        <span id="pageCounter"></span>
+        <button type="button" id="btnNext" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">&gt;</button>
+        <div id="pagination" class="d-flex justify-content-end"></div>
+    </div>
+</div>
+{{/content}}
+{{#content "modals" mode="append"}}
+<div class="row">
+    <div class="col-md-4">
+        <div class="modal fade" id="main_modal" tabindex="-1" role="dialog" aria-labelledby="main_modal"
+            aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="modal-title-default"> <i id="modal_icon"></i> <span
+                                id="modal_title"></span></h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body pb-0">
+                        <form id="lossesForm">
+                            <div class="row">
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Tipo de artículo:</label>
+                                        <select class="form-control form-control-sm " id="articleType">
+                                            <option value="" selected="true">Seleccione</option>
+                                            {{#each articleTypes}}
+                                            <option value="{{this._id}}">{{this.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Marca:</label>
+                                        <select class="form-control form-control-sm " id="brand">
+                                            <option value="" selected="true">Seleccione</option>
+                                            {{#each brands}}
+                                            <option value="{{this._id}}">{{this.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <small id="productMsg" class="text-danger"></small>
+                                    <div class="form-group">
+                                        <label class="form-control-label">Producto:</label>
+                                        <select class="form-control form-control-sm " id="product">
+                                            <option value="" selected="true">Seleccione</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <small id="quantityMsg" class="text-danger"></small>
+                                    <div class="form-group">
+                                        <label class="form-control-label">Cantidad:</label>
+                                        <input class="form-control form-control-sm " placeholder="Cantidad" type="text"
+                                            id="quantity" oninput="numericMask()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer pt-0">
+                        <button type="button" class="btn btn-secondary text-danger ml-auto"
+                            data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="btnAddLoss" class="btn btn-primary">Agregar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/content}}
+
+{{/extend}}

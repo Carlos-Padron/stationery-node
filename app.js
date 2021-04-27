@@ -64,6 +64,7 @@ const marcasRoutes = require("./Routes/marcasRoutes");
 const tiposArticulosRoutes = require("./Routes/tiposArticulosRoutes");
 const productosRoutes = require("./Routes/productosRoutes");
 const ventasRoutes = require("./Routes/ventasRoutes");
+const perdidasRoutes = require("./Routes/perdidasRoutes");
 const usuariosRoutes = require("./Routes/usuariosRoutes");
 
 app.use(authRoutes);
@@ -72,6 +73,7 @@ app.use(marcasRoutes);
 app.use(tiposArticulosRoutes);
 app.use(productosRoutes);
 app.use(ventasRoutes);
+app.use(perdidasRoutes);
 app.use(usuariosRoutes);
 
 app.get("*", (req, res) => {

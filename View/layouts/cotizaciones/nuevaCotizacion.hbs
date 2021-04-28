@@ -1,0 +1,189 @@
+{{#extend "master"}}
+
+
+{{#content "styles" mode="append"}}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    thead,
+    tbody,
+    tr,
+    td,
+    th {
+        display: block;
+    }
+
+    tr:after {
+        content: '';
+        display: block;
+        visibility: hidden;
+        clear: both;
+    }
+
+    tbody {
+        height: 45vh !important;
+        overflow-y: auto;
+    }
+
+    tbody td,
+    thead th {
+        width: 33%;
+        float: left;
+    }
+</style>
+{{/content}}
+{{#content "body" mode="append"}}
+<div class="row px-0 py-0 mx-0">
+    <div class="col-md-8 px-0 pr-md-3 pr-lg-3">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="mb-0">¡Registra una nueva cotización!</h3>
+                <div class="text-right">
+                    <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary">
+                        <i class="uil uil-redo"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form id="searchForm">
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Nombre del producto:</label>
+                                <input class="form-control form-control-sm " placeholder="Producto" type="text"
+                                    data-search="name" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Tipo de Artículo:</label>
+                                <select class="form-control form-control-sm " data-search="articleType">
+                                    <option value="" selected="true">Seleccione</option>
+                                    {{#each articleTypes}}
+                                    <option value="{{this._id}}">{{this.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Marca:</label>
+                                <select class="form-control form-control-sm " data-search="brand">
+                                    <option value="" selected="true">Seleccione</option>
+                                    {{#each brands}}
+                                    <option value="{{this._id}}">{{this.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-right">
+                <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width: 150px">
+                    <i class="uil uil-search"></i> Buscar
+                </button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body" style="padding-bottom: 0">
+                <div class="table-responsive">
+                    <table id="productsTable" class="table align-items-center"></table>
+                </div>
+            </div>
+            <div class="card-footer text-right">
+                <button type="button" id="btnPrev" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
+                    &lt;
+                </button>
+                <span id="pageCounter"></span>
+                <button type="button" id="btnNext" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
+                    &gt;
+                </button>
+                <div id="pagination" class="d-flex justify-content-end"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 px-0" style="max-height: 75vh !important;">
+        <div class="card mb-0 h-100">
+            <div class="card-header">
+                <h3 class="mb-0">Cotización</h3>
+            </div>
+            <div class="card-body pb-0">
+                <div class="row">
+                    <div class="col-12">
+                        <small id="conceptMsg" class="text-danger"></small>
+                        <div class="d-flex">
+                            <label class="form-control-label mt-auto mb-auto mr-3">Concepto:</label>
+                            <input id="concept" class="form-control form-control-sm " placeholder="Concepto" type="text"
+                                data-search="concept">
+                        </div>
+                    </div>
+                    <div class="col-12 mt-1">
+                        <small id="serviceMsg" class="text-danger"></small>
+                        <div class="d-flex">
+                            <label class="form-control-label mt-auto mb-auto mr-3">Servicio:</label>
+                            <input id="service" class="form-control form-control-sm " style="margin-left:11px"
+                                placeholder="Servicio" type="text" oninput="currencyMask()" data-search="service">
+                        </div>
+                    </div>
+                    <div id="shopping-cart" class="mt-2 col-12">
+                        <table id="card-table" class="table" style="table-layout:fixed">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Productos</th>
+                                    <th>Precio</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-table" class="list">
+                                <tr>
+                                    <td class="text-center w-100"> Aun no tienes productos. <br> Agrega productos a la
+                                        cotización   🛍
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row mb-3">
+                    <div class="col-12 mb-2">
+                        <div class="d-flex justify-content-between">
+                            <label class="form-control-label mt-auto mb-auto mr-3">SubTotal:</label>
+                            <label id="subTotal" class="form-control-label mt-auto mb-auto">$0.00</label>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="d-flex">
+                            <label class="form-control-label mt-auto mb-auto mr-3">Descuento:</label>
+                            <input id="discount" class="form-control form-control-sm  text-right"
+                                placeholder="Descuento" oninput="currencyMask()" type="text" data-save="discount">
+                        </div>
+                        <small id="discountMsg" class="text-danger"></small>
+                        <hr class="my-2">
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="d-flex justify-content-between">
+                            <label class="form-control-label mt-auto mb-auto mr-3">Total:</label>
+                            <label id="total" class="form-control-label mt-auto mb-auto">$0.00</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="registerSale" class="btn btn-md btn-success w-100">
+                    <span>Realizar Cotización</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{/content}}
+
+{{/extend}}

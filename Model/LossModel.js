@@ -21,6 +21,9 @@ const lossSchema = new mongoose.Schema(
     date: {
       type: Date,
     },
+    historyID: {
+      type: String,
+    },
   },
   {
     timestamps: true,

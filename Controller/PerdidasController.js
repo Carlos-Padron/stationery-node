@@ -3,6 +3,7 @@ const ProductModel = require("../Model/ProductModel");
 const BrandModel = require("../Model/BrandModel");
 const ArticleTypeModel = require("../Model/ArticleType");
 const errorHandler = require("../Utils/Helpers/errorHandler");
+const productModel = require("../Model/ProductModel");
 
 const index = async (req, res) => {
   try {
@@ -70,6 +71,11 @@ const registerLoss = async (req, res) => {
 
     await product.save();
 
+    let productHistoryID = product.history[product.history.length - 1]._id;
+    loss.historyID = productHistoryID;
+
+    await loss.save();
+
     res.json({
       error: false,
       message: "La pérdida se agregó correctamente.",
@@ -96,27 +102,37 @@ const registerLoss = async (req, res) => {
 
 const deleteLoss = async (req, res) => {
   const _id = req.body._id;
-
-  console.log(req.body);
+  console.log(_id);
   try {
-    let articleType = await ArticleType.findById(_id);
+    let loss = await LossModel.findById(_id);
 
-    if (!articleType) {
+    if (!loss) {
       res.json({
         error: true,
-        message: "No se encontró el artículo solicitado",
+        message: "No se encontró la pérdida solicitada",
         response: null,
       });
 
       return;
     }
 
-    articleType.disabled = true;
-    await articleType.save();
+    let quantityToAdd = loss.quantity;
+    let productID = loss.productID;
+
+    await LossModel.deleteOne({ _id });
+    let product = await productModel.findById(productID);
+
+    product.history = product.history.filter((history) => {
+      history._id != productID;
+    });
+
+    product.quantity = product.quantity += quantityToAdd;
+
+    await product.save();
 
     res.json({
       error: false,
-      message: "El tipo de artículo fue eliminado correctamente.",
+      message: "La pérdida fue eliminada correctamente.",
       response: null,
     });
   } catch (error) {
@@ -157,9 +173,8 @@ const searchLosses = async (req, res) => {
         populate: { path: "brand", select: "name" },
       })
       .select("productID  quantity unitPrice date")
-      .sort({ date: "asc" })
+      .sort({ date: "asc" });
 
-    console.log(losses[0].productID);
     res.json({
       error: false,
       message: "",

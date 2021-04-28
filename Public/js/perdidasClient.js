@@ -418,7 +418,6 @@ window.addEventListener("DOMContentLoaded", () => {
       }
       if (msg) {
         msg.innerHTML = "";
-        msg.classList.remove("text-danger");
       }
     });
   }

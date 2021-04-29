@@ -202,9 +202,6 @@ const updateProduct = async (req, res) => {
     product.articleType = req.body.articleType;
     product.brand = req.body.brand;
 
-    console.log(newStock);
-    console.log(currentStock);
-
     let action = "";
     if (newStock > currentStock) {
       action = "add";
@@ -394,6 +391,62 @@ const searchProducts = async (req, res) => {
   }
 };
 
+const searchProductsWithStock = async (req, res) => {
+  const { name, brand, articleType } = req.body;
+
+  let filter = {
+    disabled: false,
+  };
+
+  if (name) {
+    filter.name = {
+      $regex: `.*${changeVowelsForRegex(name)}.*`,
+      $options: "i",
+    };
+  }
+
+  if (brand) {
+    filter.brand = brand;
+  }
+
+  if (articleType) {
+    filter.articleType = articleType;
+  }
+
+  try {
+    let products = await Product.find(filter)
+      .populate({ path: "articleType", select: "name" })
+      .populate({ path: "brand", select: "name" })
+      .select("name price quantity imageRelativePath articleType brand")
+      .sort({ name: "asc", articleType: "asc", brand: "asc" })
+      .where("quantity")
+      .gt(0)
+      .exec();
+
+    res.json({
+      error: false,
+      message: null,
+      response: products,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 const getProductsForCombo = async (req, res) => {
   const { name, brand, articleType } = req.body;
 
@@ -453,5 +506,6 @@ module.exports = {
   showProduct,
   updateProduct,
   deleteProduct,
+  searchProductsWithStock,
   getProductsForCombo,
 };

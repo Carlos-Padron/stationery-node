@@ -9,8 +9,8 @@ window.addEventListener("DOMContentLoaded", () => {
   ];
 
   let routes = {
-    showProducts: "/getProducts",
-    registerSale: "/registrar-cotizacion",
+    showProducts: "/getProductsWithStock",
+    registerQuote: "/registrar-cotizacion",
   };
 
   let productsData = [];
@@ -21,7 +21,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.querySelector("#btnSearch");
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
-  const registerSaleBtn = document.querySelector("#registerSale");
+  const registerQuoteBtn = document.querySelector("#registerQuote");
   const mainCardTable = document.querySelector("#productsTable");
   const cartTable = document.querySelector("#cart-table");
   const discountInput = document.querySelector("#discount");
@@ -29,7 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   searchBtn.addEventListener("click", search);
   btnClearSearch.addEventListener("click", clearSearch);
-  registerSaleBtn.addEventListener("click", registerSaleBtnClick);
+  registerQuoteBtn.addEventListener("click", registerQuoteBtnClick);
   discountInput.addEventListener("input", validateDiscount);
   serviceInput.addEventListener("input", validateService);
   mainCardTable.addEventListener("click", mainCardTableRowClicked);
@@ -101,18 +101,18 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function registerSale(saleInfo) {
+  async function registerQuote(quoteInfo) {
     try {
       disableButton(
-        registerSaleBtn,
+        registerQuoteBtn,
         "Registrando cotización",
         "justify-content-center"
       );
 
-      console.log(saleInfo);
-      let body = JSON.stringify(saleInfo);
+      console.log(quoteInfo);
+      let body = JSON.stringify(quoteInfo);
 
-      let request = await fetch(routes.registerSale, {
+      let request = await fetch(routes.registerQuote, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -131,7 +131,7 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
-          enableButton(registerSaleBtn, "Realizar cotización");
+          enableButton(registerQuoteBtn, "Realizar cotización");
 
           modalAlert("warning", "Aviso", messages);
           return;
@@ -141,12 +141,12 @@ window.addEventListener("DOMContentLoaded", () => {
             "Aviso",
             `<strong>${json.message}</strong> <br>`
           );
-          enableButton(registerSaleBtn, "Realizar cotización");
+          enableButton(registerQuoteBtn, "Realizar cotización");
 
           return;
         }
       }
-      enableButton(registerSaleBtn, "Realizar cotización");
+      enableButton(registerQuoteBtn, "Realizar cotización");
 
       resetForm("shopping-cart");
 
@@ -156,12 +156,12 @@ window.addEventListener("DOMContentLoaded", () => {
         `<strong>${json.message}</strong> <br>`,
         () => {
           $("#main_modal").modal("hide");
-          //window.location = `/ventas/detalle/${json.response}`;
+          window.location = `/cotizaciones/detalle/${json.response}`;
         }
       );
     } catch (error) {
       errorNotification("Error interno del servidor");
-      enableButton(registerSaleBtn, "Realizar cotización");
+      enableButton(registerQuoteBtn, "Realizar cotización");
       console.error(error);
     }
   }
@@ -185,7 +185,7 @@ window.addEventListener("DOMContentLoaded", () => {
     resetForm("searchForm");
   }
 
-  function registerSaleBtnClick() {
+  function registerQuoteBtnClick() {
     if (shoppingCart.length === 0) {
       errorNotification(
         "No tienes productos en la cotización. Agrega productos para realizar la cotización"
@@ -207,12 +207,12 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    registerSaleConfirmation(response.body);
+    registerQuoteConfirmation(response.body);
   }
 
-  function registerSaleConfirmation(saleInfo) {
+  function registerQuoteConfirmation(quoteInfo) {
     confirmationAlert("Se registrará la cotización", () => {
-      registerSale(saleInfo);
+      registerQuote(quoteInfo);
     });
   }
 
@@ -249,11 +249,11 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    let saleDetail = [];
+    let quoteDetail = [];
 
     console.log(shoppingCart);
     shoppingCart.forEach((elem) => {
-      saleDetail.push({
+      quoteDetail.push({
         productID: elem.id,
         productName: elem.productName,
         quantity: elem.quantity,
@@ -263,7 +263,7 @@ window.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    body.saleDetail = saleDetail;
+    body.quoteDetail = quoteDetail;
     body.total = total;
 
     return {
@@ -406,7 +406,7 @@ window.addEventListener("DOMContentLoaded", () => {
       total = 0;
       subTotal = 0;
       document.querySelector("#discount").value = "";
-      updateSaleTotals();
+      updateQuoteTotals();
       validateDiscount();
 
       return;
@@ -432,11 +432,11 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     cartTable.innerHTML = tableBody;
-    updateSaleTotals();
+    updateQuoteTotals();
     validateDiscount();
   }
 
-  function updateSaleTotals() {
+  function updateQuoteTotals() {
     subTotal = 0;
     let discount = document.querySelector("#discount");
     shoppingCart.forEach((prod) => (subTotal += prod.total));
@@ -452,7 +452,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   //Validators
-  //Prevent the discount to be greater than the sale
+  //Prevent the discount to be greater than the quote
   function validateDiscount() {
     let subTotal = document.querySelector("#subTotal").innerHTML;
     let discount = document.querySelector("#discount");
@@ -471,12 +471,12 @@ window.addEventListener("DOMContentLoaded", () => {
       discountMsg.innerHTML =
         "El subtotal menos el descuento no debe ser menor a 0.";
       discount.classList.add("border", "border-danger");
-      updateSaleTotals();
+      updateQuoteTotals();
       return false;
     } else {
       discountMsg.innerHTML = "";
       discount.classList.remove("border", "border-danger");
-      updateSaleTotals();
+      updateQuoteTotals();
 
       return true;
     }

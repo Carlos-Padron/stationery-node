@@ -1,5 +1,6 @@
 const errorHandler = require("../Utils/Helpers/errorHandler");
 const Quote = require("../Model/QuoteModel");
+const Sale = require("../Model/SaleModel");
 const Brand = require("../Model/BrandModel");
 const ArticleType = require("../Model/ArticleType");
 const Product = require("../Model/ProductModel");
@@ -89,6 +90,7 @@ const registerQuote = async (req, res) => {
       message: "Cotización registrada correctamente",
     });
   } catch (error) {
+    console.log(error);
     let errors = errorHandler(error);
     if (errors.length === 0) {
       res.json({
@@ -104,16 +106,6 @@ const registerQuote = async (req, res) => {
       });
     }
   }
-};
-
-// Historial de ventas
-const saleHistory = (req, res) => {
-  res.render("ventas/historialVentas", {
-    sectionName: "Historial de ventas",
-    script: "historialVentasClient",
-    activeMenu: "VNTS",
-    activeSubmenu: "HSVNTS",
-  });
 };
 
 const searchQuotes = async (req, res) => {
@@ -156,47 +148,54 @@ const searchQuotes = async (req, res) => {
   }
 };
 
-const saleDetail = async (req, res) => {
+const quoteDetail = async (req, res) => {
   const { id } = req.params;
 
   try {
-    let sale = await Sale.findById(id)
+    let quote = await Quote.findById(id)
       .populate({
         path: "madeBy",
         select: "name fatherSurname",
       })
       .populate({ path: "updatedBy", select: "name fatherSurname" })
       .populate({ path: "madeBy", select: "name fatherSurname" })
-      .populate({ path: "saleDetail.productID", select: "name" })
+      .populate({ path: "quoteDetail.productID", select: "name" })
       .lean();
 
-    if (sale) {
-      sale.subtotal = sale.total - sale.discount - sale.service;
-      sale.discount = sale.discount == null ? 0 : sale.discount;
-      sale.service = sale.service == null ? 0 : sale.service;
+    if (quote) {
+      quote.discount = quote.discount == null ? 0 : quote.discount;
+      quote.service = quote.service == null ? 0 : quote.service;
+      quote.subtotal = quote.total - quote.discount - quote.service;
 
-      sale.total = sale.total.toFixed(2);
-      sale.subtotal = sale.subtotal.toFixed(2);
-      sale.discount = sale.discount.toFixed(2);
-      sale.service = sale.service.toFixed(2);
+      quote.total = quote.total.toFixed(2);
+      quote.subtotal = quote.subtotal.toFixed(2);
+      quote.discount = quote.discount.toFixed(2);
+      quote.service = quote.service.toFixed(2);
 
-      sale.madeBy =
-        sale.madeBy != null
-          ? `${sale.madeBy.name.split(" ")[0]} ${sale.madeBy.fatherSurname}`
+      quote.madeBy =
+        quote.madeBy != null
+          ? `${quote.madeBy.name.split(" ")[0]} ${quote.madeBy.fatherSurname}`
           : "";
-      sale.updatedBy =
-        sale.updatedBy != null
-          ? `${sale.updatedBy.name.split(" ")[0]} ${
-              sale.updatedBy.fatherSurname
+      quote.updatedBy =
+        quote.updatedBy != null
+          ? `${quote.updatedBy.name.split(" ")[0]} ${
+              quote.updatedBy.fatherSurname
             }`
           : "";
 
-      res.render("ventas/detalleVenta", {
-        sectionName: "Detalle de la venta",
-        script: "detalleVentaClient",
-        activeMenu: "VNTS",
-        activeSubmenu: "HSVNTS",
-        sale,
+      quote.date = quote.date.toISOString().toString();
+      let date = quote.date.substring(0, 10);
+      let day = date.substring(8, 10);
+      let month = date.substring(5, 7);
+      let year = date.substring(0, 4);
+
+      quote.date = `${day}/${month}/${year}`;
+
+      res.render("cotizaciones/detalleCotizacion", {
+        sectionName: "Detalle de la cotización",
+        script: "detalleCotizacionClient",
+        activeMenu: "CTZCNS",
+        quote,
       });
     } else {
       res.render("notFound");
@@ -206,7 +205,7 @@ const saleDetail = async (req, res) => {
   }
 };
 
-const editSale = async (req, res) => {
+const editQuote = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -215,23 +214,20 @@ const editSale = async (req, res) => {
       name: "asc",
     });
 
-    let sale = await Sale.findById(id)
+    let quote = await Quote.findById(id)
       .populate({
-        path: "saleDetail.productID",
+        path: "quoteDetail.productID",
       })
-      .where("canceled")
-      .equals(false)
       .lean();
 
-    if (sale) {
-      sale.saleDetail = JSON.stringify(sale.saleDetail);
+    if (quote) {
+      quote.quoteDetail = JSON.stringify(quote.quoteDetail);
 
-      res.render("ventas/editarVenta", {
-        sectionName: "Editar venta",
-        script: "editarVentaClient",
-        activeMenu: "VNTS",
-        activeSubmenu: "HSVNTS",
-        sale,
+      res.render("cotizaciones/editarCotizacion", {
+        sectionName: "Editar cotizacion",
+        script: "editarCotizacionClient",
+        activeMenu: "CTZCNS",
+        quote,
         brands,
         articleTypes,
       });
@@ -243,24 +239,24 @@ const editSale = async (req, res) => {
   }
 };
 
-const updateSale = async (req, res) => {
+const updateQuote = async (req, res) => {
   try {
-    let saleDetails = [];
+    let quoteDetails = [];
     let outOfStock = [];
 
-    let sale = await Sale.findById(req.body._id);
+    let quote = await Quote.findById(req.body._id);
 
-    if (!sale) {
+    if (!quote) {
       res.json({
         error: true,
-        message: "No se encontró la venta solicitada",
+        message: "No se encontró la cotización solicitada",
         response: null,
       });
 
       return;
     }
 
-    for (const prod of req.body.saleDetail) {
+    for (const prod of req.body.quoteDetail) {
       let product = await Product.findById(prod.productID).select(
         "_id name price quantity"
       );
@@ -275,7 +271,7 @@ const updateSale = async (req, res) => {
             `La cantidad agregada de ${prod.productName} supera a la cantidad de stock del inventario.`
           );
         } else {
-          saleDetails.push({
+          quoteDetails.push({
             productID: prod.productID,
             quantity: prod.quantity,
             unitPrice: prod.unitPrice,
@@ -292,79 +288,119 @@ const updateSale = async (req, res) => {
       });
     }
 
-    sale.concept = req.body.concept;
-    (sale.total = req.body.total),
-      (sale.discount = req.body.discount != null ? req.body.discount : 0);
-    sale.service =
+    quote.concept = req.body.concept;
+    quote.total = req.body.total;
+    quote.discount = req.body.discount != null ? req.body.discount : 0;
+    quote.service =
       req.body.service === "." || req.body.service === null
         ? null
         : req.body.service;
-    sale.updatedBy = req.user._id;
-    sale.changed = true;
+    quote.updatedBy = req.user._id;
 
-    let previouSaleDetail = sale.saleDetail;
-    //Se asigna el nuevo detalle a la venta
-    sale.saleDetail = saleDetails;
+    quote.quoteDetail = quoteDetails;
 
-    await sale.save();
+    await quote.save();
 
-    let previouSaleDetailIDS = previouSaleDetail.map((e) =>
-      e.productID.toString()
-    );
-    let saleDetailIDS = saleDetails.map((e) => e.productID.toString());
+    res.json({
+      error: false,
+      response: quote._id,
+      message: "Cotización actualizada correctamente",
+    });
+  } catch (error) {
+    console.log(error);
+    let errors = errorHandler(error);
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
 
-    //Busca los productos que se mantuvieron en la venta
-    for (const prod of saleDetails) {
-      let previousSaleProduct = previouSaleDetail.filter(
-        (p) => prod.productID.toString() == p.productID
+const sellQuote = async (req, res) => {
+  try {
+    let quoteDetails = [];
+    let outOfStock = [];
+
+    let quote = await Quote.findById(req.body._id);
+
+    if (!quote) {
+      res.json({
+        error: true,
+        message: "No se encontró la cotización solicitada",
+        response: null,
+      });
+
+      return;
+    }
+
+    for (const prod of req.body.quoteDetail) {
+      let product = await Product.findById(prod.productID).select(
+        "_id name price quantity"
       );
 
-      if (previousSaleProduct.length > 0) {
-        if (prod.quantity > previousSaleProduct[0].quantity) {
-          let diff = prod.quantity - previousSaleProduct[0].quantity;
-
-          await Product.findOneAndUpdate(
-            { _id: prod.productID },
-            { $inc: { quantity: -diff } }
-          ).exec();
-        } else if (prod.quantity < previousSaleProduct[0].quantity) {
-          await Product.findOneAndUpdate(
-            { _id: prod.productID },
-            { $inc: { quantity: prod.quantity } }
-          ).exec();
+      if (!product) {
+        outOfStock.push(
+          `No se encontró ${prod.productName} en el catálogo de productos.`
+        );
+      } else {
+        if (prod.quantity > product.quantity) {
+          outOfStock.push(
+            `La cantidad agregada de ${prod.productName} supera a la cantidad de stock del inventario.`
+          );
+        } else {
+          quoteDetails.push({
+            productID: prod.productID,
+            quantity: prod.quantity,
+            unitPrice: prod.unitPrice,
+          });
         }
       }
     }
 
-    //busca los productos que se removieron de la venta
-
-    for (const prod of previouSaleDetail) {
-      if (!saleDetailIDS.includes(prod.productID.toString())) {
-        console.log("removed");
-
-        await Product.findOneAndUpdate(
-          { _id: prod.productID },
-          { $inc: { quantity: prod.quantity } }
-        ).exec();
-      }
+    if (outOfStock.length > 0) {
+      return res.json({
+        error: true,
+        message: outOfStock,
+        response: null,
+      });
     }
 
-    //Busca los productos que se agregaron a la venta
+    let sale = Sale();
 
-    for (const prod of saleDetails) {
-      if (!previouSaleDetailIDS.includes(prod.productID.toString())) {
-        console.log("added");
-        await Product.findOneAndUpdate(
-          { _id: prod.productID },
-          { $inc: { quantity: prod.quantity } }
-        ).exec();
-      }
+    sale.concept = req.body.concept;
+    sale.date = new Date();
+    sale.total = req.body.total;
+    sale.discount = req.body.discount != null ? req.body.discount : 0;
+
+    sale.service =
+      req.body.service === "." || req.body.service === null
+        ? null
+        : req.body.service;
+    sale.madeBy = req.user._id;
+    (sale.saleDetail = quoteDetails), await sale.save();
+
+    await sale.save();
+
+    for (const prod of quoteDetails) {
+      await Product.findOneAndUpdate(
+        { _id: prod.productID },
+        { $inc: { quantity: -prod.quantity } }
+      ).exec();
     }
 
     res.json({
       error: false,
       response: sale._id,
-      message: "Venta actualizada correctamente",
+      message: "Venta registrada correctamente",
     });
   } catch (error) {
     console.log(error);
@@ -389,9 +425,9 @@ module.exports = {
   index,
   newQuote,
   registerQuote,
-  saleHistory,
   searchQuotes,
-  saleDetail,
-  editSale,
-  updateSale,
+  quoteDetail,
+  editQuote,
+  updateQuote,
+  sellQuote,
 };

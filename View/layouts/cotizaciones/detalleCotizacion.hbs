@@ -5,44 +5,30 @@
     <div class="card-header d-flex justify-content-between">
         <div class="row">
             <div class="col-8 d-flex align-items-center">
-                <h3 class="mr-3">Concepto: {{sale.concept}}</h3>
-                <input type="hidden" id="saleId" value="{{sale._id}}">
-
-                {{#if sale.canceled}}
-                <span class="badge badge-pill badge-error">Cancelada</span>
-                {{else}}
-                {{#if sale.changed}}
-                <span class="badge badge-pill badge-primary">Realizada con cambios</span>
-                {{else}}
-                <span class="badge badge-pill badge-success">Realizada</span>
-                {{/if}}
-                {{/if}}
+                <h3 class="mr-3">Concepto: {{quote.concept}}</h3>
+                <input type="hidden" id="quoteId" value="{{quote._id}}">
             </div>
             <div class="col-4 text-right">
-                <h3>Fecha: 12/12/2021</h3>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
-                <h4>subtotal: ${{sale.subtotal}}</h4>
+                <h3>Fecha: {{quote.date}}</h3>
             </div>
             <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1">
-                <h4>descuento: ${{sale.discount}}</h4>
+                <h4>Descuento: ${{quote.discount}}</h4>
             </div>
             <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
-                <h4>servicio: ${{sale.service}}</h4>
+                <h4>Servicio: ${{quote.service}}</h4>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
+                <h4>Subtotal: ${{quote.subtotal}}</h4>
             </div>
             <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1">
-                <h4>total: ${{sale.total}}</h4>
+                <h4>Total: ${{quote.total}}</h4>
             </div>
 
             <div class="col-12 col-sm-6 col-md-6 col-lg-6 mt-1">
-                <h4>Realizada por: {{sale.madeBy}}</h4>
+                <h4>Realizada por: {{quote.madeBy}}</h4>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-6 mt-1">
-                {{#if sale.canceled}}
-                <h4>Cancelada por: {{sale.updatedBy}}</h4>
-                {{else}}
-                <h4>Actualizada por: {{sale.updatedBy}}</h4>
-                {{/if}}
+                <h4>Actualizada por: {{quote.updatedBy}}</h4>
             </div>
         </div>
     </div>
@@ -57,7 +43,7 @@
                     </tr>
                 </thead>
                 <tbody class="list">
-                    {{#each sale.saleDetail}}
+                    {{#each quote.quoteDetail}}
                     <tr>
                         <td class="text-center">{{this.productID.name}}</td>
                         <td class="text-center"> {{#toFixed this.quantity}}{{/toFixed}}</td>
@@ -71,17 +57,23 @@
     </div>
 
 
-    {{#customIf sale.canceled '==' false}}
-    <div class="card-footer text-right">
-
+    <div class="card-footer">
         <div class="row">
-            <button type="button" id="cancelSaleBtn" class="btn btn-secondary text-danger ml-auto"
-                data-dismiss="modal">Cancelar
-                venta</button>
-            <button type="button" id="changeSaleBtn" class="btn btn-warning">Realizar cambio</button>
+            <div class="col d-flex justify-content-between">
+                <div class="">
+                    <button type="button" class="btn btn-outline-danger"
+                        onclick="location.href = '/cotizaciones';">Regresar</button>
+                </div>
+                {{#customIf quote.canceled '==' false}}
+                <div class="">
+                    <button type="button" id="changeQuoteBtn" class="btn btn-warning">Editar cotización</button>
+                </div>
+
+                {{/customIf}}
+
+            </div>
         </div>
     </div>
-    {{/customIf}}
 
 </div>
 

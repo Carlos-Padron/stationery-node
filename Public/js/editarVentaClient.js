@@ -9,7 +9,7 @@ window.addEventListener("DOMContentLoaded", () => {
   ];
 
   let routes = {
-    showProducts: "/getProducts",
+    showProducts: "/getProductsWithStock",
     registerSale: "/actualizar-venta",
   };
 

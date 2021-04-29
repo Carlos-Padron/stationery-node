@@ -19,19 +19,19 @@
                 {{/if}}
             </div>
             <div class="col-4 text-right">
-                <h3>Fecha: 12/12/2021</h3>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
-                <h4>subtotal: ${{sale.subtotal}}</h4>
+                <h3>Fecha: {{sale.date}}</h3>
             </div>
             <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1">
-                <h4>descuento: ${{sale.discount}}</h4>
+                <h4>Descuento: ${{sale.discount}}</h4>
             </div>
             <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
-                <h4>servicio: ${{sale.service}}</h4>
+                <h4>Servicio: ${{sale.service}}</h4>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
+                <h4>Subtotal: ${{sale.subtotal}}</h4>
             </div>
             <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1">
-                <h4>total: ${{sale.total}}</h4>
+                <h4>Total: ${{sale.total}}</h4>
             </div>
 
             <div class="col-12 col-sm-6 col-md-6 col-lg-6 mt-1">
@@ -71,18 +71,27 @@
     </div>
 
 
-    {{#customIf sale.canceled '==' false}}
-    <div class="card-footer text-right">
-
+    <div class="card-footer">
         <div class="row">
-            <button type="button" id="cancelSaleBtn" class="btn btn-secondary text-danger ml-auto"
-                data-dismiss="modal">Cancelar
-                venta</button>
-            <button type="button" id="changeSaleBtn" class="btn btn-warning">Realizar cambio</button>
+            <div class="col d-flex justify-content-between">
+                <div class="">
+                    <button type="button" class="btn btn-outline-danger"
+                        onclick="location.href = '/ventas/historialVentas';">Regresar</button>
+                </div>
+                {{#customIf sale.canceled '==' false}}
+                <div class="">
+
+                    <button type="button" id="cancelSaleBtn" class="btn btn-secondary text-danger ml-auto"
+                        data-dismiss="modal">Cancelar
+                        venta</button>
+                    <button type="button" id="changeSaleBtn" class="btn btn-warning">Realizar cambio</button>
+                </div>
+
+                {{/customIf}}
+
+            </div>
         </div>
     </div>
-    {{/customIf}}
-
 </div>
 
 {{/content}}

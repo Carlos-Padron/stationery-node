@@ -16,8 +16,16 @@ router.post("/updateProduct", authRoute, productosController.updateProduct);
 
 router.post("/deleteProduct", authRoute, productosController.deleteProduct);
 
-router.post("/getProductsForCombo", authRoute, productosController.getProductsForCombo);
+router.post(
+  "/getProductsWithStock",
+  authRoute,
+  productosController.searchProductsWithStock
+);
 
-
+router.post(
+  "/getProductsForCombo",
+  authRoute,
+  productosController.getProductsForCombo
+);
 
 module.exports = router;

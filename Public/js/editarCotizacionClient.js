@@ -10,7 +10,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let routes = {
     showProducts: "/getProductsWithStock",
-    registerSale: "/registrar-venta",
+    registerQuote: "/actualizar-cotizacion",
+    sellQuote: "/vender-cotizacion",
   };
 
   let productsData = [];
@@ -21,7 +22,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.querySelector("#btnSearch");
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
-  const registerSaleBtn = document.querySelector("#registerSale");
+  const registerQuoteBtn = document.querySelector("#registerQuote");
+  const sellQuoteBtn = document.querySelector("#sellQuote");
   const mainCardTable = document.querySelector("#productsTable");
   const cartTable = document.querySelector("#cart-table");
   const discountInput = document.querySelector("#discount");
@@ -29,7 +31,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   searchBtn.addEventListener("click", search);
   btnClearSearch.addEventListener("click", clearSearch);
-  registerSaleBtn.addEventListener("click", registerSaleBtnClick);
+  registerQuoteBtn.addEventListener("click", registerQuoteBtnClick);
+  sellQuoteBtn.addEventListener("click", sellQuoteBtnClick);
   discountInput.addEventListener("input", validateDiscount);
   serviceInput.addEventListener("input", validateService);
   mainCardTable.addEventListener("click", mainCardTableRowClicked);
@@ -101,27 +104,26 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function registerSale(saleInfo) {
+  async function updateOrSellQuote(quoteInfo, update) {
     try {
-      disableButton(
-        registerSaleBtn,
-        "Registrando venta",
-        "justify-content-center"
+      disabledButtons(update);
+
+      quoteInfo._id = quoteID;
+      console.log(quoteInfo);
+      let body = JSON.stringify(quoteInfo);
+
+      let request = await fetch(
+        update == true ? routes.registerQuote : routes.sellQuote,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            credentials: "same-origin",
+          },
+          body,
+        }
       );
-
-      console.log(saleInfo);
-      let body = JSON.stringify(saleInfo);
-
-
-      let request = await fetch(routes.registerSale, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          credentials: "same-origin",
-        },
-        body,
-      });
 
       let json = await request.json();
 
@@ -132,9 +134,11 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
-          enableButton(registerSaleBtn, "Realizar venta");
 
           modalAlert("warning", "Aviso", messages);
+
+          enableButtons(update);
+
           return;
         } else {
           modalAlert(
@@ -142,12 +146,14 @@ window.addEventListener("DOMContentLoaded", () => {
             "Aviso",
             `<strong>${json.message}</strong> <br>`
           );
-          enableButton(registerSaleBtn, "Realizar venta");
+
+          enableButtons(update);
 
           return;
         }
       }
-      enableButton(registerSaleBtn, "Realizar venta");
+
+      enableButtons(update);
 
       resetForm("shopping-cart");
 
@@ -157,13 +163,40 @@ window.addEventListener("DOMContentLoaded", () => {
         `<strong>${json.message}</strong> <br>`,
         () => {
           $("#main_modal").modal("hide");
-          //window.location = `/ventas/detalle/${json.response}`;
+          window.location =
+            update == true
+              ? `/cotizaciones/detalle/${json.response}`
+              : `/ventas/detalle/${json.response}`;
         }
       );
     } catch (error) {
       errorNotification("Error interno del servidor");
-      enableButton(registerSaleBtn, "Realizar venta");
+      enableButtons(update);
+
       console.error(error);
+    }
+  }
+
+  function enableButtons(update) {
+    if (update) {
+      console.log("tru");
+      enableButton(registerQuoteBtn, "Actualizar Cotización");
+      console.log(sellQuoteBtn);
+      sellQuoteBtn.removeAttribute("disabled");
+      console.log(sellQuoteBtn);
+    } else {
+      enableButton(sellQuoteBtn, "Vender Cotización");
+      registerQuoteBtn.removeAttribute("disabled");
+    }
+  }
+
+  function disabledButtons(update) {
+    if (update) {
+      disableButton(registerQuoteBtn, "Actualizando Cotización");
+      sellQuoteBtn.setAttribute("disabled", true);
+    } else {
+      disableButton(sellQuoteBtn, "Vendiendo Cotización");
+      registerQuoteBtn.setAttribute("disabled", true);
     }
   }
 
@@ -186,17 +219,17 @@ window.addEventListener("DOMContentLoaded", () => {
     resetForm("searchForm");
   }
 
-  function registerSaleBtnClick() {
+  function registerQuoteBtnClick() {
     if (shoppingCart.length === 0) {
       errorNotification(
-        "No tienes productos en la venta. Agrega productos para realizar la venta"
+        "No tienes productos en la cotización. Agrega productos para actualizar la cotización"
       );
       return;
     }
 
     if (total < 0) {
       errorNotification(
-        "El total de la venta no puede ser menor a 0. Revisa la venta y el descuento que hayas ingresado."
+        "El total de la cotización no puede ser menor a 0. Revisa la cotización y el descuento que hayas ingresado."
       );
       return;
     }
@@ -208,12 +241,43 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    registerSaleConfirmation(response.body);
+    registerQuoteUpdateConfirmation(response.body);
   }
 
-  function registerSaleConfirmation(saleInfo) {
-    confirmationAlert("Se registrará la venta", () => {
-      registerSale(saleInfo);
+  function sellQuoteBtnClick() {
+    if (shoppingCart.length === 0) {
+      errorNotification(
+        "No tienes productos en la cotización. Agrega productos para actualizar la cotización"
+      );
+      return;
+    }
+
+    if (total < 0) {
+      errorNotification(
+        "El total de la cotización no puede ser menor a 0. Revisa la cotización y el descuento que hayas ingresado."
+      );
+      return;
+    }
+
+    resetCartFormValidation();
+    let response = validateCartForm();
+
+    if (response.valid === false) {
+      return;
+    }
+
+    sellQuoteConfirmation(response.body);
+  }
+
+  function registerQuoteUpdateConfirmation(quoteInfo) {
+    confirmationAlert("Se actualizará la cotización", () => {
+      updateOrSellQuote(quoteInfo, true);
+    });
+  }
+
+  function sellQuoteConfirmation(quoteInfo) {
+    confirmationAlert("Se venderá la cotización", () => {
+      updateOrSellQuote(quoteInfo, false);
     });
   }
 
@@ -250,11 +314,11 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    let saleDetail = [];
+    let quoteDetail = [];
 
     console.log(shoppingCart);
     shoppingCart.forEach((elem) => {
-      saleDetail.push({
+      quoteDetail.push({
         productID: elem.id,
         productName: elem.productName,
         quantity: elem.quantity,
@@ -264,7 +328,7 @@ window.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    body.saleDetail = saleDetail;
+    body.quoteDetail = quoteDetail;
     body.total = total;
 
     return {
@@ -401,13 +465,13 @@ window.addEventListener("DOMContentLoaded", () => {
     if (shoppingCart.length == 0) {
       cartTable.innerHTML = `<tr>
           <td class="text-center w-100"> Aun no tienes productos. <br> Agrega productos a la
-              venta   🛍
+              cotización   🛍
           </td>
       </tr>`;
       total = 0;
       subTotal = 0;
       document.querySelector("#discount").value = "";
-      updateSaleTotals();
+      updateQuoteTotals();
       validateDiscount();
 
       return;
@@ -433,11 +497,11 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     cartTable.innerHTML = tableBody;
-    updateSaleTotals();
+    updateQuoteTotals();
     validateDiscount();
   }
 
-  function updateSaleTotals() {
+  function updateQuoteTotals() {
     subTotal = 0;
     let discount = document.querySelector("#discount");
     shoppingCart.forEach((prod) => (subTotal += prod.total));
@@ -453,7 +517,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   //Validators
-  //Prevent the discount to be greater than the sale
+  //Prevent the discount to be greater than the quote
   function validateDiscount() {
     let subTotal = document.querySelector("#subTotal").innerHTML;
     let discount = document.querySelector("#discount");
@@ -472,12 +536,12 @@ window.addEventListener("DOMContentLoaded", () => {
       discountMsg.innerHTML =
         "El subtotal menos el descuento no debe ser menor a 0.";
       discount.classList.add("border", "border-danger");
-      updateSaleTotals();
+      updateQuoteTotals();
       return false;
     } else {
       discountMsg.innerHTML = "";
       discount.classList.remove("border", "border-danger");
-      updateSaleTotals();
+      updateQuoteTotals();
 
       return true;
     }
@@ -485,6 +549,23 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function validateService() {
     validateDiscount();
+  }
+
+  function populateTableWithQuoteInfo() {
+    detalleCotizacion.forEach((prod) => {
+      shoppingCart.push({
+        id: prod.productID._id,
+        productName: prod.productID.name,
+        unitPrice: prod.unitPrice,
+        quantity: prod.quantity,
+        total: prod.unitPrice * prod.quantity,
+        totalStock: prod.productID.quantity,
+      });
+    });
+
+    console.log(shoppingCart);
+
+    populateTable();
   }
 
   //Initial Actions
@@ -498,4 +579,6 @@ window.addEventListener("DOMContentLoaded", () => {
     false
   );
   productsTable.reloadCardTable(productsData);
+
+  populateTableWithQuoteInfo();
 });

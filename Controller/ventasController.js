@@ -173,9 +173,9 @@ const saleDetail = async (req, res) => {
       .lean();
 
     if (sale) {
-      sale.subtotal = sale.total - sale.discount - sale.service;
       sale.discount = sale.discount == null ? 0 : sale.discount;
       sale.service = sale.service == null ? 0 : sale.service;
+      sale.subtotal = sale.total - sale.discount - sale.service;
 
       sale.total = sale.total.toFixed(2);
       sale.subtotal = sale.subtotal.toFixed(2);
@@ -193,6 +193,15 @@ const saleDetail = async (req, res) => {
             }`
           : "";
 
+      sale.date = sale.date.toISOString().toString();
+
+      let date = sale.date.substring(0, 10);
+      let day = date.substring(8, 10);
+      let month = date.substring(5, 7);
+      let year = date.substring(0, 4);
+
+      sale.date = `${day}/${month}/${year}`;
+
       res.render("ventas/detalleVenta", {
         sectionName: "Detalle de la venta",
         script: "detalleVentaClient",
@@ -204,6 +213,7 @@ const saleDetail = async (req, res) => {
       res.render("notFound");
     }
   } catch (error) {
+    console.log(error);
     res.render("notFound");
   }
 };

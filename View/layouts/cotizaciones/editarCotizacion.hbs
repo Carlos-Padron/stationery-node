@@ -42,7 +42,7 @@
     <div class="col-md-8 px-0 pr-md-3 pr-lg-3">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="mb-0">¡Edita la venta realizada!</h3>
+                <h3 class="mb-0">Actualiza una nueva cotización!</h3>
                 <div class="text-right">
                     <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary">
                         <i class="uil uil-redo"></i>
@@ -112,7 +112,7 @@
     <div class="col-md-4 px-0" style="max-height: 75vh !important;">
         <div class="card mb-0 h-100">
             <div class="card-header">
-                <h3 class="mb-0">Venta</h3>
+                <h3 class="mb-0">Cotización</h3>
             </div>
             <div class="card-body pb-0">
                 <div class="row">
@@ -121,7 +121,7 @@
                         <div class="d-flex">
                             <label class="form-control-label mt-auto mb-auto mr-3">Concepto:</label>
                             <input id="concept" class="form-control form-control-sm " placeholder="Concepto" type="text"
-                                data-search="concept" value="{{sale.concept}}">
+                                data-search="concept" value="{{quote.concept}}">
                         </div>
                     </div>
                     <div class="col-12 mt-1">
@@ -130,7 +130,7 @@
                             <label class="form-control-label mt-auto mb-auto mr-3">Servicio:</label>
                             <input id="service" class="form-control form-control-sm " style="margin-left:11px"
                                 placeholder="Servicio" type="text" oninput="currencyMask()" data-search="service"
-                                value="{{sale.service}}">
+                                value="{{quote.service}}">
                         </div>
                     </div>
                     <div id="shopping-cart" class="mt-2 col-12">
@@ -145,7 +145,7 @@
                             <tbody id="cart-table" class="list">
                                 <tr>
                                     <td class="text-center w-100"> Aun no tienes productos. <br> Agrega productos a la
-                                        venta   🛍
+                                        cotización   🛍
                                     </td>
                                 </tr>
                             </tbody>
@@ -166,7 +166,7 @@
                             <label class="form-control-label mt-auto mb-auto mr-3">Descuento:</label>
                             <input id="discount" class="form-control form-control-sm  text-right"
                                 placeholder="Descuento" oninput="currencyMask()" type="text" data-save="discount"
-                                value="{{sale.discount}}">
+                                value="{{quote.discount}}">
                         </div>
                         <small id="discountMsg" class="text-danger"></small>
                         <hr class="my-2">
@@ -178,25 +178,33 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" id="registerSale" class="btn btn-md btn-success w-100">
-                    <span>Realizar Venta</span>
-                </button>
+                <div class="d-flex">
+                    <button type="button" id="registerQuote" class="btn btn-md btn-warning w-100">
+                        <span>Actualizar Cotización</span>
+                    </button>
+                    <button type="button" id="sellQuote" class="btn btn-md btn-success w-100">
+                        <span>Vender Cotización</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 {{/content}}
 
+
+
 {{#content "scripts" mode="append"}}
 <script>
-    const saleID = "{{ sale._id }}"
-    let detalleVenta = '{{ sale.saleDetail}}'
+    const quoteID = "{{ quote._id }}"
+    let detalleCotizacion = '{{ quote.quoteDetail}}'
 
     let textArea = document.createElement("textarea");
-    textArea.innerHTML = detalleVenta
+    textArea.innerHTML = detalleCotizacion
     let decodedString = textArea.innerHTML;
 
-    detalleVenta = JSON.parse(decodedString)
+
+    detalleCotizacion = JSON.parse(decodedString)
 </script>
 {{/content}}
 

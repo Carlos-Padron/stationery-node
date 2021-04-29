@@ -18,14 +18,6 @@ let quoteSchema = new mongoose.Schema({
   service: {
     type: Number,
   },
-  canceled: {
-    type: Boolean,
-    default: false,
-  },
-  changed: {
-    type: Boolean,
-    default: false,
-  },
   madeBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

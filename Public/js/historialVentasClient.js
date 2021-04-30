@@ -192,18 +192,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
           body[elem] = data.checked;
       }
-
-      if (
-        body.fechaInicio != null &&
-        body.fechaFin != null &&
-        body.fechaInicio > body.fechaFin
-      ) {
-        warningNotification(
-          "La fecha de inicio no puede ser mayor a la fecha fin"
-        );
-        valid = false;
-      }
     });
+
+    if (
+      body.fechaInicio != null &&
+      body.fechaFin != null &&
+      body.fechaInicio > body.fechaFin
+    ) {
+      warningNotification(
+        "La fecha de inicio no puede ser mayor a la fecha fin"
+      );
+      valid = false;
+    }
 
     return {
       valid,

@@ -1,5 +1,6 @@
 const Brand = require("../Model/BrandModel");
 const errorHandler = require("../Utils/Helpers/errorHandler");
+const { changeVowelsForRegex } = require("../Utils/Helpers/regrexHelper");
 
 const index = (req, res) => {
   res.render("inventario/marcas", {

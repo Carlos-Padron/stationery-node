@@ -374,6 +374,8 @@ const sellQuote = async (req, res) => {
       });
     }
 
+    await Quote.deleteOne({ _id: quote._id });
+
     let sale = Sale();
 
     sale.concept = req.body.concept;

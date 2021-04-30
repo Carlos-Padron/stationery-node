@@ -1,24 +1,26 @@
-const User = require("../Model/UserModel");
+const OtherMovement = require("../Model/OtherMovementModel");
 const errorHandler = require("../Utils/Helpers/errorHandler");
-const { changeVowelsForRegex } = require("../Utils/Helpers/regrexHelper");
 
 const index = (req, res) => {
-  res.render("usuarios/usuarios", {
-    sectionName: "Usuarios",
-    script: "usuariosClient",
+  res.render("otrosMovimientos/otrosMovimientos", {
+    sectionName: "Otros Movimientos",
+    script: "otrosMovimientosClient",
+    activeMenu: "OTRMOV",
   });
 };
 
-const createUser = async (req, res) => {
+const createOtherMovement = async (req, res) => {
   delete req.body._id;
 
+  req.body.date = new Date();
   try {
-    const user = new User(req.body);
+    let otherMovement = OtherMovement(req.body);
 
-    await user.save();
+    await otherMovement.save();
+
     res.json({
       error: false,
-      message: "El usuario se agregó correctamente.",
+      message: "El movimiento se agregó correctamente.",
       response: null,
     });
   } catch (error) {
@@ -40,69 +42,70 @@ const createUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
+const updateOtherMovement = async (req, res) => {
   const _id = req.body._id;
   delete req.body._id;
+
+  try {
+    let otherMovement = await OtherMovement.findById(_id).exec();
+
+    if (!otherMovement) {
+      res.json({
+        error: true,
+        message: "No se encontró el movimiento solicitado.",
+        response: null,
+      });
+      return;
+    }
+
+    await OtherMovement.findByIdAndUpdate(_id, req.body);
+
+    res.json({
+      error: false,
+      message: "El movimiento fue actulizado correctamente.",
+      response: null,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
+const deleteOtherMovement = async (req, res) => {
+  const _id = req.body._id;
+
   console.log(req.body);
   try {
-    let user = await User.findById(_id).exec();
+    let otherMovement = await OtherMovement.findById(_id);
 
-    if (!user) {
+    if (!otherMovement) {
       res.json({
         error: true,
-        message: "No se econtró al usuario solicitado.",
+        message: "No se encontró el movimiento solicitado",
         response: null,
       });
+
       return;
     }
 
-    await User.findByIdAndUpdate(_id, req.body).exec();
+    await otherMovement.deleteOne({ _id });
 
     res.json({
       error: false,
-      message: "El usuario actualizado correctamente.",
-      response: null,
-    });
-  } catch (error) {
-    console.log(error);
-    let errors = errorHandler(error);
-
-    if (errors.length === 0) {
-      res.json({
-        error: true,
-        message: error.message,
-        response: null,
-      });
-    } else {
-      res.json({
-        error: true,
-        message: errors,
-        response: null,
-      });
-    }
-  }
-};
-
-const deleteUser = async (req, res) => {
-  const _id = req.body._id;
-
-  try {
-    let user = await User.findById(_id).exec();
-
-    if (!user) {
-      res.json({
-        error: true,
-        message: "No se encontró al usuario solicitado.",
-        response: null,
-      });
-      return;
-    }
-
-    user.disabled = true;
-    await user.save();
-    res.json({
-      error: false,
-      message: "El usuario fue desabilitado correctamente.",
+      message: "El movimiento fue eliminado correctamente.",
       response: null,
     });
   } catch (error) {
@@ -124,19 +127,24 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const searchUsers = async (req, res) => {
-  const { name } = req.body;
+const searchOtherMovements = async (req, res) => {
+  let { fechaInicio, fechaFin } = req.body;
+
+  fechaInicio = fechaInicio.split("T");
+  fechaInicio = `${fechaInicio[0]}T00:00:00z`;
+
+  fechaFin = fechaFin.split("T");
+  fechaFin = `${fechaFin[0]}T23:59:59z`;
 
   try {
-    const users = await User.find({
-      name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
-      disabled: false,
-    }).sort({ name: "asc" });
+    const otherMovements = await OtherMovement.find({
+      date: { $gte: fechaInicio, $lte: fechaFin },
+    }).sort({ date: "asc" });
 
     res.json({
       error: false,
-      message: null,
-      response: users,
+      message: "",
+      response: otherMovements,
     });
   } catch (error) {
     let errors = errorHandler(error);
@@ -159,8 +167,8 @@ const searchUsers = async (req, res) => {
 
 module.exports = {
   index,
-  searchUsers,
-  createUser,
-  updateUser,
-  deleteUser,
+  createOtherMovement,
+  updateOtherMovement,
+  deleteOtherMovement,
+  searchOtherMovements,
 };

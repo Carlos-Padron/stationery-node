@@ -1,49 +1,53 @@
 window.addEventListener("DOMContentLoaded", () => {
   //Variables & Elements
-  let $fields = ["fechaInicio", "fechaFin", "product", "quantity"];
+  let $fields = [
+    "_id",
+    "description",
+    "amount",
+    "type",
+    "fechaInicio",
+    "fechaFin",
+  ];
   let routes = {
-    get: "/getLosses",
-    add: "/registerLoss",
-    delete: "/deleteLoss",
-    getProductsForCombo: "/getProductsForCombo",
+    get: "/searchOtherMovements",
+    add: "/addOtherMovement",
+    update: "/updateOtherMovement",
+    delete: "/deleteOtherMovement",
   };
 
-  let lossColumns = [
-    { column: "name", class: "text-center" },
-    { column: "brand", class: "text-center" },
-    { column: "quantity", class: "text-center" },
-    { column: "total", class: "text-center" },
+  let otherMovementsColumns = [
+    { column: "description", class: "text-center" },
+    { column: "amount", class: "text-center" },
+    { column: "type", class: "text-center" },
     { column: "date", class: "text-center" },
     { column: "actions", class: "text-center" },
   ];
 
-  let lossesData = [];
+  let otherMovementsData = [];
 
   const searchBtn = document.querySelector("#btnSearch");
   const searchForm = document.querySelector("#searchForm");
-  const lossesForm = document.querySelector("#lossesForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
   const addBtn = document.querySelector("#btnAdd");
-  const addLossBtn = document.querySelector("#btnAddLoss");
-  const productSelect = document.querySelector("#product");
-  const articleTypeSelect = document.querySelector("#articleType");
-  const brandSelect = document.querySelector("#brand");
+  const addOtherMovementBtn = document.querySelector("#btnAddOtherMovement");
+  const updateOtherMovementBtn = document.querySelector(
+    "#btnUpdateOtherMovement"
+  );
   const mainTableBody = document.querySelector("#mainTable tbody.list");
 
   //Listeners
   searchBtn.addEventListener("click", search);
   addBtn.addEventListener("click", showMainModalAdd);
-  addLossBtn.addEventListener("click", addLossBtnClick);
+  addOtherMovementBtn.addEventListener("click", addOtherMovementBtnClick);
+  updateOtherMovementBtn.addEventListener("click", updateOtherMovementBtnClick);
   mainTableBody.addEventListener("click", rowClicked);
   btnClearSearch.addEventListener("click", clearSearch);
-  articleTypeSelect.addEventListener("change", searchProducts);
-  brandSelect.addEventListener("change", searchProducts);
 
   //functions
   async function search() {
     try {
+      console.log("va a buscar");
       resetSearchFormValidation();
-
       let response = validateSearchForm();
 
       if (response.valid === false) {
@@ -52,7 +56,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       blockElem(searchForm);
 
-      let body = JSON.stringify(response.body);
+      body = JSON.stringify(response.body);
 
       let request = await fetch(routes.get, {
         method: "POST",
@@ -86,16 +90,9 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      lossesData = json.response;
+      otherMovementsData = json.response;
 
-      lossesData.forEach((elem, index) => {
-        elem.total = elem.quantity * elem.unitPrice;
-        elem.total = elem.total.toFixed(2);
-
-        elem.name = elem.productID.name;
-
-        elem.brand = elem.productID.brand.name;
-
+      otherMovementsData.forEach((elem, index) => {
         let date = elem.date.substring(0, 10);
         let day = date.substring(8, 10);
         let month = date.substring(5, 7);
@@ -104,11 +101,12 @@ window.addEventListener("DOMContentLoaded", () => {
         elem.date = `${day}/${month}/${year}`;
 
         elem.actions = `<div class="btn-group">
-          <button title="Eliminar pérdida"   type="button" class="btn btn-sm btn-icon btn-danger   delete"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
+          <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
+          <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
       </div>`;
       });
 
-      mainTable.reloadTable(lossesData);
+      mainTable.reloadTable(otherMovementsData);
       unblockElem(searchForm);
     } catch (error) {
       unblockElem(searchForm);
@@ -117,19 +115,24 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function save() {
+  async function save(route) {
     let response = validateForm();
 
     if (response.valid === false) {
       return;
     }
 
-    disableButton(addLossBtn, "Agregando");
+    console.log(route);
+    disableButton(
+      addOtherMovementBtn,
+      route == "/updateOtherMovement" ? "Actualizando" : "Agregando"
+    );
 
     try {
+      console.log(response.body);
       let body = JSON.stringify(response.body);
 
-      let request = await fetch(routes.add, {
+      let request = await fetch(route, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -147,7 +150,10 @@ window.addEventListener("DOMContentLoaded", () => {
           json.message.forEach((msg) => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
-          enableButton(addLossBtn, "Agregar");
+          enableButton(
+            addOtherMovementBtn,
+            route == "/updateOtherMovement" ? "Actualizar" : "Agregar"
+          );
 
           modalAlert("warning", "Aviso", messages);
           return;
@@ -157,11 +163,17 @@ window.addEventListener("DOMContentLoaded", () => {
             "Aviso",
             `<strong>${json.message}</strong> <br>`
           );
-          enableButton(addLossBtn, "Agregar");
+          enableButton(
+            addOtherMovementBtn,
+            route == "/updateOtherMovement" ? "Actualizar" : "Agregar"
+          );
           return;
         }
       }
-      enableButton(addLossBtn, "Agregar");
+      enableButton(
+        addOtherMovementBtn,
+        route == "/updateOtherMovement" ? "Actualizar" : "Agregar"
+      );
 
       modalAlert(
         "success",
@@ -169,12 +181,16 @@ window.addEventListener("DOMContentLoaded", () => {
         `<strong>${json.message}</strong> <br>`,
         () => {
           $("#main_modal").modal("hide");
+
           search();
         }
       );
     } catch (error) {
       errorNotification("Error interno del servidor");
-      enableButton(addLossBtn, "Agregar");
+      enableButton(
+        addOtherMovementBtn,
+        route == "/updateOtherMovement" ? "Actualizar" : "Agregar"
+      );
       console.error(error);
     }
   }
@@ -232,7 +248,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function validateSearchForm() {
+  function validateForm() {
     let body = {};
     let valid = true;
 
@@ -240,10 +256,77 @@ window.addEventListener("DOMContentLoaded", () => {
       let data;
       let msg;
       switch (elem) {
-        case "fechaInicio":
+        case "_id":
+          data = document.querySelector(`#${elem}`);
+          body[elem] = data.value;
+
+          break;
+
+        case "description":
           data = document.querySelector(`#${elem}`);
           msg = document.querySelector(`#${elem}Msg`);
 
+          if (!data.value) {
+            data.classList.add("invalid-input");
+            msg.classList.add("text-danger");
+            msg.innerHTML += "La decripción es requerida";
+
+            valid = false;
+            return;
+          } else {
+            body[elem] = data.value;
+          }
+          break;
+
+        case "amount":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value || data.value == 0) {
+            data.classList.add("invalid-input");
+            msg.classList.add("text-danger");
+            msg.innerHTML += "La cantidad es requerida y no puede ser cero";
+            valid = false;
+            return;
+          } else {
+            body[elem] = data.value;
+          }
+          break;
+
+        case "type":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value || data.value == 0) {
+            data.classList.add("invalid-input");
+            msg.classList.add("text-danger");
+            msg.innerHTML += "EL tipo de movimiento es requerido";
+            valid = false;
+            return;
+          } else {
+            body[elem] = data.value;
+          }
+          break;
+      }
+    });
+
+    return {
+      valid,
+      body,
+    };
+  }
+
+  function validateSearchForm() {
+    let body = {};
+    let valid = true;
+    $fields.forEach((elem) => {
+      let data;
+      let msg;
+      switch (elem) {
+        case "fechaInicio":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+          console.log(data);
           if (!data.value) {
             data.classList.add("invalid-input");
             msg.innerHTML += "La fecha de inicio es requerida para filtrar";
@@ -316,12 +399,11 @@ window.addEventListener("DOMContentLoaded", () => {
           }
           break;
 
-        case "canceled":
-          data = document.querySelector(`#${elem}`);
-
-          body[elem] = data.checked;
+        default:
+          break;
       }
     });
+
     if (
       body.fechaInicio != null &&
       body.fechaFin != null &&
@@ -332,52 +414,6 @@ window.addEventListener("DOMContentLoaded", () => {
       );
       valid = false;
     }
-    return {
-      valid,
-      body,
-    };
-  }
-
-  function validateForm() {
-    let body = {};
-    let valid = true;
-
-    $fields.forEach((elem) => {
-      let data;
-      let msg;
-      switch (elem) {
-        case "product":
-          data = document.querySelector(`#${elem}`);
-          msg = document.querySelector(`#${elem}Msg`);
-
-          if (!data.value) {
-            data.classList.add("invalid-input");
-            msg.classList.add("text-danger");
-            msg.innerHTML += "El producto es requerido";
-
-            valid = false;
-            return;
-          } else {
-            body[elem] = data.value;
-          }
-          break;
-
-        case "quantity":
-          data = document.querySelector(`#${elem}`);
-          msg = document.querySelector(`#${elem}Msg`);
-
-          if (!data.value || data.value == 0) {
-            data.classList.add("invalid-input");
-            msg.classList.add("text-danger");
-            msg.innerHTML += "La cantidad es requerida y no puede ser cero";
-            valid = false;
-            return;
-          } else {
-            body[elem] = data.value;
-          }
-          break;
-      }
-    });
 
     return {
       valid,
@@ -387,14 +423,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
   async function resetForm(form) {
     switch (form) {
-      case "lossesForm":
-        document.querySelector("#lossesForm").reset();
-        addLossBtn.classList.remove("d-none");
-        let option = document.createElement("option");
-        option.value = "";
-        option.innerHTML = "Seleccione";
-        productSelect.innerHTML = "";
-        productSelect.appendChild(option);
+      case "otherMovementForm":
+        document.querySelector("#otherMovementForm").reset();
+        addOtherMovementBtn.classList.remove("d-none");
+        updateOtherMovementBtn.classList.add("d-none");
         break;
       case "searchForm":
         document.querySelector("#searchForm").reset();
@@ -440,14 +472,20 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function addLossBtnClick() {
-    confirmationAlert("Se registrará la pérdida", () => {
+  function addOtherMovementBtnClick() {
+    confirmationAlert("Se registrará el movimiento", () => {
       save(routes.add);
     });
   }
 
+  function updateOtherMovementBtnClick() {
+    confirmationAlert("Se actualizará el movimiento", () => {
+      save(routes.update);
+    });
+  }
+
   function deleteConfirmation(_id) {
-    confirmationAlert("Se borrará la pérdida seleccionada", () => {
+    confirmationAlert("Se eliminará el movimiento seleccionado", () => {
       destroy(_id);
     });
   }
@@ -457,107 +495,68 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function rowClicked(e) {
+    if (e.target && e.target.classList.contains("show")) {
+      if (e.target.tagName === "I") {
+        let button = e.target.parentElement;
+        let index = button.getAttribute("data-index");
+        showMainModalEdit(otherMovementsData[index]);
+      } else {
+        let button = e.target;
+        let index = button.getAttribute("data-index");
+        showMainModalEdit(otherMovementsData[index]);
+      }
+    }
+
     if (e.target && e.target.classList.contains("delete")) {
       if (e.target.tagName === "I") {
         let button = e.target.parentElement;
         let index = button.getAttribute("data-index");
-        deleteConfirmation(lossesData[index]._id);
+        deleteConfirmation(otherMovementsData[index]._id);
       } else {
         let button = e.target;
         let index = button.getAttribute("data-index");
-        deleteConfirmation(lossesData[index]._id);
+        deleteConfirmation(otherMovementsData[index]._id);
       }
     }
   }
 
   function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML =
-      "Agrega una nueva pérdida";
+      "Agregar un nuevo movimiento";
     $("#main_modal").modal("show");
   }
 
-  function searchProducts() {
-    if (brandSelect.value != "" && articleTypeSelect.value != "") {
-      fetchProducts();
-    }
-  }
+  function showMainModalEdit(otherMovements) {
+    addOtherMovementBtn.classList.add("d-none");
+    updateOtherMovementBtn.classList.remove("d-none");
 
-  async function fetchProducts() {
-    try {
-      blockElem(lossesForm);
-
-      let body = JSON.stringify({
-        brand: document.querySelector("#brand").value,
-        articleType: document.querySelector("#articleType").value,
-      });
-
-      let request = await fetch(routes.getProductsForCombo, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          credentials: "same-origin",
-        },
-        body,
-      });
-
-      let json = await request.json();
-
-      console.log(json);
-      if (json.error) {
-        if (Array.isArray(json.message)) {
-          let messages = "";
-          json.message.forEach((msg) => {
-            messages += `<strong>*${msg}</strong> <br>`;
-          });
-          modalAlert("warning", "Aviso", messages);
-          unblockElem(lossesForm);
-          return;
-        } else {
-          modalAlert(
-            "warning",
-            "Aviso",
-            `<strong>*${json.message}</strong> <br>`
-          );
-          unblockElem(lossesForm);
-          return;
-        }
+    $fields.forEach((elem) => {
+      if (elem != "fechaInicio" && elem != "fechaFin") {
+        document.querySelector(`#${elem}`).value = otherMovements[elem];
       }
+    });
 
-      let products = json.response;
-
-      products.forEach((prod) => {
-        let option = document.createElement("option");
-        option.value = prod._id;
-        option.innerHTML = prod.name;
-
-        productSelect.appendChild(option);
-      });
-
-      unblockElem(lossesForm);
-    } catch (error) {
-      errorNotification(error);
-      unblockElem(lossesForm);
-      console.error(error);
-    }
+    document.querySelector("#modal_title").innerHTML = "Edita un movimiento";
+    $("#main_modal").modal("show");
   }
 
   $("#main_modal").on("hidden.bs.modal", function (e) {
     resetFormValidation();
-    resetForm("lossesForm");
+    console.log("cierra");
+    resetForm("otherMovementForm");
   });
 
   //Initial actions
   let mainTable = new NormalTable(
     "mainTable",
-    lossesData,
-    lossColumns,
+    otherMovementsData,
+    otherMovementsColumns,
     "btnNext",
     "btnPrev",
     "pageCounter",
-    "6"
+    "5"
   );
-  mainTable.reloadTable(lossesData);
+  mainTable.reloadTable(otherMovementsData);
 
   $(".datepicker-es").datepicker({
     language: "es",

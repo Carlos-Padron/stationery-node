@@ -17,6 +17,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //Listeners
   logInButton.addEventListener("click", () => {
+    logInProcess();
+  });
+
+  email.addEventListener("keydown", (e) => {
+    if (e.keyCode == 13) {
+      logInProcess();
+    }
+  });
+
+  pw.addEventListener("keydown", (e) => {
+    if (e.keyCode == 13) {
+      logInProcess();
+    }
+  });
+
+  function logInProcess() {
     resetEmail();
     resetPw();
     let validEmail = valdiateEmail(email);
@@ -25,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (validEmail && validPW) {
       sendLoginCredeintials(email.value, pw.value, elemToBlock);
     }
-  });
+  }
 
   function valdiateEmail(email) {
     if (email.value === "") {
@@ -40,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
       emailMsg.classList.add("text-danger");
       return false;
     }
-    return true
+    return true;
   }
 
   function valdiatePw(pw) {
@@ -51,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return false;
     }
 
-    return true
+    return true;
   }
 
   function resetEmail() {
@@ -77,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(body);
     blockElem(elemToBlock);
     try {
-
       let request = await fetch("/login", {
         method: "POST",
         headers: {

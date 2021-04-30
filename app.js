@@ -68,6 +68,7 @@ const perdidasRoutes = require("./Routes/perdidasRoutes");
 const cotizacionesRoutes = require("./Routes/cotizacionesRoutes");
 const otrosMovimientosRoutes = require("./Routes/otrosMovimientosRoutes");
 const usuariosRoutes = require("./Routes/usuariosRoutes");
+const cortesRoutes = require("./Routes/cortesRoutes");
 
 app.use(authRoutes);
 app.use(dashboardhRoutes);
@@ -79,6 +80,7 @@ app.use(perdidasRoutes);
 app.use(cotizacionesRoutes);
 app.use(otrosMovimientosRoutes);
 app.use(usuariosRoutes);
+app.use(cortesRoutes);
 
 app.get("*", (req, res) => {
   res.render("notFound");

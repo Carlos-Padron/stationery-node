@@ -1,4 +1,5 @@
 const User = require("../Model/UserModel");
+const { redisDelete } = require("../Utils/Helpers/redisHelper");
 
 const index = (req, res) => {
   res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -38,7 +39,14 @@ const logInUser = async (req, res) => {
   }
 };
 
-const logOutUser = async (req, res) => {};
+const logOutUser = async (req, res) => {
+  let session = req.sessionID;
+
+  redisDelete(`sess:${session}`);
+  req.session.destroy();
+
+  res.redirect("/login");
+};
 
 module.exports = {
   index,

@@ -1,4 +1,4 @@
-const DEFAULT_ROUTE = `${window.location.protocol}://${window.location.hostname}:3000/inventario/productos`;
+const DEFAULT_ROUTE_PRODUCTS = `${window.location.protocol}://${window.location.hostname}:3000/inventario/productos`;
 
 const isEmail = (email) => {
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -272,3 +272,11 @@ var unblockElem = (elem) => {
     elem.removeChild(document.querySelector(".overlay"));
   }
 };
+
+
+///* DOM ELEMENTS *///
+
+const userImage = document.querySelector("#userImage").src = localStorage.getItem("userImage")
+const userName = document.querySelector("#userName").innerHTML = localStorage.getItem("userName")
+
+console.log(userName);

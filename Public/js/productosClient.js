@@ -302,7 +302,7 @@ window.addEventListener("DOMContentLoaded", () => {
           body[elem] =
             data.src === "" ||
             data.src === undefined ||
-            data.src === DEFAULT_ROUTE
+            data.src === DEFAULT_ROUTE_PRODUCTS
               ? null
               : data.src;
           break;
@@ -536,7 +536,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     if (
-      product.imageRelativePath != DEFAULT_ROUTE &&
+      product.imageRelativePath != DEFAULT_ROUTE_PRODUCTS &&
       product.imageRelativePath != null &&
       product.imageRelativePath != undefined &&
       product.imageRelativePath != ""

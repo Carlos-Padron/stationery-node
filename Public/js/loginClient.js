@@ -117,6 +117,16 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         successNotification(json.message);
 
+        let responseData = json.response.user;
+
+        let userName = `${responseData.name.split(" ")[0]} ${
+          responseData.fatherSurname
+        }`;
+        
+        let userImage = responseData.imageRelativePath;
+        localStorage.setItem("userName", userName);
+        localStorage.setItem("userImage", userImage);
+
         window.location = "/dashboard";
       }
     } catch (error) {

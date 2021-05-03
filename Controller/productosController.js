@@ -8,9 +8,6 @@ const fs = require("fs");
 const imgHelper = require("../Utils/Helpers/imageHelper");
 const { changeVowelsForRegex } = require("../Utils/Helpers/regrexHelper");
 
-//!actualizacion la mercancía
-//!Devolucion de mercanía
-//!Périda de mercancía
 
 const index = async (req, res) => {
   try {

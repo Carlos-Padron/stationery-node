@@ -34,8 +34,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    picture: {
-      type: Buffer,
+    imageAbsolutePath: {
+      type: String,
+    },
+    imageRelativePath: {
+      type: String,
     },
   },
   {

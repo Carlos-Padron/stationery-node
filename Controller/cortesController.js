@@ -1,5 +1,6 @@
 const CashOut = require("../Model/CashOutModel");
 const Sale = require("../Model/SaleModel");
+const OtherMovements = require("../Model/OtherMovementModel");
 
 const errorHandler = require("../Utils/Helpers/errorHandler");
 
@@ -17,12 +18,11 @@ const registerCashOut = async (req, res) => {
   dateOnly = date.split("T");
   date = `${dateOnly[0]}T00:00:00z`;
 
-  let initialDate = date;
-  let finalDate = `${dateOnly[0]}T23:59:59z`;
+  let startOfTheDay = date;
+  let endOfTheDay = `${dateOnly[0]}T23:59:59z`;
 
   try {
-
-    let tempCashOut = await CashOut.find({date})
+    let tempCashOut = await CashOut.find({ date });
 
     if (tempCashOut.length > 0) {
       return res.json({
@@ -32,27 +32,78 @@ const registerCashOut = async (req, res) => {
       });
     }
 
-
     let sales = await Sale.find({
-      date: { $gte: initialDate, $lte: finalDate },
+      date: { $gte: startOfTheDay, $lte: endOfTheDay },
       canceled: false,
     });
 
+    let otherMovements = await OtherMovements.find({
+      date: { $gte: startOfTheDay, $lte: endOfTheDay },
+    });
+
+    let body = {};
     if (sales.length == 0) {
       //No hay ventas
-      let cashOut = await CashOut({
-        date: date,
-        totalSales: 0,
-        salesMade: 0,
-        madeBy: req.user._id,
-      });
+
+      if (otherMovements.length == 0) {
+        body = {
+          date,
+          totalSales: 0,
+          salesMade: 0,
+          madeBy: req.user._id,
+        };
+      } else {
+        let total = 0;
+        let salida = otherMovements.filter(
+          (mov) => mov.type == "Salida de dinero"
+        );
+
+        let entrada = otherMovements.filter(
+          (mov) => mov.type == "Ingreso de dinero"
+        );
+
+        salida.forEach((mov) => {
+          total -= mov.amount;
+        });
+
+        entrada.forEach((mov) => {
+          total += mov.amount;
+        });
+
+        body = {
+          date,
+          totalSales: total,
+          salesMade: 0,
+          madeBy: req.user._id,
+        };
+      }
+
+      let cashOut = await CashOut(body);
 
       await cashOut.save();
     } else {
-      console.log(sales);
       let totalSales = 0;
+      let salida = otherMovements.filter(
+        (mov) => mov.type == "Salida de dinero"
+      );
+
+      let entrada = otherMovements.filter(
+        (mov) => mov.type == "Ingreso de dinero"
+      );
+
+      salida.forEach((mov) => {
+        totalSales -= mov.amount;
+      });
+
+      entrada.forEach((mov) => {
+        totalSales += mov.amount;
+      });
+
       sales.forEach((sale) => {
-        console.log(sale.total);
+        totalSales += sale.total;
+      });
+
+      sales.forEach((sale) => {
         totalSales += sale.total;
       });
 
@@ -108,22 +159,70 @@ const updateCashOut = async (req, res) => {
       return;
     }
 
-    console.log(cashOut.date);
+    let startOfTheDay = cashOut.date;
+    let endOfTheDay = `${cashOut.date.toISOString().split("T")[0]}T23:59:59z`;
+
     let sales = await Sale.find({
-      date: { $gte: cashOut.date, $lte: cashOut.date },
+      date: { $gte: startOfTheDay, $lte: endOfTheDay },
       canceled: false,
+    });
+
+    let otherMovements = await OtherMovements.find({
+      date: { $gte: startOfTheDay, $lte: endOfTheDay },
     });
 
     let body = {};
     if (sales.length == 0) {
       //No hay ventas
-      body = {
-        totalSales: 0,
-        salesMade: 0,
-        updatedBy: req.user._id,
-      };
+
+      if (otherMovements.length == 0) {
+        body = {
+          totalSales: 0,
+          salesMade: 0,
+          updatedBy: req.user._id,
+        };
+      } else {
+        let total = 0;
+        let salida = otherMovements.filter(
+          (mov) => mov.type == "Salida de dinero"
+        );
+
+        let entrada = otherMovements.filter(
+          (mov) => mov.type == "Ingreso de dinero"
+        );
+
+        salida.forEach((mov) => {
+          total -= mov.amount;
+        });
+
+        entrada.forEach((mov) => {
+          total += mov.amount;
+        });
+
+        body = {
+          totalSales: total,
+          salesMade: 0,
+          updatedBy: req.user._id,
+        };
+      }
     } else {
       let totalSales = 0;
+      let salida = otherMovements.filter(
+        (mov) => mov.type == "Salida de dinero"
+      );
+
+      let entrada = otherMovements.filter(
+        (mov) => mov.type == "Ingreso de dinero"
+      );
+
+      salida.forEach((mov) => {
+        totalSales -= mov.amount;
+      });
+
+      entrada.forEach((mov) => {
+        totalSales += mov.amount;
+      });
+
       sales.forEach((sale) => {
         totalSales += sale.total;
       });

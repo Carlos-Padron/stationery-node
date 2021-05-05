@@ -20,6 +20,8 @@ const authViews = async (req, res, next) => {
       let user = await User.findById(userID);
 
       if (user) {
+        req.user = user;
+
         next();
       } else {
         return res.redirect("/login?code=403");

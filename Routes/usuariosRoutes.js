@@ -6,6 +6,8 @@ const { authViews, authRoute } = require("../Utils/Middlewares/authMiddleware");
 
 router.get("/usuarios", authViews, usuarioController.index);
 
+router.get("/perfil", authViews, usuarioController.profile);
+
 router.post("/getUsers", authRoute, usuarioController.searchUsers);
 
 router.post("/addUser", authRoute, usuarioController.createUser);

@@ -99,6 +99,7 @@ window.addEventListener("DOMContentLoaded", () => {
         let year = date.substring(0, 4);
 
         elem.date = `${day}/${month}/${year}`;
+        elem.amount = `$${elem.amount.toFixed(2)}`;
 
         elem.actions = `<div class="btn-group">
           <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>

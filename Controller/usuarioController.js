@@ -1,5 +1,8 @@
 const User = require("../Model/UserModel");
 const errorHandler = require("../Utils/Helpers/errorHandler");
+
+const fs = require("fs");
+const imgHelper = require("../Utils/Helpers/imageHelper");
 const { changeVowelsForRegex } = require("../Utils/Helpers/regrexHelper");
 
 const index = (req, res) => {
@@ -7,6 +10,25 @@ const index = (req, res) => {
     sectionName: "Usuarios",
     script: "usuariosClient",
   });
+};
+
+const profile = async (req, res) => {
+  try {
+    let user = await User.findById(req.user._id);
+    console.log(user);
+    delete user.password;
+    delete user.disabled;
+    delete user.imageAbsolutePath;
+
+    res.render("perfil/perfil", {
+      sectionName: "Mi Perfil",
+      script: "perfilClient",
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.render("notFound");
+  }
 };
 
 const createUser = async (req, res) => {
@@ -41,11 +63,14 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const _id = req.body._id;
-  delete req.body._id;
-  console.log(req.body);
+  const _id = req.user._id;
+
+  let imageRelativePath = `${req.protocol}://${req.get("host")}/images/users/`;
+  let imageAbsolutePath = `${__dirname}/Public/images/users/`;
+
   try {
     let user = await User.findById(_id).exec();
+    let body = req.body;
 
     if (!user) {
       res.json({
@@ -56,17 +81,64 @@ const updateUser = async (req, res) => {
       return;
     }
 
-    await User.findByIdAndUpdate(_id, req.body).exec();
+    if (
+      req.body.image == null ||
+      req.body.image == process.env.DEFAULT_USER_ROUTE
+    ) {
+      console.log("sin imagen");
+      body.imageAbsolutePath = null;
+      body.imageRelativePath = null;
+
+      if (fs.existsSync(user.imageAbsolutePath)) {
+        fs.unlinkSync(user.imageAbsolutePath);
+      }
+    } else if (req.body.image != null && req.body.image.includes("base64")) {
+      console.log("con imagen nueva");
+
+      let base64Image = req.body.image.split(";base64,").pop();
+      let buffer = Buffer.from(base64Image, "base64");
+
+      let resultingBuffer = await imgHelper.resizeImgBuffer(buffer);
+
+      if (resultingBuffer.error) {
+        res.json({
+          error: true,
+          message: `Ocurrió un error al procesar la imagen: ${resultingBuffer.result}`,
+          response: null,
+        });
+        return;
+      }
+
+      fs.writeFileSync(
+        `Public/images/users/${user._id}.png`,
+        resultingBuffer.result,
+        {
+          encoding: "base64",
+        }
+      );
+      let imageName = `${user._id}.png`;
+      imageAbsolutePath += imageName;
+      imageRelativePath += imageName;
+
+      body.imageAbsolutePath = imageAbsolutePath;
+      body.imageRelativePath = imageRelativePath;
+
+      delete body.image;
+    }
+
+    await User.findOneAndUpdate({ _id }, body).exec();
 
     res.json({
       error: false,
-      message: "El usuario actualizado correctamente.",
+      message: "El perfil actualizado correctamente.",
       response: null,
     });
   } catch (error) {
-    console.log(error);
+    if (fs.existsSync(imageAbsolutePath)) {
+      fs.unlinkSync(imageAbsolutePath);
+    }
     let errors = errorHandler(error);
-
+console.log(error);
     if (errors.length === 0) {
       res.json({
         error: true,
@@ -159,6 +231,7 @@ const searchUsers = async (req, res) => {
 
 module.exports = {
   index,
+  profile,
   searchUsers,
   createUser,
   updateUser,

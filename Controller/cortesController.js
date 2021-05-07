@@ -1,6 +1,7 @@
 const CashOut = require("../Model/CashOutModel");
 const Sale = require("../Model/SaleModel");
 const OtherMovements = require("../Model/OtherMovementModel");
+const ServiceModel = require("../Model/ServiceModel");
 
 const errorHandler = require("../Utils/Helpers/errorHandler");
 
@@ -41,81 +42,43 @@ const registerCashOut = async (req, res) => {
       date: { $gte: startOfTheDay, $lte: endOfTheDay },
     });
 
+    let services = await ServiceModel.find({
+      date: { $gte: startOfTheDay, $lte: endOfTheDay },
+    });
+
     let body = {};
-    if (sales.length == 0) {
-      //No hay ventas
 
-      if (otherMovements.length == 0) {
-        body = {
-          date,
-          totalSales: 0,
-          salesMade: 0,
-          madeBy: req.user._id,
-        };
-      } else {
-        let total = 0;
-        let salida = otherMovements.filter(
-          (mov) => mov.type == "Salida de dinero"
-        );
+    let totalSales = 0;
+    let salida = otherMovements.filter((mov) => mov.type == "Salida de dinero");
 
-        let entrada = otherMovements.filter(
-          (mov) => mov.type == "Ingreso de dinero"
-        );
+    let entrada = otherMovements.filter(
+      (mov) => mov.type == "Ingreso de dinero"
+    );
 
-        salida.forEach((mov) => {
-          total -= mov.amount;
-        });
+    salida.forEach((mov) => {
+      totalSales -= mov.amount;
+    });
 
-        entrada.forEach((mov) => {
-          total += mov.amount;
-        });
+    entrada.forEach((mov) => {
+      totalSales += mov.amount;
+    });
 
-        body = {
-          date,
-          totalSales: total,
-          salesMade: 0,
-          madeBy: req.user._id,
-        };
-      }
+    sales.forEach((sale) => {
+      totalSales += sale.total;
+    });
 
-      let cashOut = await CashOut(body);
+    services.forEach((ser) => {
+      totalSales += ser.total;
+    });
 
-      await cashOut.save();
-    } else {
-      let totalSales = 0;
-      let salida = otherMovements.filter(
-        (mov) => mov.type == "Salida de dinero"
-      );
+    let cashOut = await CashOut({
+      date: date,
+      totalSales,
+      salesMade: sales.length + services.length,
+      madeBy: req.user._id,
+    });
 
-      let entrada = otherMovements.filter(
-        (mov) => mov.type == "Ingreso de dinero"
-      );
-
-      salida.forEach((mov) => {
-        totalSales -= mov.amount;
-      });
-
-      entrada.forEach((mov) => {
-        totalSales += mov.amount;
-      });
-
-      sales.forEach((sale) => {
-        totalSales += sale.total;
-      });
-
-      sales.forEach((sale) => {
-        totalSales += sale.total;
-      });
-
-      let cashOut = await CashOut({
-        date: date,
-        totalSales,
-        salesMade: sales.length,
-        madeBy: req.user._id,
-      });
-
-      await cashOut.save();
-    }
+    await cashOut.save();
 
     res.json({
       error: false,
@@ -171,68 +134,39 @@ const updateCashOut = async (req, res) => {
       date: { $gte: startOfTheDay, $lte: endOfTheDay },
     });
 
+    let services = await ServiceModel.find({
+      date: { $gte: startOfTheDay, $lte: endOfTheDay },
+    });
+
     let body = {};
-    if (sales.length == 0) {
-      //No hay ventas
 
-      if (otherMovements.length == 0) {
-        body = {
-          totalSales: 0,
-          salesMade: 0,
-          updatedBy: req.user._id,
-        };
-      } else {
-        let total = 0;
-        let salida = otherMovements.filter(
-          (mov) => mov.type == "Salida de dinero"
-        );
+    let totalSales = 0;
+    let salida = otherMovements.filter((mov) => mov.type == "Salida de dinero");
 
-        let entrada = otherMovements.filter(
-          (mov) => mov.type == "Ingreso de dinero"
-        );
+    let entrada = otherMovements.filter(
+      (mov) => mov.type == "Ingreso de dinero"
+    );
 
-        salida.forEach((mov) => {
-          total -= mov.amount;
-        });
+    salida.forEach((mov) => {
+      totalSales -= mov.amount;
+    });
 
-        entrada.forEach((mov) => {
-          total += mov.amount;
-        });
+    entrada.forEach((mov) => {
+      totalSales += mov.amount;
+    });
 
-        body = {
-          totalSales: total,
-          salesMade: 0,
-          updatedBy: req.user._id,
-        };
-      }
-    } else {
-      let totalSales = 0;
-      let salida = otherMovements.filter(
-        (mov) => mov.type == "Salida de dinero"
-      );
+    sales.forEach((sale) => {
+      totalSales += sale.total;
+    });
 
-      let entrada = otherMovements.filter(
-        (mov) => mov.type == "Ingreso de dinero"
-      );
-
-      salida.forEach((mov) => {
-        totalSales -= mov.amount;
-      });
-
-      entrada.forEach((mov) => {
-        totalSales += mov.amount;
-      });
-
-      sales.forEach((sale) => {
-        totalSales += sale.total;
-      });
-
-      body = {
-        totalSales,
-        salesMade: sales.length,
-        updatedBy: req.user._id,
-      };
-    }
+    services.forEach((ser) => {
+      totalSales += ser.total;
+    });
+    body = {
+      totalSales,
+      salesMade: sales.length + services.length,
+      updatedBy: req.user._id,
+    };
 
     await CashOut.findByIdAndUpdate(_id, body);
 

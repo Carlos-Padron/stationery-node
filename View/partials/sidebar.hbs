@@ -79,6 +79,15 @@
                             </ul>
                         </div>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{#customIf activeMenu '==' 'SRVCO'}} active {{/customIf}}" href="/servicios"
+                            role="button" aria-expanded="true" aria-controls="navbar-dashboards">
+                            <i class="uil uil-football text-purple"></i>
+                            <span class="nav-link-text">Servicios</span>
+                        </a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{#customIf activeMenu '==' 'PRDS'}} active {{/customIf}}" href="/perdidas"
                             role="button" aria-expanded="false" aria-controls="navbar-forms">
@@ -110,26 +119,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{#customIf activeMenu '==' 'CRTS'}} active {{/customIf}}" href="/cortes">
-                            <i class="uil uil-bill text-info"></i>
+                            <i class="uil uil-bill text-yellow"></i>
                             <span class="nav-link-text">Cortes de caja</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{#customIf activeMenu '==' 'RPTS'}} active {{/customIf}}" href="#reportes"
-                            data-toggle="collapse" role="button" aria-expanded="false" aria-controls="reportes">
-                            <i class="uil uil-clipboard-notes text-primary"></i>
-                            <span class="nav-link-text">Reportes</span>
-                        </a>
-                        <div class="collapse" id="reportes">
-                            <ul class="nav nav-sm flex-column">
-                                <li class="nav-item">
-                                    <a href="../../pages/maps/google.html" class="nav-link">...</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="../../pages/maps/vector.html" class="nav-link">...</a>
-                                </li>
-                            </ul>
-                        </div>
                     </li>
                 </ul>
             </div>

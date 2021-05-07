@@ -1,23 +1,20 @@
 const mongoose = require("mongoose");
 
-const otherMovementSchema = new mongoose.Schema({
+const serviceSchema = new mongoose.Schema({
   description: {
     type: String,
     required: [true, "La descripción es requerida"],
     trim: true,
   },
-  amount: {
+  total: {
     type: Number,
     required: [true, "La cantidad es requerida"],
   },
   date: {
     type: Date,
   },
-  type: {
-    type: String,
-  },
 });
 
-const OtherMovement = new mongoose.model("OtherMovement", otherMovementSchema);
+const Service = new mongoose.model("Service", serviceSchema);
 
-module.exports = OtherMovement;
+module.exports = Service;

@@ -99,8 +99,6 @@ userSchema.pre("save", async function (next) {
 userSchema.pre("findOneAndUpdate", async function (next) {
   const user = this;
 
-  console.log(user._update.password);
-  console.log(typeof parseInt(process.env.BCRYPT_ROUNDS));
   if (user._update.password) {
     user._update.password = await bcrypt.hash(
       user._update.password,

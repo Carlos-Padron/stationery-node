@@ -81,7 +81,8 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <h5 class="card-title text-uppercase text-muted mb-0">Ventas de ayer</h5>
+                            <h5 id="yesterdaySalesLabel" class="card-title text-uppercase text-muted mb-0">Ventas del
+                                día anterior</h5>
                             <span id="yesterdaySales" class="h2 font-weight-bold mb-0"></span>
                         </div>
                         <div class="col-auto">
@@ -182,7 +183,6 @@
             </div>
         </div>
     </div>
-    <canvas id="myChart" width="400" height="400"></canvas>
 </div>
 
 
@@ -191,40 +191,10 @@
 
 {{#content "scripts" mode="append"}}
 <script>
-
-    const labels = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-    ];
-    const data = {
-        labels: labels,
-        datasets: [{
-            label: 'My First dataset',
-            borderColor: 'rgb(94, 114, 228)',
-            data: [0, 10, 5, 2, 20, 30, 45],
-            fill: false
-        }]
-    };
-
-
-    const config = {
-        type: 'line',
-        data,
-        options: {}
-    };
-
-    var myChart = new Chart(
-        document.getElementById('chart-cashout-dark'),
-        config
-    );
-
-
     let cashOuts = '{{ cashOuts }}'
     let products = '{{ products }}'
+    let todaySalesBackEnd = '{{ todaySalesBackEnd }}'
+
 
     let textArea = document.createElement("textarea");
     textArea.innerHTML = cashOuts
@@ -236,9 +206,6 @@
     decodedString = textArea.innerHTML;
 
     products = JSON.parse(decodedString)
-
-
-
 
 </script>
 {{/content}}

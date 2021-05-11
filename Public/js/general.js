@@ -276,9 +276,18 @@ var unblockElem = (elem) => {
 
 ///* DOM ELEMENTS *///
 
-const userImage = (document.querySelector(
-  "#userImage"
-).src = localStorage.getItem("userImage"));
-const userName = (document.querySelector(
-  "#userName"
-).innerHTML = localStorage.getItem("userName"));
+document.querySelector("#userImage").src = localStorage.getItem("userImage");
+document.querySelector("#userName").innerHTML = localStorage.getItem(
+  "userName"
+);
+
+const role = localStorage.getItem("role");
+if (role) {
+  if (role == "admin") {
+    document.querySelector("#usuarioMenu").classList.remove("d-none");
+  } else {
+    document.querySelector("#usuarioMenu").remove();
+  }
+} else {
+  document.querySelector("#usuarioMenu").remove();
+}

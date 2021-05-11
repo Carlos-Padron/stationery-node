@@ -64,7 +64,7 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const _id = req.user._id;
-
+  delete req.body._id
   let imageRelativePath = `${req.protocol}://${req.get("host")}/images/users/`;
   let imageAbsolutePath = `${__dirname}/Public/images/users/`;
 
@@ -126,6 +126,7 @@ const updateUser = async (req, res) => {
       delete body.image;
     }
 
+    console.log(body);
     let updatedUser = await User.findOneAndUpdate({ _id }, body, {
       new: true,
     }).exec();
@@ -202,14 +203,55 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const enableUser = async (req, res) => {
+  const _id = req.body._id;
+
+  try {
+    let user = await User.findById(_id).exec();
+
+    if (!user) {
+      res.json({
+        error: true,
+        message: "No se encontró al usuario solicitado.",
+        response: null,
+      });
+      return;
+    }
+
+    user.disabled = false;
+    await user.save();
+    res.json({
+      error: false,
+      message: "El usuario fue habilitado correctamente.",
+      response: null,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 const searchUsers = async (req, res) => {
   const { name } = req.body;
 
   try {
     const users = await User.find({
       name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
-      disabled: false,
-    }).sort({ name: "asc" });
+    })
+    .sort({ name: "asc" });
 
     res.json({
       error: false,
@@ -241,5 +283,6 @@ module.exports = {
   searchUsers,
   createUser,
   updateUser,
+  enableUser,
   deleteUser,
 };

@@ -13,6 +13,7 @@ window.addEventListener("DOMContentLoaded", () => {
     add: "/addUser",
     update: "/updateUser",
     delete: "/deleteUser",
+    enable: "/enableUser",
   };
 
   let usuariosColums = [
@@ -29,6 +30,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const updateUserBtn = document.querySelector("#btnUpdateUser");
   const mainTableBody = document.querySelector("#mainTable tbody.list");
 
+  const isAdmin = localStorage.getItem("role")
   //Listeners
   searchBtn.addEventListener("click", search);
   addBtn.addEventListener("click", showMainModalAdd);
@@ -98,10 +100,18 @@ window.addEventListener("DOMContentLoaded", () => {
       usuariosData = json.response;
 
       usuariosData.forEach((elem, index) => {
-        elem.actions = `<div class="btn-group">
-        <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
-        <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
-    </div>`;
+
+        if (elem.disabled) {
+          elem.actions = `<div class="btn-group">
+          <button title="Habilitar"   type="button" class="btn btn-sm btn-icon btn-secondary   enable"   data-index="${index}" data-id="${elem._id}" > <i class="uil uil-user-check enable text-warning"></i> </button>
+          </div>`;
+        }else{
+          elem.actions = `<div class="btn-group">
+          <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
+            <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
+          </div>`;
+        }
+       
       });
 
       mainTable.reloadTable(usuariosData);
@@ -198,6 +208,59 @@ window.addEventListener("DOMContentLoaded", () => {
 
     try {
       let request = await fetch(routes.delete, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          credentials: "same-origin",
+        },
+        body,
+      });
+
+      let json = await request.json();
+
+      if (json.error) {
+        if (Array.isArray(json.message)) {
+          let messages = "";
+          json.message.forEach((msg) => {
+            messages += `<strong>*${msg}</strong>`;
+          });
+          unblockElem(mainTableBody);
+          modalAlert("warning", "Aviso", messages);
+          return;
+        } else {
+          unblockElem(mainTableBody);
+
+          modalAlert(
+            "warning",
+            "Aviso",
+            `<strong>*${json.message}</strong> <br>`
+          );
+          return;
+        }
+      }
+
+      modalAlert(
+        "success",
+        "Aviso ",
+        `<strong>${json.message}</strong> <br>`,
+        () => {
+          search();
+        }
+      );
+    } catch (error) {
+      errorNotification(error);
+      unblockElem(mainTableBody);
+      console.error(error);
+    }
+  }
+
+  async function enable(_id) {
+    blockElem(mainTableBody);
+    let body = JSON.stringify({ _id });
+
+    try {
+      let request = await fetch(routes.enable, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -405,6 +468,12 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function enableConfirmation(_id) {
+    confirmationAlert("Se habilitará el usuario seleccionado.", () => {
+      enable(_id);
+    });
+  }
+
   function clearSearch() {
     resetForm("searchForm");
   }
@@ -431,6 +500,18 @@ window.addEventListener("DOMContentLoaded", () => {
         let button = e.target;
         let index = button.getAttribute("data-index");
         deleteConfirmation(usuariosData[index]._id);
+      }
+    }
+
+    if (e.target && e.target.classList.contains("enable")) {
+      if (e.target.tagName === "I") {
+        let button = e.target.parentElement;
+        let index = button.getAttribute("data-index");
+        enableConfirmation(usuariosData[index]._id);
+      } else {
+        let button = e.target;
+        let index = button.getAttribute("data-index");
+        enableConfirmation(usuariosData[index]._id);
       }
     }
   }

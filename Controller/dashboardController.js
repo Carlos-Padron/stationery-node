@@ -1,10 +1,14 @@
 const User = require("../Model/UserModel");
 const CashOut = require("../Model/CashOutModel");
 const Product = require("../Model/ProductModel");
+const Sale = require("../Model/SaleModel");
+const OtherMovements = require("../Model/OtherMovementModel");
+const ServiceModel = require("../Model/ServiceModel");
 
 const index = async (req, res) => {
   let currentDay = new Date();
   let sevenDaysAgo = new Date();
+  let todaySales = 0;
 
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
 
@@ -28,6 +32,38 @@ const index = async (req, res) => {
     .select("name brand quantity")
     .lean();
 
+  let sales = await Sale.find({
+    canceled: false,
+    date: { $gte: currentDay },
+  }).select("total");
+
+  let otherMovements = await OtherMovements.find({
+    date: { $gte: currentDay },
+  });
+
+  let salida = otherMovements.filter((mov) => mov.type == "Salida de dinero");
+  let entrada = otherMovements.filter((mov) => mov.type == "Ingreso de dinero");
+
+  let services = await ServiceModel.find({
+    date: { $gte: currentDay },
+  });
+
+  salida.forEach((mov) => {
+    todaySales -= mov.amount;
+  });
+
+  entrada.forEach((mov) => {
+    todaySales += mov.amount;
+  });
+
+  sales.forEach((sale) => {
+    todaySales += sale.total;
+  });
+
+  services.forEach((ser) => {
+    todaySales += ser.total;
+  });
+
   products.forEach((prod, index) => {
     products[index].brand = prod.brand.name;
   });
@@ -41,6 +77,7 @@ const index = async (req, res) => {
       users: users.length,
       cashOuts: JSON.stringify(cashOuts),
       products: JSON.stringify(products),
+      todaySalesBackEnd: todaySales,
     });
   } catch (error) {
     console.log(error);

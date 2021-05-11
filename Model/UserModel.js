@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     unique: true,
   },
+  role: {
+    type: String,
+    default: "employee",
+    lowercase: true,
+    unique: true,
+  },
   password: {
     type: String,
     required: [true, "La contraseña es requerida."],

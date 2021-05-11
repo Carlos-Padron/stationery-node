@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let userImage = responseData.imageRelativePath;
         localStorage.setItem("userName", userName);
         localStorage.setItem("userImage", userImage);
+        localStorage.setItem("role", responseData.role);
 
         window.location = "/dashboard";
       }

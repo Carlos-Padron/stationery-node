@@ -50,6 +50,8 @@ const redirectIfAuth = async (req, res, next) => {
 
         if (user) {
           return res.redirect("/dashboard");
+        } else {
+          return res.redirect("/login");
         }
       }
 
@@ -78,6 +80,13 @@ const authRoute = async (req, res, next) => {
 
           next();
           return;
+        } else {
+          return res.json({
+            error: true,
+            message:
+              "No se puedo verificar el usuario autenticado. Por favor vuelve a iniciar sesión.",
+            response: null,
+          });
         }
       } else {
         return res.json({
@@ -104,8 +113,6 @@ const authRoute = async (req, res, next) => {
     });
   }
 };
-
-//TODO: middlerware para verificar el el usuario puede acceder a ciertos módulos
 
 module.exports = {
   authViews,

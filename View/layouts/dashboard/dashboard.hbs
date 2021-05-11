@@ -1,5 +1,247 @@
 {{#extend "master"}}
-    {{#content "body" mode="append"}}
-        <h1>Contenido</h1>
-    {{/content}}
+
+
+{{#content "styles" mode="append"}}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    thead,
+    tbody,
+    tr,
+    td,
+    th {
+        display: block;
+    }
+
+    tr:after {
+        content: '';
+        display: block;
+        visibility: hidden;
+        clear: both;
+    }
+
+    tbody {
+        height: 42vh !important;
+        overflow-y: auto;
+    }
+
+    tbody td,
+    thead th {
+        width: 33%;
+        float: left;
+    }
+</style>
+{{/content}}
+
+{{#content "body" mode="append"}}
+
+{{!-- <h1>grafica de cortes de caja por 7 dias</h1>
+<h1>tarjeta total de usuarios </h1>
+<h1>tarjeta comparacion de ventas de hoy con las de ayer dia n - 1 </h1>
+<h1>reporte en tabla de todos los productos en inventarios</h1>
+<h1>reporte de productos bajos </h1>
+<h1>Cantida dde ventas por 7 dias</h1>
+<h1>grafica de servicios</h1>
+<h1>Pedidas de productos poer 7 dias</h1> --}}
+
+
+
+
+
+
+<div class="header-body">
+    <!-- Card stats -->
+    <div class="row">
+        <div class="col-xl-4 col-md-6">
+            <div class="card">
+                <!-- Card body -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="card-title text-uppercase text-muted mb-0">Total usuarios</h5>
+                            <span class="h2 font-weight-bold mb-0">{{users}}</span>
+                        </div>
+                        <div class="col-auto">
+                            <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                <i class="uil uil-users-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card">
+                <!-- Card body -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="card-title text-uppercase text-muted mb-0">Ventas de ayer</h5>
+                            <span id="yesterdaySales" class="h2 font-weight-bold mb-0"></span>
+                        </div>
+                        <div class="col-auto">
+                            <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                <i class="uil uil-chart-line"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card">
+                <!-- Card body -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="card-title text-uppercase text-muted mb-0">Ventas de hoy</h5>
+                            <span id="todaySales" class="h2 font-weight-bold mb-0"></span>
+                        </div>
+                        <div class="col-auto">
+                            <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                <i class="uil uil-chart-line"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="">
+    <div class="row">
+        <div class="col-xl-7">
+            <div class="card bg-default">
+                <div class="card-header bg-transparent">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h6 class="text-light text-uppercase ls-1 mb-1">Resumen</h6>
+                            <h5 class="h3 text-white mb-0">Cortes de caja</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Chart -->
+                    <div class="chart">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <!-- Chart wrapper -->
+                        <canvas id="chart-cashout-dark" class="chart-canvas chartjs-render-monitor"
+                            style="display: block; height: 350px; width: 623px;" width="1246" height="700"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-5">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h6 class="text-uppercase text-muted ls-1 mb-1">Reporte</h6>
+                            <h5 class="h3 mb-0">Productos bajos en inventario</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+
+
+                    <div id="shopping-cart" class="px-0 col-12">
+                        <table id="card-table" class="table" style="table-layout:fixed">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="text-center">Producto</th>
+                                    <th class="text-center">Marca</th>
+                                    <th class="text-center">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTable" class="list">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <canvas id="myChart" width="400" height="400"></canvas>
+</div>
+
+
+{{/content}}
+
+
+{{#content "scripts" mode="append"}}
+<script>
+
+    const labels = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+    ];
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'My First dataset',
+            borderColor: 'rgb(94, 114, 228)',
+            data: [0, 10, 5, 2, 20, 30, 45],
+            fill: false
+        }]
+    };
+
+
+    const config = {
+        type: 'line',
+        data,
+        options: {}
+    };
+
+    var myChart = new Chart(
+        document.getElementById('chart-cashout-dark'),
+        config
+    );
+
+
+    let cashOuts = '{{ cashOuts }}'
+    let products = '{{ products }}'
+
+    let textArea = document.createElement("textarea");
+    textArea.innerHTML = cashOuts
+    let decodedString = textArea.innerHTML;
+
+    cashOuts = JSON.parse(decodedString)
+
+    textArea.innerHTML = products
+    decodedString = textArea.innerHTML;
+
+    products = JSON.parse(decodedString)
+
+
+
+
+</script>
+{{/content}}
+
+
 {{/extend}}

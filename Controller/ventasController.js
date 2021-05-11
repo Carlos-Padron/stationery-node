@@ -128,7 +128,7 @@ const searchSales = async (req, res) => {
 
   try {
     let sales = await Sale.find({
-      date: { $gte: fechaInicio, $lte: fechaFin },
+      date: { $gte: fechaFin, $lte: fechaInicio },
       canceled,
     })
       .select("_id concept date total canceled ")

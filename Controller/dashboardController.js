@@ -1,16 +1,36 @@
+const User = require("../Model/UserModel");
 const CashOut = require("../Model/CashOutModel");
-const Sale = require("../Model/SaleModel");
-const OtherMovements = require("../Model/OtherMovementModel");
-const Loss = require("../Model/LossModel");
+const Product = require("../Model/ProductModel");
 
 const index = async (req, res) => {
   let currentDay = new Date();
   let sevenDaysAgo = new Date();
 
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7); 
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
 
-  console.log(currentDay);
-  console.log(sevenDaysAgo);
+  currentDay = `${currentDay.toISOString().split("T")[0]}T00:00:00z`;
+  sevenDaysAgo = `${sevenDaysAgo.toISOString().split("T")[0]}T23:59:59z`;
+
+  let users = await User.find({ disabled: false });
+  let cashOuts = await CashOut.find({
+    date: { $gte: sevenDaysAgo, $lte: currentDay },
+  })
+    .select("totalSales date")
+    .sort({ date: "asc" });
+
+  let products = await Product.find({
+    disabled: false,
+    quantity: {
+      $lte: 30,
+    },
+  })
+    .populate({ path: "brand" })
+    .select("name brand quantity")
+    .lean();
+
+  products.forEach((prod, index) => {
+    products[index].brand = prod.brand.name;
+  });
 
   try {
     res.render("dashboard/dashboard", {
@@ -18,8 +38,14 @@ const index = async (req, res) => {
       script: "dashboardClient",
       activeMenu: "DSHBRD",
       activeSubmenu: "",
+      users: users.length,
+      cashOuts: JSON.stringify(cashOuts),
+      products: JSON.stringify(products),
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    res.render("notFound");
+  }
 };
 
 module.exports = {

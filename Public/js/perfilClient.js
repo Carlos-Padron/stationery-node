@@ -94,6 +94,15 @@ window.addEventListener("DOMContentLoaded", () => {
       }
       enableButton(addUserBtn, "Actualizar");
 
+      localStorage.setItem("userName", json.response.name);
+      localStorage.setItem("userImage", json.response.image);
+
+      document.querySelector("#userImage").src = localStorage.getItem(
+        "userImage"
+      );
+      document.querySelector("#userName").innerHTML = localStorage.getItem(
+        "userName"
+      );
       modalAlert(
         "success",
         "Aviso ",

@@ -119,7 +119,7 @@ const searchQuotes = async (req, res) => {
 
   try {
     let quotes = await Quote.find({
-      date: { $gte: fechaInicio, $lte: fechaFin },
+      date: { $gte: fechaFin, $lte: fechaInicio },
     })
       .select("_id concept date total")
       .sort({ date: "asc" });

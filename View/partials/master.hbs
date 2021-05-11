@@ -1,85 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>Papelería Ricard2</title>
-    <!-- Favicon -->
-    <link rel="icon" href="/assets/img/brand/favicon.png" type="image/png" />
-    <!-- Fonts -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
-    />
-    <!-- Icons -->
-    <link
-      rel="stylesheet"
-      href="https://unicons.iconscout.com/release/v3.0.3/css/line.css"
-    />
-    <link
-      rel="stylesheet"
-      href="/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css"
-      type="text/css"
-    />
-    <!-- Page plugins -->
-    <link rel="stylesheet" href="/assets/vendor/animate.css/animate.min.css" />
-    <link
-      rel="stylesheet"
-      href="../../assets/vendor/sweetalert2/dist/sweetalert2.min.css"
-    />
 
-    <!-- Argon CSS -->
-    <link
-      rel="stylesheet"
-      href="/assets/css/argon.css?v=1.1.0"
-      type="text/css"
-    />
-    <link rel="stylesheet" href="/css/global.css" type="text/css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Papelería Ricard2</title>
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/img/brand/favicon.png" type="image/png" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" />
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.3/css/line.css" />
+  <link rel="stylesheet" href="/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" type="text/css" />
+  <!-- Page plugins -->
+  <link rel="stylesheet" href="/assets/vendor/animate.css/animate.min.css" />
+  <link rel="stylesheet" href="../../assets/vendor/sweetalert2/dist/sweetalert2.min.css" />
 
-    {{#block "styles"}}
+  <!-- Argon CSS -->
+  <link rel="stylesheet" href="/assets/css/argon.css?v=1.1.0" type="text/css" />
+  <link rel="stylesheet" href="/css/global.css" type="text/css" />
+
+  {{#block "styles"}}
+  {{/block}}
+</head>
+
+<body>
+  {{>sidebar}}
+  <div id="panel" class="main-content">
+    {{>navbar}}
+    {{>content}}
+    {{#block "modals"}}
     {{/block}}
-  </head>
+    {{!-- <div class="container-fluid">
 
-  <body>
-    {{>sidebar}}
-    <div id="panel" class="main-content">
-      {{>navbar}}
-      {{>content}}
-      {{#block "modals"}}
-      {{/block}}
-    </div>
+      <footer class="footer pt-0">
+        <div class="row align-items-center justify-content-lg-between">
+          <div class="col-lg-6">
+            <div class="copyright text-center  text-lg-left  text-muted">
+              © 2021 <a href="https://www.carlospadron.dev/" class="font-weight-bold ml-1" target="_blank">Carlos
+                Padrón</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div> --}}
 
-    <!-- Core -->
-    <script src="../../assets/vendor/jquery/dist/jquery.min.js"></script>
-    <script src="../../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/vendor/js-cookie/js.cookie.js"></script>
-    <script src="../../assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
-    <script src="../../assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
-    <!-- Optional JS -->
-    <script src="../../assets/vendor/bootstrap-notify/bootstrap-notify.min.js"></script>
-    <script src="../../assets/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
-    <script src="../../assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-    <script src="../../assets/vendor/bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min.js"></script>
 
-    <!-- Optional CSS -->
-    <link
-      rel="stylesheet"
-      href="../../assets/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css"
-    />
+  </div>
 
-    <!-- Argon JS -->
-    <script src="../../assets/js/argon.js?v=1.1.0"></script>
 
-    <!-- Page jS -->
-    {{#block "scripts"}}
-    {{/block}}
 
-    <script src="/js/general.js"></script>
-    <script src="/js/cardTable.js"></script>
-    <script src="/js/normalTable.js"></script>
-    <script src="/js/{{ script }}.js"></script>
-  </body>
+  <!-- Core -->
+  <script src="../../assets/vendor/jquery/dist/jquery.min.js"></script>
+  <script src="../../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/vendor/js-cookie/js.cookie.js"></script>
+  <script src="../../assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
+  <script src="../../assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
+  <!-- Optional JS -->
+  <script src="../../assets/vendor/bootstrap-notify/bootstrap-notify.min.js"></script>
+  <script src="../../assets/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
+  <script src="../../assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+  <script src="../../assets/vendor/bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min.js"></script>
+  <script src="../../assets/vendor/chart.js/dist/Chart.min.js"></script>
+  <script src="../../assets/vendor/chart.js/dist/Chart.extension.js"></script>
+
+  <!-- Optional CSS -->
+  <link rel="stylesheet" href="../../assets/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" />
+
+  <!-- Argon JS -->
+  <script src="../../assets/js/argon.js?v=1.1.0"></script>
+
+  <!-- Page jS -->
+  {{#block "scripts"}}
+  {{/block}}
+
+  <script src="/js/general.js"></script>
+  <script src="/js/cardTable.js"></script>
+  <script src="/js/normalTable.js"></script>
+
+  <script src="/js/{{ script }}.js"></script>
+</body>
+
 </html>

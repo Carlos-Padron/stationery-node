@@ -126,19 +126,25 @@ const updateUser = async (req, res) => {
       delete body.image;
     }
 
-    await User.findOneAndUpdate({ _id }, body).exec();
+    let updatedUser = await User.findOneAndUpdate({ _id }, body, {
+      new: true,
+    }).exec();
 
+    console.log(updatedUser);
     res.json({
       error: false,
       message: "El perfil actualizado correctamente.",
-      response: null,
+      response: {
+        image: updatedUser.imageRelativePath,
+        name: `${updatedUser.name.split(" ")[0]} ${updatedUser.fatherSurname}`,
+      },
     });
   } catch (error) {
     if (fs.existsSync(imageAbsolutePath)) {
       fs.unlinkSync(imageAbsolutePath);
     }
     let errors = errorHandler(error);
-console.log(error);
+    console.log(error);
     if (errors.length === 0) {
       res.json({
         error: true,

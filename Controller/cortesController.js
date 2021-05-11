@@ -34,16 +34,16 @@ const registerCashOut = async (req, res) => {
     }
 
     let sales = await Sale.find({
-      date: { $gte: startOfTheDay, $lte: endOfTheDay },
+      date: { $gte: endOfTheDay, $lte: startOfTheDay },
       canceled: false,
     });
 
     let otherMovements = await OtherMovements.find({
-      date: { $gte: startOfTheDay, $lte: endOfTheDay },
+      date: { $gte: endOfTheDay, $lte: startOfTheDay },
     });
 
     let services = await ServiceModel.find({
-      date: { $gte: startOfTheDay, $lte: endOfTheDay },
+      date: { $gte: endOfTheDay, $lte: startOfTheDay },
     });
 
     let body = {};
@@ -126,16 +126,16 @@ const updateCashOut = async (req, res) => {
     let endOfTheDay = `${cashOut.date.toISOString().split("T")[0]}T23:59:59z`;
 
     let sales = await Sale.find({
-      date: { $gte: startOfTheDay, $lte: endOfTheDay },
+      date: { $gte: endOfTheDay, $lte: startOfTheDay },
       canceled: false,
     });
 
     let otherMovements = await OtherMovements.find({
-      date: { $gte: startOfTheDay, $lte: endOfTheDay },
+      date: { $gte: endOfTheDay, $lte: startOfTheDay },
     });
 
     let services = await ServiceModel.find({
-      date: { $gte: startOfTheDay, $lte: endOfTheDay },
+      date: { $gte: endOfTheDay, $lte: startOfTheDay },
     });
 
     let body = {};
@@ -205,7 +205,7 @@ const searchCashOuts = async (req, res) => {
 
   try {
     const cashOuts = await CashOut.find({
-      date: { $gte: fechaInicio, $lte: fechaFin },
+      date: { $gte: fechaFin, $lte: fechaInicio },
     }).sort({ date: "asc" });
 
     res.json({

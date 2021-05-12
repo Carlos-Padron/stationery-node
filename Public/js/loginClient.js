@@ -123,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
           responseData.fatherSurname
         }`;
         
+        console.log(responseData);
         let userImage = responseData.imageRelativePath;
         localStorage.setItem("userName", userName);
         localStorage.setItem("userImage", userImage);

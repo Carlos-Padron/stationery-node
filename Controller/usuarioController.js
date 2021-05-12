@@ -15,7 +15,6 @@ const index = (req, res) => {
 const profile = async (req, res) => {
   try {
     let user = await User.findById(req.user._id);
-    console.log(user);
     delete user.password;
     delete user.disabled;
     delete user.imageAbsolutePath;
@@ -63,8 +62,15 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const _id = req.user._id;
-  delete req.body._id
+  let _id;
+  if (req.body._id == undefined) {
+    _id = req.user._id;
+  } else {
+    _id = req.body._id;
+    delete req.body._id;
+  }
+  console.log();
+
   let imageRelativePath = `${req.protocol}://${req.get("host")}/images/users/`;
   let imageAbsolutePath = `${__dirname}/Public/images/users/`;
 
@@ -85,7 +91,6 @@ const updateUser = async (req, res) => {
       req.body.image == null ||
       req.body.image == process.env.DEFAULT_USER_ROUTE
     ) {
-      console.log("sin imagen");
       body.imageAbsolutePath = null;
       body.imageRelativePath = null;
 
@@ -93,8 +98,6 @@ const updateUser = async (req, res) => {
         fs.unlinkSync(user.imageAbsolutePath);
       }
     } else if (req.body.image != null && req.body.image.includes("base64")) {
-      console.log("con imagen nueva");
-
       let base64Image = req.body.image.split(";base64,").pop();
       let buffer = Buffer.from(base64Image, "base64");
 
@@ -126,12 +129,12 @@ const updateUser = async (req, res) => {
       delete body.image;
     }
 
-    console.log(body);
     let updatedUser = await User.findOneAndUpdate({ _id }, body, {
       new: true,
+      runValidators: true,
+      context: "query",
     }).exec();
 
-    console.log(updatedUser);
     res.json({
       error: false,
       message: "El perfil actualizado correctamente.",
@@ -249,9 +252,21 @@ const searchUsers = async (req, res) => {
 
   try {
     const users = await User.find({
-      name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
+      $or: [
+        {
+          name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
+        },
+        {
+          fatherSurname: {
+            $regex: `.*${changeVowelsForRegex(name)}.*`,
+            $options: "i",
+          },
+        },
+      ],
     })
-    .sort({ name: "asc" });
+      .where("_id")
+      .ne(req.user._id)
+      .sort({ name: "asc" });
 
     res.json({
       error: false,

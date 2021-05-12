@@ -30,7 +30,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const updateUserBtn = document.querySelector("#btnUpdateUser");
   const mainTableBody = document.querySelector("#mainTable tbody.list");
 
-  const isAdmin = localStorage.getItem("role")
+  const isAdmin = localStorage.getItem("role");
   //Listeners
   searchBtn.addEventListener("click", search);
   addBtn.addEventListener("click", showMainModalAdd);
@@ -100,18 +100,28 @@ window.addEventListener("DOMContentLoaded", () => {
       usuariosData = json.response;
 
       usuariosData.forEach((elem, index) => {
+        elem.name = `${elem.name.split(" ")[0]} ${elem.fatherSurname}`;
 
         if (elem.disabled) {
           elem.actions = `<div class="btn-group">
-          <button title="Habilitar"   type="button" class="btn btn-sm btn-icon btn-secondary   enable"   data-index="${index}" data-id="${elem._id}" > <i class="uil uil-user-check enable text-warning"></i> </button>
+          <button title="Habilitar"   type="button" class="btn btn-sm btn-icon btn-warning   enable" ;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-refresh enable "></i> </button>
           </div>`;
-        }else{
+        } else {
           elem.actions = `<div class="btn-group">
-          <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> </button>
-            <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
+            <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete"   data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
           </div>`;
+         /*  <button
+            title="Editar"
+            type="button"
+            class="btn btn-sm btn-icon btn-info   show"
+            style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"
+            data-index="${index}"
+            data-id="${elem._id}"
+          >
+            {" "}
+            <i class="uil uil-pen show"></i>{" "}
+          </button>; */
         }
-       
       });
 
       mainTable.reloadTable(usuariosData);
@@ -519,6 +529,8 @@ window.addEventListener("DOMContentLoaded", () => {
   function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML = "Agregar nuevo usuario";
     $("#main_modal").modal("show");
+    addUserBtn.classList.remove("d-none");
+    updateUserBtn.classList.add("d-none");
   }
 
   function showMainModalEdit(usuario) {

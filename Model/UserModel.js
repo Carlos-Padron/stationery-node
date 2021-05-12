@@ -27,8 +27,6 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "employee",
-    lowercase: true,
-    unique: true,
   },
   password: {
     type: String,
@@ -63,18 +61,24 @@ userSchema.methods.toJSON = function () {
 //*Retornar TRUE si es válido
 //*Retornar FALSE si no pasa la validación
 userSchema.path("email").validate(async function (email) {
-  console.log("validating email");
-  let existingUser = await mongoose.models.User.findOne({
-    _id: this._id.toString(),
-  });
+  let existingUser =
+    this.options == null
+      ? await mongoose.models.User.findOne({
+          _id: this._id.toString(),
+        })
+      : await mongoose.models.User.findOne({
+          _id: this.getQuery()._id,
+        });
 
-  console.log("existingUser: " + existingUser);
+  //console.log(existingUser);
   if (existingUser) {
+
+    console.log(existingUser.email);    
     if (existingUser.email === email) {
       return true;
     } else {
-      let email = await mongoose.models.User.findOne({ email });
-      if (email) {
+      let userEmail = await mongoose.models.User.findOne({ email });
+      if (userEmail) {
         return false;
       } else {
         return true;

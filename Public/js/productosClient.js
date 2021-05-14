@@ -16,6 +16,7 @@ window.addEventListener("DOMContentLoaded", () => {
     update: "/updateProduct",
     delete: "/deleteProduct",
     printAllProducts: "/printAllProducts",
+    printLowStockProducts: "/printLowStockProducts",
   };
 
   let productsData = [];
@@ -50,6 +51,7 @@ window.addEventListener("DOMContentLoaded", () => {
   //Seach and main form elements
   const searchBtn = document.querySelector("#btnSearch");
   const btnPrintAll = document.querySelector("#btnPrintAll");
+  const btnPrintLowStock = document.querySelector("#btnPrintLowStock");
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
   const addBtn = document.querySelector("#btnAdd");
@@ -60,6 +62,7 @@ window.addEventListener("DOMContentLoaded", () => {
   //Listeners
   searchBtn.addEventListener("click", search);
   btnPrintAll.addEventListener("click", printProductsReport);
+  btnPrintLowStock.addEventListener("click", printProductsReport);
   addBtn.addEventListener("click", showMainModalAdd);
   btnClearSearch.addEventListener("click", clearSearch);
   btnAddProduct.addEventListener("click", addProductBtnClick);
@@ -590,10 +593,10 @@ window.addEventListener("DOMContentLoaded", () => {
     $("#main_modal").modal("show");
   }
 
-  async function printProductsReport() {
+  async function printProductsReport(e) {
     blockElem(searchForm);
     let body = {};
-
+    console.log();
     $fields.forEach((elem) => {
       let elemData = document.querySelector(`[data-search="${elem}"]`);
 
@@ -606,15 +609,20 @@ window.addEventListener("DOMContentLoaded", () => {
     try {
       body = JSON.stringify(body);
 
-      let request = await fetch(routes.printAllProducts, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          credentials: "same-origin",
-        },
-        body,
-      });
+      let request = await fetch(
+        e.target.id == "btnPrintAll"
+          ? routes.printAllProducts
+          : routes.printLowStockProducts,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            credentials: "same-origin",
+          },
+          body,
+        }
+      );
 
       let json = await request.json();
 

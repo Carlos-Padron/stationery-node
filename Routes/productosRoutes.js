@@ -30,5 +30,6 @@ router.post(
 
 router.post("/printAllProducts", authRoute, productosController.printProductsReport);
 
+router.post("/printLowStockProducts", authRoute, productosController.printLowStockProductsReport);
 
 module.exports = router;

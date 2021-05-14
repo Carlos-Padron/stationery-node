@@ -41,7 +41,6 @@ const prepateDataForTemplate = async (templateName) => {
 
   data.date = `${day}/${month}/${year}`;
 
-
   switch (templateName) {
     case "productsReport":
       let products = await Product.find({ disabled: false })
@@ -58,6 +57,29 @@ const prepateDataForTemplate = async (templateName) => {
       console.log(products);
 
       data.products = products;
+
+      break;
+
+    case "lowProductsReport":
+      let lowStockProducts = await Product.find({
+        disabled: false,
+        quantity: {
+          $lte: 30,
+        },
+      })
+        .populate({ path: "articleType", select: "name" })
+        .populate({ path: "brand", select: "name" })
+        .select("name price quantity articleType brand")
+        .sort({ name: "asc", articleType: "asc", brand: "asc" })
+        .lean();
+
+      lowStockProducts.forEach((prod) => {
+        prod.price = prod.price.toFixed(2);
+      });
+
+      console.log(lowStockProducts);
+
+      data.products = lowStockProducts;
 
       break;
 

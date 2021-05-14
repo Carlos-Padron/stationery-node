@@ -28,4 +28,7 @@ router.post(
   productosController.getProductsForCombo
 );
 
+router.post("/printAllProducts", authRoute, productosController.printProductsReport);
+
+
 module.exports = router;

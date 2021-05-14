@@ -15,6 +15,7 @@ window.addEventListener("DOMContentLoaded", () => {
     show: "/showProduct",
     update: "/updateProduct",
     delete: "/deleteProduct",
+    printAllProducts: "/printAllProducts",
   };
 
   let productsData = [];
@@ -48,6 +49,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //Seach and main form elements
   const searchBtn = document.querySelector("#btnSearch");
+  const btnPrintAll = document.querySelector("#btnPrintAll");
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
   const addBtn = document.querySelector("#btnAdd");
@@ -57,6 +59,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //Listeners
   searchBtn.addEventListener("click", search);
+  btnPrintAll.addEventListener("click", printProductsReport);
   addBtn.addEventListener("click", showMainModalAdd);
   btnClearSearch.addEventListener("click", clearSearch);
   btnAddProduct.addEventListener("click", addProductBtnClick);
@@ -585,6 +588,73 @@ window.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector("#modal_title").innerHTML = "Editar Producto";
     $("#main_modal").modal("show");
+  }
+
+  async function printProductsReport() {
+    blockElem(searchForm);
+    let body = {};
+
+    $fields.forEach((elem) => {
+      let elemData = document.querySelector(`[data-search="${elem}"]`);
+
+      if (elemData != undefined) {
+        let data = elemData.value.trim();
+        body[elem] = data;
+      }
+    });
+
+    try {
+      body = JSON.stringify(body);
+
+      let request = await fetch(routes.printAllProducts, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          credentials: "same-origin",
+        },
+        body,
+      });
+
+      let json = await request.json();
+
+      if (json.error) {
+        if (Array.isArray(json.message)) {
+          let messages = "";
+          json.message.forEach((msg) => {
+            messages += `<strong>*${msg}</strong> <br>`;
+          });
+          modalAlert("warning", "Aviso", messages);
+          unblockElem(searchForm);
+          return;
+        } else {
+          modalAlert(
+            "warning",
+            "Aviso",
+            `<strong>*${json.message}</strong> <br>`
+          );
+          unblockElem(searchForm);
+          return;
+        }
+      }
+
+      let byteArray = new Uint8Array(
+        atob(json.response)
+          .split("")
+          .map((char) => char.charCodeAt(0))
+      );
+      let blob = new Blob([byteArray], { type: "application/pdf" });
+
+      const url = window.URL.createObjectURL(blob);
+
+      window.open(url, "_blank");
+
+      unblockElem(searchForm);
+    } catch (error) {
+      unblockElem(searchForm);
+      errorNotification("Error interno del servidor");
+      console.error(error);
+    }
   }
 
   $("#main_modal").on("hidden.bs.modal", function (e) {

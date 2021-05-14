@@ -7,7 +7,10 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const imgHelper = require("../Utils/Helpers/imageHelper");
 const { changeVowelsForRegex } = require("../Utils/Helpers/regrexHelper");
-
+const {
+  renderTemplate,
+  createPDF,
+} = require("../Utils/Helpers/PDFtemplateHelper");
 
 const index = async (req, res) => {
   try {
@@ -496,6 +499,37 @@ const getProductsForCombo = async (req, res) => {
   }
 };
 
+const printProductsReport = async (req, res) => {
+  try {
+    const template = await renderTemplate("info", "productsReport");
+
+    let PDFBuffer = await createPDF(template);
+
+    res.json({
+      error: false,
+      message: null,
+      response: PDFBuffer.toString("base64"),
+    });
+  } catch (error) {
+    console.log(error);
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 module.exports = {
   index,
   createProduct,
@@ -505,4 +539,5 @@ module.exports = {
   deleteProduct,
   searchProductsWithStock,
   getProductsForCombo,
+  printProductsReport,
 };

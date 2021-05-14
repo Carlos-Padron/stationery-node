@@ -107,7 +107,51 @@ const deleteArticleType = async (req, res) => {
 
     res.json({
       error: false,
-      message: "El tipo de artículo fue eliminado correctamente.",
+      message: "El tipo de artículo fue deshabilitaado correctamente.",
+      response: null,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
+const enableArticleType = async (req, res) => {
+  const _id = req.body._id;
+
+  console.log(req.body);
+  try {
+    let articleType = await ArticleType.findById(_id);
+
+    if (!articleType) {
+      res.json({
+        error: true,
+        message: "No se encontró el artículo solicitado",
+        response: null,
+      });
+
+      return;
+    }
+
+    articleType.disabled = false;
+    await articleType.save();
+
+    res.json({
+      error: false,
+      message: "El tipo de artículo fue habilidato correctamente.",
       response: null,
     });
   } catch (error) {
@@ -133,13 +177,18 @@ const searchArticleType = async (req, res) => {
   const { name } = req.body;
 
   try {
-    const articleTypes = await ArticleType.find({
+    let filter = {
       name: {
         $regex: `.*${changeVowelsForRegex(name)}.*`,
         $options: "i",
       },
-      disabled: false,
-    }).sort({ name: "asc" });
+    };
+
+    if (req.user.role != "admin") {
+      filter.disabled = false;
+    }
+
+    const articleTypes = await ArticleType.find(filter).sort({ name: "asc" });
 
     res.json({
       error: false,
@@ -170,5 +219,6 @@ module.exports = {
   createArticleType,
   updateArticleType,
   deleteArticleType,
+  enableArticleType,
   searchArticleType,
 };

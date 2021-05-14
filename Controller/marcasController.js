@@ -104,7 +104,49 @@ const deleteBrand = async (req, res) => {
 
     res.json({
       error: false,
-      message: "La marca fue desabilitada correctamente",
+      message: "La marca fue deshabilitada correctamente",
+      response: null,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
+const enableBrand = async (req, res) => {
+  const _id = req.body._id;
+
+  try {
+    let brand = await Brand.findById(_id).exec();
+
+    if (!brand) {
+      res.json({
+        error: true,
+        message: "No se encontró la marca solicitada.",
+        response: null,
+      });
+      return;
+    }
+
+    brand.disabled = false;
+    await brand.save();
+
+    res.json({
+      error: false,
+      message: "La marca fue habilitada correctamente",
       response: null,
     });
   } catch (error) {
@@ -130,10 +172,17 @@ const searchBrands = async (req, res) => {
   const { name } = req.body;
   try {
     console.log("before search");
-    const brands = await Brand.find({
+
+    let filter = {
       name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
-      disabled: false,
-    }).sort({ name: "asc" });
+    };
+
+    console.log(req.user.role);
+    if (req.user.role != "admin") {
+      filter.disabled = false;
+    }
+
+    const brands = await Brand.find(filter).sort({ name: "asc" });
 
     res.json({
       error: false,
@@ -165,4 +214,5 @@ module.exports = {
   updateBrand,
   deleteBrand,
   searchBrands,
+  enableBrand,
 };

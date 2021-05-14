@@ -110,17 +110,6 @@ window.addEventListener("DOMContentLoaded", () => {
           elem.actions = `<div class="btn-group">
             <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete"   data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> </button>
           </div>`;
-         /*  <button
-            title="Editar"
-            type="button"
-            class="btn btn-sm btn-icon btn-info   show"
-            style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"
-            data-index="${index}"
-            data-id="${elem._id}"
-          >
-            {" "}
-            <i class="uil uil-pen show"></i>{" "}
-          </button>; */
         }
       });
 

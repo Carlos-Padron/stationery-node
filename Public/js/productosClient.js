@@ -15,6 +15,7 @@ window.addEventListener("DOMContentLoaded", () => {
     show: "/showProduct",
     update: "/updateProduct",
     delete: "/deleteProduct",
+    enable: "/enableProduct",
     printAllProducts: "/printAllProducts",
     printLowStockProducts: "/printLowStockProducts",
   };
@@ -128,11 +129,26 @@ window.addEventListener("DOMContentLoaded", () => {
       productsData = json.response;
       console.log(productsData);
 
+      let role = localStorage.getItem("role");
+      
       productsData.forEach((elem, index) => {
-        elem.actions = `
+        if (role == "admin") {
+          if (elem.disabled) {
+            elem.actions = `
+            <button title="Habilitar"   type="button" class="btn btn-sm btn-icon btn-warning   enable" ;"  data-index="${index}" data-id="${elem._id}" > <i class="uil uil-refresh enable "></i> Habilitar</button>
+          `;
+          } else {
+            elem.actions = `
           <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"     data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> Editar</button>
           <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete"   data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> Deshabilitar</button>
-      `;
+          `;
+          }
+        } else {
+          elem.actions = `
+          <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"     data-index="${index}" data-id="${elem._id}" > <i class="uil uil-pen show"></i> Editar</button>
+          <button title="Deshabilitar" type="button" class="btn btn-sm btn-icon btn-danger delete"   data-index="${index}" data-id="${elem._id}" > <i class="uil uil-multiply delete"></i> Deshabilitar</button>
+        `;
+        }
       });
 
       mainTable.reloadCardTable(productsData);
@@ -230,6 +246,59 @@ window.addEventListener("DOMContentLoaded", () => {
 
     try {
       let request = await fetch(routes.delete, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          credentials: "same-origin",
+        },
+        body,
+      });
+
+      let json = await request.json();
+
+      if (json.error) {
+        if (Array.isArray(json.message)) {
+          let messages = "";
+          json.message.forEach((msg) => {
+            messages += `<strong>*${msg}</strong>`;
+          });
+          unblockElem(mainCardTable);
+          modalAlert("warning", "Aviso", messages);
+          return;
+        } else {
+          unblockElem(mainCardTable);
+          modalAlert(
+            "warning",
+            "Aviso",
+            `<strong>*${json.message}</strong> <br>`
+          );
+          return;
+        }
+      }
+
+      modalAlert(
+        "success",
+        "Aviso ",
+        `<strong>${json.message}</strong> <br>`,
+        () => {
+          search();
+        }
+      );
+    } catch (error) {
+      alert(error);
+      errorNotification(error);
+      unblockElem(mainCardTable);
+      console.error(error);
+    }
+  }
+
+  async function enable(_id) {
+    blockElem(mainCardTable);
+    let body = JSON.stringify({ _id });
+
+    try {
+      let request = await fetch(routes.enable, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -423,6 +492,12 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function enableConfirmation(_id) {
+    confirmationAlert("Se habilitará el producto seleccionado", () => {
+      enable(_id);
+    });
+  }
+
   function clearSearch() {
     resetForm("searchForm");
   }
@@ -449,6 +524,18 @@ window.addEventListener("DOMContentLoaded", () => {
         let button = e.target;
         let index = button.getAttribute("data-index");
         deleteConfirmation(productsData[index]._id);
+      }
+    }
+
+    if (e.target && e.target.classList.contains("enable")) {
+      if (e.target.tagName === "I") {
+        let button = e.target.parentElement;
+        let index = button.getAttribute("data-index");
+        enableConfirmation(productsData[index]._id);
+      } else {
+        let button = e.target;
+        let index = button.getAttribute("data-index");
+        enableConfirmation(productsData[index]._id);
       }
     }
   }

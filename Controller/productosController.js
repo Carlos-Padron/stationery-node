@@ -315,7 +315,7 @@ const deleteProduct = async (req, res) => {
     await product.save();
     res.json({
       error: false,
-      message: "El producto fue desabilitado correctamente",
+      message: "El producto fue deshabilitado correctamente",
       response: null,
     });
   } catch (error) {
@@ -336,6 +336,48 @@ const deleteProduct = async (req, res) => {
     }
   }
 };
+
+const enableProduct = async (req, res) => {
+  const { _id } = req.body;
+
+  try {
+    let product = await Product.findById(_id);
+
+    if (!product) {
+      res.json({
+        error: true,
+        message: "No se encontró el producto solicitado.",
+        response: null,
+      });
+      return;
+    }
+
+    product.disabled = false;
+    await product.save();
+    res.json({
+      error: false,
+      message: "El producto fue habilitado correctamente",
+      response: null,
+    });
+  } catch (error) {
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 
 const searchProducts = async (req, res) => {
   const { name, brand, articleType } = req.body;
@@ -365,7 +407,7 @@ const searchProducts = async (req, res) => {
     let products = await Product.find(filter)
       .populate({ path: "articleType", select: "name" })
       .populate({ path: "brand", select: "name" })
-      .select("name price quantity imageRelativePath articleType brand")
+      .select("name price quantity imageRelativePath articleType brand disabled")
       .sort({ name: "asc", articleType: "asc", brand: "asc" })
       .exec();
 
@@ -570,6 +612,7 @@ module.exports = {
   showProduct,
   updateProduct,
   deleteProduct,
+  enableProduct,
   searchProductsWithStock,
   getProductsForCombo,
   printProductsReport,

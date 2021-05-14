@@ -339,10 +339,12 @@ const deleteProduct = async (req, res) => {
 
 const searchProducts = async (req, res) => {
   const { name, brand, articleType } = req.body;
+  console.log(req.user.role);
 
-  let filter = {
-    disabled: false,
-  };
+  let filter = {};
+  if (req.user.role != "admin") {
+    filter.disabled = false;
+  }
 
   if (name) {
     filter.name = {
@@ -530,8 +532,6 @@ const printProductsReport = async (req, res) => {
   }
 };
 
-
-
 const printLowStockProductsReport = async (req, res) => {
   try {
     const template = await renderTemplate("info", "lowProductsReport");
@@ -563,7 +563,6 @@ const printLowStockProductsReport = async (req, res) => {
   }
 };
 
-
 module.exports = {
   index,
   createProduct,
@@ -574,5 +573,5 @@ module.exports = {
   searchProductsWithStock,
   getProductsForCombo,
   printProductsReport,
-  printLowStockProductsReport
+  printLowStockProductsReport,
 };

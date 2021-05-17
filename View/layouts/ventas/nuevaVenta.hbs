@@ -1,189 +1,402 @@
 {{#extend "master"}}
 
+  {{#content "styles" mode="append"}}
 
-{{#content "styles" mode="append"}}
-
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        border-spacing: 0;
-    }
-
-    thead,
-    tbody,
-    tr,
-    td,
-    th {
-        display: block;
-    }
-
-    tr:after {
-        content: '';
-        display: block;
-        visibility: hidden;
-        clear: both;
-    }
-
-    tbody {
-        height: 45vh !important;
-        overflow-y: auto;
-    }
-
-    tbody td,
-    thead th {
-        width: 33%;
-        float: left;
-    }
-</style>
-{{/content}}
-{{#content "body" mode="append"}}
-<div class="row px-0 py-0 mx-0">
-    <div class="col-md-8 px-0 pr-md-3 pr-lg-3">
+    <style>
+      table { width: 100%; border-collapse: collapse; border-spacing: 0; }
+      thead, tbody, tr, td, th { display: block; } tr:after { content: '';
+      display: block; visibility: hidden; clear: both; } tbody { height: 45vh
+      !important; overflow-y: auto; } tbody td, thead th { width: 33%; float:
+      left; }
+    </style>
+  {{/content}}
+  {{#content "body" mode="append"}}
+    <div class="row px-0 py-0 mx-0">
+      <div class="col-md-8 px-0 pr-md-3 pr-lg-3">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
-                <h3 class="mb-0">¡Registra una nueva venta!</h3>
-                <div class="text-right">
-                    <button id="btnClearSearch" type="button" class="btn btn-sm btn-outline-secondary">
-                        <i class="uil uil-redo"></i>
-                    </button>
+          <div class="card-header d-flex justify-content-between">
+            <h3 class="mb-0">¡Registra una nueva venta!</h3>
+            <div class="text-right">
+              <button
+                id="btnClearSearch"
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+              >
+                <i class="uil uil-redo"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <form id="searchForm">
+              <div class="row">
+                <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label">Nombre del producto:</label>
+                    <input
+                      class="form-control form-control-sm"
+                      placeholder="Producto"
+                      type="text"
+                      data-search="name"
+                    />
+                  </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <form id="searchForm">
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label class="form-control-label">Nombre del producto:</label>
-                                <input class="form-control form-control-sm " placeholder="Producto" type="text"
-                                    data-search="name" />
-                            </div>
-                        </div>
-                        <div class="col-12 col-sm-4 col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label class="form-control-label">Tipo de Artículo:</label>
-                                <select class="form-control form-control-sm " data-search="articleType">
-                                    <option value="" selected="true">Seleccione</option>
-                                    {{#each articleTypes}}
-                                    <option value="{{this._id}}">{{this.name}}</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-sm-4 col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label class="form-control-label">Marca:</label>
-                                <select class="form-control form-control-sm " data-search="brand">
-                                    <option value="" selected="true">Seleccione</option>
-                                    {{#each brands}}
-                                    <option value="{{this._id}}">{{this.name}}</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="card-footer text-right">
-                <button id="btnSearch" type="button" class="btn btn-sm btn-primary" style="width: 150px">
-                    <i class="uil uil-search"></i> Buscar
-                </button>
-            </div>
+                <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label">Tipo de Artículo:</label>
+                    <select
+                      class="form-control form-control-sm"
+                      data-search="articleType"
+                    >
+                      <option value="" selected="true">Seleccione</option>
+                      {{#each articleTypes}}
+                        <option value="{{this._id}}">{{this.name}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label">Marca:</label>
+                    <select
+                      class="form-control form-control-sm"
+                      data-search="brand"
+                    >
+                      <option value="" selected="true">Seleccione</option>
+                      {{#each brands}}
+                        <option value="{{this._id}}">{{this.name}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="card-footer text-right">
+            <button
+              id="btnSearch"
+              type="button"
+              class="btn btn-sm btn-primary"
+              style="width: 150px"
+            >
+              <i class="uil uil-search"></i>
+              Buscar
+            </button>
+          </div>
         </div>
         <div class="card">
-            <div class="card-body" style="padding-bottom: 0">
-                <div class="table-responsive">
-                    <table id="productsTable" class="table align-items-center"></table>
-                </div>
+          <div class="card-body" style="padding-bottom: 0">
+            <div class="table-responsive">
+              <table
+                id="productsTable"
+                class="table align-items-center"
+              ></table>
             </div>
-            <div class="card-footer text-right">
-                <button type="button" id="btnPrev" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
-                    &lt;
-                </button>
-                <span id="pageCounter"></span>
-                <button type="button" id="btnNext" class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle">
-                    &gt;
-                </button>
-                <div id="pagination" class="d-flex justify-content-end"></div>
-            </div>
+          </div>
+          <div class="card-footer text-right">
+            <button
+              type="button"
+              id="btnPrev"
+              class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle"
+            >
+              &lt;
+            </button>
+            <span id="pageCounter"></span>
+            <button
+              type="button"
+              id="btnNext"
+              class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle"
+            >
+              &gt;
+            </button>
+            <div id="pagination" class="d-flex justify-content-end"></div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <div class="col-md-4 px-0" style="max-height: 75vh !important;">
-        <div class="card mb-0 h-100">
-            <div class="card-header">
-                <h3 class="mb-0">Venta</h3>
-            </div>
-            <div class="card-body pb-0">
-                <div class="row">
-                    <div class="col-12">
-                        <small id="conceptMsg" class="text-danger"></small>
-                        <div class="d-flex">
-                            <label class="form-control-label mt-auto mb-auto mr-3">Concepto:</label>
-                            <input id="concept" class="form-control form-control-sm " placeholder="Concepto" type="text"
-                                data-search="concept">
-                        </div>
-                    </div>
-                    <div class="col-12 mt-1">
-                        <small id="serviceMsg" class="text-danger"></small>
-                        <div class="d-flex">
-                            <label class="form-control-label mt-auto mb-auto mr-3">Servicio:</label>
-                            <input id="service" class="form-control form-control-sm " style="margin-left:11px"
-                                placeholder="Servicio" type="text" oninput="currencyMask()" data-search="service">
-                        </div>
-                    </div>
-                    <div id="shopping-cart" class="mt-2 col-12">
-                        <table id="card-table" class="table" style="table-layout:fixed">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Productos</th>
-                                    <th>Precio</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cart-table" class="list">
-                                <tr>
-                                    <td class="text-center w-100"> Aun no tienes productos. <br> Agrega productos a la
-                                        venta   🛍
-                                    </td>
-                                </tr>
-                            </tbody>
+      <div class="col-md-4 px-0" style="max-height: 75vh !important;">
+        <div class="card mb-0">
+          <div class="card-header">
+            <h3 class="mb-0">Venta</h3>
+          </div>
+          <div class="card-body pb-0">
+            <div class="row">
+              <div class="col-12">
+                <small id="conceptMsg" class="text-danger"></small>
+                <div class="d-flex">
+                  <label
+                    class="form-control-label mt-auto mb-auto mr-3"
+                  >Concepto:</label>
+                  <input
+                    id="concept"
+                    class="form-control form-control-sm"
+                    placeholder="Concepto"
+                    type="text"
+                    data-search="concept"
+                  />
+                </div>
+              </div>
+              <div class="col-12 mt-1">
+                <small id="extraMsg" class="text-danger"></small>
+                <div class="d-flex">
+                  <label
+                    class="form-control-label mt-auto mb-auto"
+                    style="margin-right: 33px;"
+                  >Extra:</label>
+                  <input
+                    id="extra"
+                    class="form-control form-control-sm"
+                    style="margin-left:11px"
+                    placeholder="Extra"
+                    type="text"
+                    oninput="currencyMask()"
+                    data-search="extra"
+                  />
+                </div>
+              </div>
+
+              <div class="nav-wrapper w-100 pb-0">
+                <ul
+                  class="nav nav-pills nav-fill flex-column flex-md-row"
+                  id="tabs-icons-text"
+                  role="tablist"
+                >
+                  <li class="nav-item">
+                    <a
+                      class="nav-link mb-sm-3 mb-md-0 active"
+                      id="productosTab"
+                      data-toggle="tab"
+                      href="#productosTabContent"
+                      role="tab"
+                      aria-controls="productosTabContent"
+                      aria-selected="true"
+                    ><i class="ni ni-cloud-upload-96 mr-2"></i>Productos</a>
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link mb-sm-3 mb-md-0"
+                      id="serviciosTab"
+                      data-toggle="tab"
+                      href="#serviciosTabContent"
+                      role="tab"
+                      aria-controls="serviciosTabContent"
+                      aria-selected="false"
+                    ><i class="ni ni-bell-55 mr-2"></i>Servicios</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="">
+                {{! card shadow }}
+                <div class="">
+                  {{! card-body }}
+                  <div class="tab-content" id="myTabContent">
+                    <div
+                      class="tab-pane fade show active"
+                      id="productosTabContent"
+                      role="tabpanel"
+                      aria-labelledby="productosTab"
+                    >
+                      <div id="products-shopping-cart" class="mt-3 col-12">
+                        <table class="table" style="table-layout:fixed">
+                          <thead class="thead-light">
+                            <tr>
+                              <th>Productos</th>
+                              <th>Precio</th>
+                              <th>Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody id="cart-table" class="list">
+                            <tr>
+                              <td class="text-center w-100">
+                                Aun no tienes productos.
+                                <br />
+                                Agrega productos a la venta   🛍
+                              </td>
+                            </tr>
+                          </tbody>
                         </table>
+                      </div>
                     </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="row mb-3">
-                    <div class="col-12 mb-2">
-                        <div class="d-flex justify-content-between">
-                            <label class="form-control-label mt-auto mb-auto mr-3">SubTotal:</label>
-                            <label id="subTotal" class="form-control-label mt-auto mb-auto">$0.00</label>
+                    <div
+                      class="tab-pane fade"
+                      id="serviciosTabContent"
+                      role="tabpanel"
+                      aria-labelledby="serviciosTab"
+                    >
+                      <div id="services-shopping-cart" class="mt-2 col-12">
+                        <div class="col-12 text-right mb-2">
+                          <button
+                            id="showServiceModalBtn"
+                            class="btn btn-sm btn-outline-secondary"
+                          >
+                            Agregar Servicio</button>
                         </div>
+                        <table class="table" style="table-layout:fixed">
+                          <thead class="thead-light">
+                            <tr>
+                              <th>Servicio</th>
+                              <th>Precio</th>
+                              <th>Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody id="cart-service-table" class="list">
+                            <tr>
+                              <td class="text-center w-100">
+                                Aun no tienes servicios.
+                                <br />
+                                Agrega servicios a la venta  🛒
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                    <div class="col-12 mb-2">
-                        <div class="d-flex">
-                            <label class="form-control-label mt-auto mb-auto mr-3">Descuento:</label>
-                            <input id="discount" class="form-control form-control-sm  text-right"
-                                placeholder="Descuento" oninput="currencyMask()" type="text" data-save="discount">
-                        </div>
-                        <small id="discountMsg" class="text-danger"></small>
-                        <hr class="my-2">
-                    </div>
-                    <div class="col-12 mb-2">
-                        <div class="d-flex justify-content-between">
-                            <label class="form-control-label mt-auto mb-auto mr-3">Total:</label>
-                            <label id="total" class="form-control-label mt-auto mb-auto">$0.00</label>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" id="registerSale" class="btn btn-md btn-success w-100">
-                    <span>Realizar Venta</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
-{{/content}}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="row mb-3">
+              <div class="col-12 mb-2">
+                <div class="d-flex justify-content-between">
+                  <label
+                    class="form-control-label mt-auto mb-auto mr-3"
+                  >SubTotal:</label>
+                  <label
+                    id="subTotal"
+                    class="form-control-label mt-auto mb-auto"
+                  >$0.00</label>
+                </div>
+              </div>
+              <div class="col-12 mb-2">
+                <div class="d-flex">
+                  <label
+                    class="form-control-label mt-auto mb-auto mr-3"
+                  >Descuento:</label>
+                  <input
+                    id="discount"
+                    class="form-control form-control-sm text-right"
+                    placeholder="Descuento"
+                    oninput="currencyMask()"
+                    type="text"
+                    data-save="discount"
+                  />
+                </div>
+                <small id="discountMsg" class="text-danger"></small>
+                <hr class="my-2" />
+              </div>
+              <div class="col-12 mb-2">
+                <div class="d-flex justify-content-between">
+                  <label
+                    class="form-control-label mt-auto mb-auto mr-3"
+                  >Total:</label>
+                  <label
+                    id="total"
+                    class="form-control-label mt-auto mb-auto"
+                  >$0.00</label>
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              id="registerSale"
+              class="btn btn-md btn-success w-100"
+            >
+              <span>Realizar Venta</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {{/content}}
+  {{#content "modals" mode="append"}}
+    <div class="row">
+      <div class="col-md-4">
+        <div
+          class="modal fade"
+          id="main_modal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="main_modal"
+          aria-hidden="true"
+          data-backdrop="static"
+          data-keyboard="false"
+        >
+          <div
+            class="modal-dialog modal- modal-dialog-centered modal-"
+            role="document"
+          >
+            <div class="modal-content">
+              <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-default">
+                  <i id="modal_icon"></i>
+                  <span id="modal_title"></span></h6>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body py-0">
+                <form id="ServiceForm">
+                  <div class="row">
+                    <input id="_id" type="hidden" />
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                      <small id="descriptionMsg" class="text-danger"></small>
+                      <div class="form-group">
+                        <label class="form-control-label">Descripción:</label>
+                        <input
+                          id="description"
+                          class="form-control form-control-sm"
+                          placeholder="Descripción"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                      <small id="totalServiceMsg" class="text-danger"></small>
+                      <div class="form-group">
+                        <label class="form-control-label">Total:</label>
+                        <input
+                          id="totalService"
+                          class="form-control form-control-sm"
+                          placeholder="Total"
+                          type="text"
+                          oninput="currencyMask()"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer pt-0">
+                <button
+                  type="button"
+                  class="btn btn-secondary text-danger ml-auto"
+                  data-dismiss="modal"
+                >Cerrar</button>
+                <button
+                  type="button"
+                  id="btnAddService"
+                  class="btn btn-primary"
+                >Agregar</button>
+                <button
+                  type="button"
+                  id="btnUpdateService"
+                  class="btn btn-primary d-none"
+                >Actualizar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{/content}}
 
 {{/extend}}

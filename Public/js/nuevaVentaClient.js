@@ -5,8 +5,10 @@ window.addEventListener("DOMContentLoaded", () => {
     "articleType",
     "discount",
     "concept",
-    "service",
+    "extra",
   ];
+
+  let $serviceFields = ["description", "totalService"];
 
   let routes = {
     showProducts: "/getProductsWithStock",
@@ -15,6 +17,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let productsData = [];
   let shoppingCart = [];
+  let servicesCart = [];
   let subTotal = 0;
   let total = 0;
 
@@ -24,16 +27,30 @@ window.addEventListener("DOMContentLoaded", () => {
   const registerSaleBtn = document.querySelector("#registerSale");
   const mainCardTable = document.querySelector("#productsTable");
   const cartTable = document.querySelector("#cart-table");
+  const cartServiceTable = document.querySelector("#cart-service-table");
+  const showServiceModalBtn = document.querySelector("#showServiceModalBtn");
+  const btnAddService = document.querySelector("#btnAddService");
+  const btnUpdateService = document.querySelector("#btnUpdateService");
   const discountInput = document.querySelector("#discount");
-  const serviceInput = document.querySelector("#service");
+  const extraInput = document.querySelector("#extra");
 
   searchBtn.addEventListener("click", search);
   btnClearSearch.addEventListener("click", clearSearch);
+  showServiceModalBtn.addEventListener("click", showServiceModalBtnClicked);
+  btnAddService.addEventListener("click", addServiceToTable);
+  btnUpdateService.addEventListener("click", addUpdatedServiceToTable);
+  showServiceModalBtn.addEventListener("click", showServiceModalBtnClicked);
   registerSaleBtn.addEventListener("click", registerSaleBtnClick);
   discountInput.addEventListener("input", validateDiscount);
-  serviceInput.addEventListener("input", validateService);
+  extraInput.addEventListener("input", validateExtra);
   mainCardTable.addEventListener("click", mainCardTableRowClicked);
   cartTable.addEventListener("click", cartTableRowClicked);
+  cartServiceTable.addEventListener("click", serviceTableRowClicked);
+
+  //TODO:
+  //*Validacion de productos, se debe agregar servicio en la validacion
+  //*ajuste de descuentos y total en servicios
+  //*Actualizar updateSaleTotals y validateDiscount
 
   //Search products
   async function search() {
@@ -112,7 +129,6 @@ window.addEventListener("DOMContentLoaded", () => {
       console.log(saleInfo);
       let body = JSON.stringify(saleInfo);
 
-
       let request = await fetch(routes.registerSale, {
         method: "POST",
         headers: {
@@ -171,10 +187,16 @@ window.addEventListener("DOMContentLoaded", () => {
     switch (form) {
       case "shopping-cart":
         shoppingCart = [];
+        servicesCart = [];
         populateTable();
         search();
         document.querySelector(`#concept`).value = "";
         document.querySelector(`#discount`).value = "";
+        document.querySelector(`#extra`).value = "";
+        break;
+      case "serviceForm":
+        document.querySelector(`#description`).value = "";
+        document.querySelector(`#totalService`).value = "";
         break;
       case "searchForm":
         document.querySelector("#searchForm").reset();
@@ -243,7 +265,7 @@ window.addEventListener("DOMContentLoaded", () => {
           body[elem] = data.value;
           break;
 
-        case "service":
+        case "extra":
           data = document.querySelector(`#${elem}`);
           body[elem] = data.value;
           break;
@@ -288,7 +310,84 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  //Listen when an element from the tablie is clicked
+  function validateServiceForm() {
+    let body = {};
+    let valid = true;
+
+    $serviceFields.forEach((elem) => {
+      let data;
+      let msg;
+
+      switch (elem) {
+        case "description":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value) {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "La descripción es requerida.";
+            valid = false;
+          }
+          body[elem] = data.value;
+          break;
+
+        case "totalService":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value) {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "El total es requerido.";
+            valid = false;
+          }
+          body[elem] = data.value;
+          break;
+      }
+    });
+
+    return {
+      valid,
+      body,
+    };
+  }
+
+  function resetServiceFormValidation() {
+    $serviceFields.forEach((elem) => {
+      switch (elem) {
+        case "description":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          msg.innerHTML = "";
+
+          break;
+        case "totalService":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          msg.innerHTML = "";
+
+          break;
+      }
+    });
+  }
+  function addServiceToTable() {
+    resetServiceFormValidation();
+
+    let response = validateServiceForm();
+
+    console.log(response);
+    if (response.valid) {
+      addService(response.body);
+      $("#main_modal").modal("hide");
+    }
+  }
+
+  function addUpdatedServiceToTable() {
+    console.log(["update"]);
+  }
+
+  //Listen when an element from the table is clicked
   function mainCardTableRowClicked(e) {
     if (e.target && e.target.classList.contains("add")) {
       if (e.target.tagName === "I") {
@@ -305,7 +404,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  //Listen when an element from the tablie is clicked
+  //Listen when an element from the table is clicked
   function cartTableRowClicked(e) {
     if (e.target.classList.contains("add")) {
       if (e.target.tagName === "I") {
@@ -327,6 +426,21 @@ window.addEventListener("DOMContentLoaded", () => {
         let button = e.target;
         let index = button.getAttribute("data-index");
         removeProduct(index);
+      }
+    }
+  }
+
+  //Listen when an element from the table is clicked
+  function serviceTableRowClicked(e) {
+    if (e.target.classList.contains("remove")) {
+      if (e.target.tagName === "I") {
+        let button = e.target.parentElement;
+        let index = button.getAttribute("data-index");
+        removeService(index);
+      } else {
+        let button = e.target;
+        let index = button.getAttribute("data-index");
+        removeService(index);
       }
     }
   }
@@ -354,6 +468,12 @@ window.addEventListener("DOMContentLoaded", () => {
       shoppingCart.splice(productIndex, 1);
     }
 
+    populateTable();
+  }
+
+  //reduces or removes services
+  function removeService(productIndex) {
+    cartServiceTable.splice(productIndex, 1);
     populateTable();
   }
 
@@ -440,16 +560,91 @@ window.addEventListener("DOMContentLoaded", () => {
   function updateSaleTotals() {
     subTotal = 0;
     let discount = document.querySelector("#discount");
-    shoppingCart.forEach((prod) => (subTotal += prod.total));
-    subTotal = !isNaN(parseFloat(serviceInput.value))
-      ? subTotal + parseFloat(serviceInput.value)
-      : subTotal;
+    discount =
+      discount.value != undefined && discount.value != "" ? discount.value : 0;
 
-    total = subTotal - discount.value;
+    console.log(discount.value );
+
+    shoppingCart.forEach((prod) => (subTotal += prod.total));
+    servicesCart.forEach((serv) => (subTotal += serv.total));
+    subTotal = !isNaN(parseFloat(extraInput.value))
+      ? parseFloat(subTotal) + parseFloat(extraInput.value)
+      : parseFloat(subTotal);
+
+    total = parseFloat(subTotal) - parseFloat(discount);
 
     console.log(total);
-    document.querySelector("#subTotal").innerHTML = `$${subTotal.toFixed(2)}`;
-    document.querySelector("#total").innerHTML = `$${total.toFixed(2)}`;
+    document.querySelector("#subTotal").innerHTML = `$${parseFloat(
+      subTotal
+    ).toFixed(2)}`;
+    document.querySelector("#total").innerHTML = `$${parseFloat(total).toFixed(
+      2
+    )}`;
+  }
+
+  function addService(service) {
+    console.log(service);
+    if (servicesCart.length == 0) {
+      console.log("es 0");
+      servicesCart.push({
+        id: 1,
+        description: service.description,
+        total: service.totalService,
+      });
+    } else {
+      console.log("No es 0");
+
+      servicesCart.push({
+        id: servicesCart.length + 1,
+        description: service.description,
+        total: service.totalService,
+      });
+    }
+    console.log(servicesCart);
+    populateSeriviceTable();
+  }
+
+  //Fill serviceTable
+  function populateSeriviceTable() {
+    if (servicesCart.length == 0) {
+      cartTable.innerHTML = `<tr>
+          <td class="text-center w-100"> Aun no tienes servicios. <br> Agrega servicios a la
+              venta   🛒
+          </td>
+      </tr>`;
+      if (shoppingCart.length == 0) {
+        total = 0;
+        subTotal = 0;
+        document.querySelector("#discount").value = "";
+      }
+
+      updateSaleTotals();
+      validateDiscount();
+
+      return;
+    }
+
+    let tableBody = "";
+    servicesCart.forEach((service, index) => {
+      console.log(service);
+
+      tableBody += `<tr>
+          <td style="white-space:normal"> 
+            ${service.description}
+          </td>
+          <td class="text-center">$${parseFloat(service.total).toFixed(2)}</td>
+          <td class="text-center"> 
+              <button type="button"
+                  class="btn btn-sm btn-outline-secondary text-danger remove" data-index="${index}"  data-id="${
+        service._id
+      }"><i class="uil uil-minus remove"></i></button>
+          </td>
+      </tr>`;
+    });
+
+    cartServiceTable.innerHTML = tableBody;
+    updateSaleTotals();
+    validateDiscount();
   }
 
   //Validators
@@ -483,9 +678,30 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function validateService() {
+  function validateExtra() {
     validateDiscount();
   }
+
+  //Modals
+  function showServiceModalBtnClicked() {
+    showServiceModal();
+  }
+
+  function showServiceModal(data) {
+    if (data) {
+      document.querySelector("#modal_title").innerHTML = "Editar servicio";
+      $("#main_modal").modal("show");
+    } else {
+      document.querySelector("#modal_title").innerHTML = "Agregar servicio";
+      $("#main_modal").modal("show");
+    }
+  }
+
+  $("#main_modal").on("hidden.bs.modal", function (e) {
+    resetServiceFormValidation();
+    console.log("cierra");
+    resetForm("serviceForm");
+  });
 
   //Initial Actions
   let productsTable = new CardTable(

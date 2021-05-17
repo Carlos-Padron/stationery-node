@@ -67,10 +67,15 @@ const registerSale = async (req, res) => {
       date: new Date(),
       total: req.body.total,
       discount: req.body.discount != null ? req.body.discount : 0,
-      service:
-        req.body.service === "." || req.body.service === null
+      serviceAmount:
+        req.body.serviceAmount === "." || req.body.serviceAmount === null
           ? null
-          : req.body.service,
+          : req.body.serviceAmount,
+      serviceDescription: req.body.serviceDescription,
+      extra:
+        req.body.extra === "." || req.body.extra === null
+          ? null
+          : req.body.extra,
       madeBy: req.user._id,
       saleDetail: saleDetails,
     });
@@ -180,6 +185,8 @@ const saleDetail = async (req, res) => {
       sale.total = sale.total.toFixed(2);
       sale.subtotal = sale.subtotal.toFixed(2);
       sale.discount = sale.discount.toFixed(2);
+      sale.extra = sale.extra.toFixed(2);
+
       sale.service = sale.service.toFixed(2);
 
       sale.madeBy =
@@ -359,10 +366,13 @@ const updateSale = async (req, res) => {
     sale.concept = req.body.concept;
     (sale.total = req.body.total),
       (sale.discount = req.body.discount != null ? req.body.discount : 0);
-    sale.service =
-      req.body.service === "." || req.body.service === null
-        ? null
-        : req.body.service;
+    (sale.serviceDescription = req.body.serviceDescription),
+      (sale.serviceAmount =
+        req.body.serviceAmount === "." || req.body.serviceAmount === null
+          ? null
+          : req.body.serviceAmount);
+    sale.extra =
+      req.body.extra === "." || req.body.extra === null ? null : req.body.extra;
     sale.updatedBy = req.user._id;
     sale.changed = true;
 

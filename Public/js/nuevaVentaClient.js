@@ -26,11 +26,10 @@ window.addEventListener("DOMContentLoaded", () => {
   const btnClearSearch = document.querySelector("#btnClearSearch");
   const registerSaleBtn = document.querySelector("#registerSale");
   const mainCardTable = document.querySelector("#productsTable");
-  const cartTable = document.querySelector("#cart-table");
+  const cartProductTable = document.querySelector("#cart-products-table");
   const cartServiceTable = document.querySelector("#cart-service-table");
   const showServiceModalBtn = document.querySelector("#showServiceModalBtn");
   const btnAddService = document.querySelector("#btnAddService");
-  const btnUpdateService = document.querySelector("#btnUpdateService");
   const discountInput = document.querySelector("#discount");
   const extraInput = document.querySelector("#extra");
 
@@ -38,19 +37,15 @@ window.addEventListener("DOMContentLoaded", () => {
   btnClearSearch.addEventListener("click", clearSearch);
   showServiceModalBtn.addEventListener("click", showServiceModalBtnClicked);
   btnAddService.addEventListener("click", addServiceToTable);
-  btnUpdateService.addEventListener("click", addUpdatedServiceToTable);
-  showServiceModalBtn.addEventListener("click", showServiceModalBtnClicked);
   registerSaleBtn.addEventListener("click", registerSaleBtnClick);
   discountInput.addEventListener("input", validateDiscount);
   extraInput.addEventListener("input", validateExtra);
   mainCardTable.addEventListener("click", mainCardTableRowClicked);
-  cartTable.addEventListener("click", cartTableRowClicked);
+  cartProductTable.addEventListener("click", cartProductTableRowClicked);
   cartServiceTable.addEventListener("click", serviceTableRowClicked);
 
-  //TODO:
-  //*Validacion de productos, se debe agregar servicio en la validacion
-  //*ajuste de descuentos y total en servicios
-  //*Actualizar updateSaleTotals y validateDiscount
+  //TODO: Borrar info de la tabla de servicio
+  //TODO: Borrar subtota y total al finalizar registro de venta
 
   //Search products
   async function search() {
@@ -170,11 +165,12 @@ window.addEventListener("DOMContentLoaded", () => {
       modalAlert(
         "success",
         "Aviso ",
-        `<strong>${json.message}</strong> <br>`,
-        () => {
-          $("#main_modal").modal("hide");
-          //window.location = `/ventas/detalle/${json.response}`;
-        }
+        `<strong>${json.message}</strong> <br>`
+        //,
+        //() => {
+        //$("#main_modal").modal("hide");
+        //window.location = `/ventas/detalle/${json.response}`;
+        //}
       );
     } catch (error) {
       errorNotification("Error interno del servidor");
@@ -188,11 +184,13 @@ window.addEventListener("DOMContentLoaded", () => {
       case "shopping-cart":
         shoppingCart = [];
         servicesCart = [];
-        populateTable();
-        search();
+
         document.querySelector(`#concept`).value = "";
         document.querySelector(`#discount`).value = "";
         document.querySelector(`#extra`).value = "";
+        populateProductTable();
+        populateSeriviceTable();
+        search();
         break;
       case "serviceForm":
         document.querySelector(`#description`).value = "";
@@ -209,9 +207,9 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function registerSaleBtnClick() {
-    if (shoppingCart.length === 0) {
+    if (shoppingCart.length === 0 && servicesCart.length === 0) {
       errorNotification(
-        "No tienes productos en la venta. Agrega productos para realizar la venta"
+        "No tienes productos ni servicios en la venta. Agrega productos o servicios para realizar la venta"
       );
       return;
     }
@@ -222,8 +220,10 @@ window.addEventListener("DOMContentLoaded", () => {
       );
       return;
     }
-
+    //Resets form Validation
     resetCartFormValidation();
+
+    //Resets validates cartForms and returns if it´s valid and its info
     let response = validateCartForm();
 
     if (response.valid === false) {
@@ -285,6 +285,8 @@ window.addEventListener("DOMContentLoaded", () => {
         add: false,
       });
     });
+
+    body.serviceDetail = servicesCart;
 
     body.saleDetail = saleDetail;
     body.total = total;
@@ -383,10 +385,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function addUpdatedServiceToTable() {
-    console.log(["update"]);
-  }
-
   //Listen when an element from the table is clicked
   function mainCardTableRowClicked(e) {
     if (e.target && e.target.classList.contains("add")) {
@@ -405,7 +403,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   //Listen when an element from the table is clicked
-  function cartTableRowClicked(e) {
+  function cartProductTableRowClicked(e) {
     if (e.target.classList.contains("add")) {
       if (e.target.tagName === "I") {
         let button = e.target.parentElement;
@@ -456,7 +454,7 @@ window.addEventListener("DOMContentLoaded", () => {
     shoppingCart[productIndex].quantity++;
     shoppingCart[productIndex].total += shoppingCart[productIndex].unitPrice;
 
-    populateTable();
+    populateProductTable();
   }
 
   //reduces or removes products
@@ -468,13 +466,13 @@ window.addEventListener("DOMContentLoaded", () => {
       shoppingCart.splice(productIndex, 1);
     }
 
-    populateTable();
+    populateProductTable();
   }
 
   //reduces or removes services
   function removeService(productIndex) {
-    cartServiceTable.splice(productIndex, 1);
-    populateTable();
+    servicesCart.splice(productIndex, 1);
+    populateSeriviceTable();
   }
 
   //add products to the cart
@@ -512,14 +510,13 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    populateTable();
+    populateProductTable();
   }
 
-  //cartTableFunction
-  //populate the cart table
-  function populateTable() {
+  //cartProductTableFunction
+  function populateProductTable() {
     if (shoppingCart.length == 0) {
-      cartTable.innerHTML = `<tr>
+      cartProductTable.innerHTML = `<tr>
           <td class="text-center w-100"> Aun no tienes productos. <br> Agrega productos a la
               venta   🛍
           </td>
@@ -552,28 +549,32 @@ window.addEventListener("DOMContentLoaded", () => {
       </tr>`;
     });
 
-    cartTable.innerHTML = tableBody;
+    cartProductTable.innerHTML = tableBody;
     updateSaleTotals();
     validateDiscount();
   }
 
   function updateSaleTotals() {
     subTotal = 0;
+
+    //Get discount
     let discount = document.querySelector("#discount");
     discount =
       discount.value != undefined && discount.value != "" ? discount.value : 0;
 
-    console.log(discount.value );
+    //Gets elements from the product and service cart
+    shoppingCart.forEach((prod) => (subTotal += parseFloat(prod.total)));
+    servicesCart.forEach((serv) => (subTotal += parseFloat(serv.total)));
 
-    shoppingCart.forEach((prod) => (subTotal += prod.total));
-    servicesCart.forEach((serv) => (subTotal += serv.total));
+    //Checkk if extra has a value and if so, is added to the subtotal
     subTotal = !isNaN(parseFloat(extraInput.value))
       ? parseFloat(subTotal) + parseFloat(extraInput.value)
       : parseFloat(subTotal);
 
+    //Calculate the total by sustrating the discount minus the subtotal
     total = parseFloat(subTotal) - parseFloat(discount);
 
-    console.log(total);
+    //Sets the subtotal and total to their dom elements
     document.querySelector("#subTotal").innerHTML = `$${parseFloat(
       subTotal
     ).toFixed(2)}`;
@@ -582,32 +583,29 @@ window.addEventListener("DOMContentLoaded", () => {
     )}`;
   }
 
+  //Adds services to the serivice cart
   function addService(service) {
     console.log(service);
     if (servicesCart.length == 0) {
-      console.log("es 0");
       servicesCart.push({
         id: 1,
         description: service.description,
         total: service.totalService,
       });
     } else {
-      console.log("No es 0");
-
       servicesCart.push({
         id: servicesCart.length + 1,
         description: service.description,
         total: service.totalService,
       });
     }
-    console.log(servicesCart);
     populateSeriviceTable();
   }
 
   //Fill serviceTable
   function populateSeriviceTable() {
     if (servicesCart.length == 0) {
-      cartTable.innerHTML = `<tr>
+      cartServiceTable.innerHTML = `<tr>
           <td class="text-center w-100"> Aun no tienes servicios. <br> Agrega servicios a la
               venta   🛒
           </td>
@@ -637,7 +635,7 @@ window.addEventListener("DOMContentLoaded", () => {
               <button type="button"
                   class="btn btn-sm btn-outline-secondary text-danger remove" data-index="${index}"  data-id="${
         service._id
-      }"><i class="uil uil-minus remove"></i></button>
+      }"><i class="uil uil-multiply remove"></i></button>
           </td>
       </tr>`;
     });
@@ -654,12 +652,15 @@ window.addEventListener("DOMContentLoaded", () => {
     let discount = document.querySelector("#discount");
     let discountMsg = document.querySelector("#discountMsg");
 
+    //checks if subtotal has a '$' and if so removes it to get the number
     subTotal = subTotal.includes("$")
       ? subTotal.substr(1, subTotal.length - 1)
       : subTotal;
 
+    //Check if the total is and number
     subTotal = isNaN(parseFloat(subTotal)) ? 0 : parseFloat(subTotal);
 
+    //checks if the subtotal is less than the discount
     if (
       subTotal - (discount.value ?? 0) < 0 ||
       isNaN(subTotal - (discount.value ?? 0))
@@ -687,19 +688,13 @@ window.addEventListener("DOMContentLoaded", () => {
     showServiceModal();
   }
 
-  function showServiceModal(data) {
-    if (data) {
-      document.querySelector("#modal_title").innerHTML = "Editar servicio";
-      $("#main_modal").modal("show");
-    } else {
-      document.querySelector("#modal_title").innerHTML = "Agregar servicio";
-      $("#main_modal").modal("show");
-    }
+  function showServiceModal() {
+    document.querySelector("#modal_title").innerHTML = "Agregar servicio";
+    $("#main_modal").modal("show");
   }
 
   $("#main_modal").on("hidden.bs.modal", function (e) {
     resetServiceFormValidation();
-    console.log("cierra");
     resetForm("serviceForm");
   });
 

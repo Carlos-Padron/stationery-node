@@ -15,13 +15,6 @@ let saleSchema = new mongoose.Schema({
   discount: {
     type: Number,
   },
-  serviceDescription: {
-    type: String,
-    trim: true,
-  },
-  serviceAmount: {
-    type: Number,
-  },
   extra: {
     type: Number,
   },
@@ -51,6 +44,17 @@ let saleSchema = new mongoose.Schema({
         type: Number,
       },
       unitPrice: {
+        type: Number,
+      },
+    },
+  ],
+  serviceDetail: [
+    {
+      description: {
+        type: String,
+        trim: true,
+      },
+      total: {
         type: Number,
       },
     },

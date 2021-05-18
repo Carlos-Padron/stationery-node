@@ -1,99 +1,140 @@
 {{#extend "master"}}
-{{#content "body" mode="append"}}
+  {{#content "body" mode="append"}}
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
         <div class="row">
-            <div class="col-8 d-flex align-items-center">
-                <h3 class="mr-3">Concepto: {{sale.concept}}</h3>
-                <input type="hidden" id="saleId" value="{{sale._id}}">
+          <div class="col-8 d-flex align-items-center">
+            <h3 class="mr-3">Concepto: {{sale.concept}}</h3>
+            <input type="hidden" id="saleId" value="{{sale._id}}" />
 
-                {{#if sale.canceled}}
-                <span class="badge badge-pill badge-error">Cancelada</span>
-                {{else}}
-                {{#if sale.changed}}
-                <span class="badge badge-pill badge-primary">Realizada con cambios</span>
-                {{else}}
+            {{#if sale.canceled}}
+              <span class="badge badge-pill badge-error">Cancelada</span>
+            {{else}}
+              {{#if sale.changed}}
+                <span class="badge badge-pill badge-primary">Realizada con
+                  cambios</span>
+              {{else}}
                 <span class="badge badge-pill badge-success">Realizada</span>
-                {{/if}}
-                {{/if}}
-            </div>
-            <div class="col-4 text-right">
-                <h3>Fecha: {{sale.date}}</h3>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1">
-                <h4>Descuento: ${{sale.discount}}</h4>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
-                <h4>Servicio: ${{sale.service}}</h4>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
-                <h4>Subtotal: ${{sale.subtotal}}</h4>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1">
-                <h4>Total: ${{sale.total}}</h4>
-            </div>
+              {{/if}}
+            {{/if}}
+          </div>
+          <div class="col-4 text-right">
+            <h3>Fecha: {{sale.date}}</h3>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1">
+            <h4>Descuento: ${{sale.discount}}</h4>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
+            <h4>Extra: ${{sale.extra}}</h4>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1 left">
+            <h4>Subtotal: ${{sale.subtotal}}</h4>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-3 mt-1">
+            <h4>Total: ${{sale.total}}</h4>
+          </div>
 
-            <div class="col-12 col-sm-6 col-md-6 col-lg-6 mt-1">
-                <h4>Realizada por: {{sale.madeBy}}</h4>
-            </div>
-            <div class="col-12 col-sm-6 col-md-6 col-lg-6 mt-1">
-                {{#if sale.canceled}}
-                <h4>Cancelada por: {{sale.updatedBy}}</h4>
-                {{else}}
-                <h4>Actualizada por: {{sale.updatedBy}}</h4>
-                {{/if}}
-            </div>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-6 mt-1">
+            <h4>Realizada por: {{sale.madeBy}}</h4>
+          </div>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-6 mt-1">
+            {{#if sale.canceled}}
+              <h4>Cancelada por: {{sale.updatedBy}}</h4>
+            {{else}}
+              <h4>Actualizada por: {{sale.updatedBy}}</h4>
+            {{/if}}
+          </div>
         </div>
-    </div>
-    <div class="card-body" style="padding-bottom: 0;">
-        <div class="table-responsive mb-2" style="max-height: 350px;">
+      </div>
+
+      {{#customIf sale.saleDetail.length ">" 0}}
+
+        <div class="card-body" style="padding-bottom: 0;">
+          <div class="table-responsive mb-2" style="max-height: 350px;">
             <table id="mainTable" class="table align-items-center">
-                <thead class="thead-light">
-                    <tr>
-                        <th class="text-center">Articulo</th>
-                        <th class="text-center">Cantidad</th>
-                        <th class="text-center">Precio de venta</th>
-                    </tr>
-                </thead>
-                <tbody class="list">
-                    {{#each sale.saleDetail}}
-                    <tr>
-                        <td class="text-center">{{this.productID.name}}</td>
-                        <td class="text-center"> {{#toFixed this.quantity}}{{/toFixed}}</td>
-                        <td class="text-center"> ${{#toFixed this.unitPrice}}{{/toFixed}} </td>
-
-                    </tr>
-                    {{/each}}
-                </tbody>
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-center">Articulo</th>
+                  <th class="text-center">Cantidad</th>
+                  <th class="text-center">Precio de venta</th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {{#each ../sale.saleDetail}}
+                  <tr>
+                    <td class="text-center">{{this.productID.name}}</td>
+                    <td class="text-center">
+                      {{#toFixed this.quantity}}{{/toFixed}}</td>
+                    <td class="text-center">
+                      ${{#toFixed this.unitPrice}}{{/toFixed}}
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
             </table>
+          </div>
         </div>
-    </div>
 
+      {{/customIf}}
 
-    <div class="card-footer">
+      {{#customIf sale.serviceDetail.length ">" 0}}
+        <div class="card-body" style="padding-bottom: 0;">
+          <div class="table-responsive mb-2" style="max-height: 350px;">
+            <table id="mainTable" class="table align-items-center">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-center">Servicio</th>
+                  <th class="text-center">Costo</th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {{#each ../sale.serviceDetail}}
+                  <tr>
+                    <td class="text-center">{{this.description}}</td>
+                    <td class="text-center">
+                      ${{#toFixed this.total}}{{/toFixed}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      {{/customIf}}
+
+      <div class="card-footer">
         <div class="row">
-            <div class="col d-flex justify-content-between">
-                <div class="">
-                    <button type="button" class="btn btn-outline-danger"
-                        onclick="location.href = '/ventas/historialVentas';">Regresar</button>
-                </div>
-                {{#customIf sale.canceled '==' false}}
-                <div class="">
-
-                    <button type="button" id="cancelSaleBtn" class="btn btn-secondary text-danger ml-auto"
-                        data-dismiss="modal">Cancelar
-                        venta</button>
-                    <button type="button" id="changeSaleBtn" class="btn btn-warning">Realizar cambio</button>
-                </div>
-
-                {{/customIf}}
-
+          <div class="col d-flex justify-content-between">
+            <div class="">
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                onclick="location.href = '/ventas/historialVentas';"
+              >Regresar</button>
             </div>
-        </div>
-    </div>
-</div>
+            {{#customIf sale.canceled "==" false}}
+              <div class="">
 
-{{/content}}
+                <button
+                  type="button"
+                  id="cancelSaleBtn"
+                  class="btn btn-secondary text-danger ml-auto"
+                  data-dismiss="modal"
+                >Cancelar venta</button>
+                <button
+                  type="button"
+                  id="changeSaleBtn"
+                  class="btn btn-warning"
+                >Realizar cambio</button>
+              </div>
+
+            {{/customIf}}
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {{/content}}
 
 {{/extend}}

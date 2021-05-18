@@ -28,8 +28,10 @@ const index = async (req, res) => {
 const registerSale = async (req, res) => {
   try {
     let saleDetails = [];
+    let serviceDetails = [];
     let outOfStock = [];
 
+    //Verificy if product exists and has enough stock
     for (const prod of req.body.saleDetail) {
       let product = await Product.findById(prod.productID).select(
         "_id name price quantity"
@@ -54,6 +56,13 @@ const registerSale = async (req, res) => {
       }
     }
 
+    req.body.serviceDetail.forEach((service) => {
+      serviceDetails.push({
+        description: service.description,
+        total: service.total,
+      });
+    });
+
     if (outOfStock.length > 0) {
       return res.json({
         error: true,
@@ -67,17 +76,13 @@ const registerSale = async (req, res) => {
       date: new Date(),
       total: req.body.total,
       discount: req.body.discount != null ? req.body.discount : 0,
-      serviceAmount:
-        req.body.serviceAmount === "." || req.body.serviceAmount === null
-          ? null
-          : req.body.serviceAmount,
-      serviceDescription: req.body.serviceDescription,
       extra:
         req.body.extra === "." || req.body.extra === null
           ? null
           : req.body.extra,
       madeBy: req.user._id,
       saleDetail: saleDetails,
+      serviceDetail: serviceDetails,
     });
 
     await sale.save();
@@ -175,19 +180,18 @@ const saleDetail = async (req, res) => {
       .populate({ path: "updatedBy", select: "name fatherSurname" })
       .populate({ path: "madeBy", select: "name fatherSurname" })
       .populate({ path: "saleDetail.productID", select: "name" })
+      .populate({ path: "saleDetail.productID.brand", select: "name" })
       .lean();
 
     if (sale) {
       sale.discount = sale.discount == null ? 0 : sale.discount;
-      sale.service = sale.service == null ? 0 : sale.service;
-      sale.subtotal = sale.total - sale.discount - sale.service;
+      sale.extra = sale.extra == null ? 0 : sale.extra;
+      sale.subtotal = sale.total - sale.discount - sale.extra;
 
       sale.total = sale.total.toFixed(2);
       sale.subtotal = sale.subtotal.toFixed(2);
       sale.discount = sale.discount.toFixed(2);
       sale.extra = sale.extra.toFixed(2);
-
-      sale.service = sale.service.toFixed(2);
 
       sale.madeBy =
         sale.madeBy != null

@@ -44,9 +44,6 @@ window.addEventListener("DOMContentLoaded", () => {
   cartProductTable.addEventListener("click", cartProductTableRowClicked);
   cartServiceTable.addEventListener("click", serviceTableRowClicked);
 
-  //TODO: Borrar info de la tabla de servicio
-  //TODO: Borrar subtota y total al finalizar registro de venta
-
   //Search products
   async function search() {
     blockElem(searchForm);
@@ -281,8 +278,6 @@ window.addEventListener("DOMContentLoaded", () => {
         productName: elem.productName,
         quantity: elem.quantity,
         unitPrice: elem.unitPrice,
-        changed: false,
-        add: false,
       });
     });
 
@@ -373,6 +368,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
   function addServiceToTable() {
     resetServiceFormValidation();
 

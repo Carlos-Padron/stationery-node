@@ -31,9 +31,9 @@ hbs.registerHelper("customIf", (val1, operator, val2, options) => {
     case "!=":
       return val1 != val2 ? options.fn(this) : options.inverse(this);
     case "<":
-      return val1 < v2al ? options.fn(this) : options.inverse(this);
+      return val1 < val2 ? options.fn(this) : options.inverse(this);
     case ">":
-      return val1 > v2al ? options.fn(this) : options.inverse(this);
+      return val1 > val2 ? options.fn(this) : options.inverse(this);
     case "<=":
       return val1 <= val2 ? options.fn(this) : options.inverse(this);
     case ">=":

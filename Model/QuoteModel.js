@@ -15,7 +15,7 @@ let quoteSchema = new mongoose.Schema({
   discount: {
     type: Number,
   },
-  service: {
+  extra: {
     type: Number,
   },
   madeBy: {
@@ -36,6 +36,17 @@ let quoteSchema = new mongoose.Schema({
         type: Number,
       },
       unitPrice: {
+        type: Number,
+      },
+    },
+  ],
+  serviceDetail: [
+    {
+      description: {
+        type: String,
+        trim: true,
+      },
+      total: {
         type: Number,
       },
     },

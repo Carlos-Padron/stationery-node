@@ -5,8 +5,10 @@ window.addEventListener("DOMContentLoaded", () => {
     "articleType",
     "discount",
     "concept",
-    "service",
+    "extra",
   ];
+
+  let $serviceFields = ["description", "totalService"];
 
   let routes = {
     showProducts: "/getProductsWithStock",
@@ -15,6 +17,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let productsData = [];
   let shoppingCart = [];
+  let servicesCart = [];
   let subTotal = 0;
   let total = 0;
 
@@ -23,17 +26,23 @@ window.addEventListener("DOMContentLoaded", () => {
   const btnClearSearch = document.querySelector("#btnClearSearch");
   const registerQuoteBtn = document.querySelector("#registerQuote");
   const mainCardTable = document.querySelector("#productsTable");
-  const cartTable = document.querySelector("#cart-table");
+  const cartProductTable = document.querySelector("#cart-products-table");
+  const cartServiceTable = document.querySelector("#cart-service-table");
+  const showServiceModalBtn = document.querySelector("#showServiceModalBtn");
+  const btnAddService = document.querySelector("#btnAddService");
   const discountInput = document.querySelector("#discount");
-  const serviceInput = document.querySelector("#service");
+  const extraInput = document.querySelector("#extra");
 
   searchBtn.addEventListener("click", search);
   btnClearSearch.addEventListener("click", clearSearch);
+  showServiceModalBtn.addEventListener("click", showServiceModalBtnClicked);
+  btnAddService.addEventListener("click", addServiceToTable);
   registerQuoteBtn.addEventListener("click", registerQuoteBtnClick);
   discountInput.addEventListener("input", validateDiscount);
-  serviceInput.addEventListener("input", validateService);
+  extraInput.addEventListener("input", validateExtra);
   mainCardTable.addEventListener("click", mainCardTableRowClicked);
-  cartTable.addEventListener("click", cartTableRowClicked);
+  cartProductTable.addEventListener("click", cartProductTableRowClicked);
+  cartServiceTable.addEventListener("click", serviceTableRowClicked);
 
   //Search products
   async function search() {
@@ -84,7 +93,6 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       productsData = json.response;
-      console.log(productsData);
 
       productsData.forEach((elem, index) => {
         elem.actions = `
@@ -170,10 +178,18 @@ window.addEventListener("DOMContentLoaded", () => {
     switch (form) {
       case "shopping-cart":
         shoppingCart = [];
-        populateTable();
-        search();
+        servicesCart = [];
+
         document.querySelector(`#concept`).value = "";
         document.querySelector(`#discount`).value = "";
+        document.querySelector(`#extra`).value = "";
+        populateProductTable();
+        populateSeriviceTable();
+        search();
+        break;
+      case "serviceForm":
+        document.querySelector(`#description`).value = "";
+        document.querySelector(`#totalService`).value = "";
         break;
       case "searchForm":
         document.querySelector("#searchForm").reset();
@@ -186,9 +202,9 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function registerQuoteBtnClick() {
-    if (shoppingCart.length === 0) {
+    if (shoppingCart.length === 0 && servicesCart.length === 0) {
       errorNotification(
-        "No tienes productos en la cotización. Agrega productos para realizar la cotización"
+        "No tienes productos ni servicios en la cotización. Agrega productos o servicios para realizar la cotización"
       );
       return;
     }
@@ -200,7 +216,10 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    //Resets form Validation
     resetCartFormValidation();
+
+    //Resets validates cartForms and returns if it´s valid and its info
     let response = validateCartForm();
 
     if (response.valid === false) {
@@ -242,7 +261,7 @@ window.addEventListener("DOMContentLoaded", () => {
           body[elem] = data.value;
           break;
 
-        case "service":
+        case "extra":
           data = document.querySelector(`#${elem}`);
           body[elem] = data.value;
           break;
@@ -258,12 +277,12 @@ window.addEventListener("DOMContentLoaded", () => {
         productName: elem.productName,
         quantity: elem.quantity,
         unitPrice: elem.unitPrice,
-        changed: false,
-        add: false,
       });
     });
 
     body.quoteDetail = quoteDetail;
+    body.serviceDetail = servicesCart;
+
     body.total = total;
 
     return {
@@ -287,6 +306,79 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function validateServiceForm() {
+    let body = {};
+    let valid = true;
+
+    $serviceFields.forEach((elem) => {
+      let data;
+      let msg;
+
+      switch (elem) {
+        case "description":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value) {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "La descripción es requerida.";
+            valid = false;
+          }
+          body[elem] = data.value;
+          break;
+
+        case "totalService":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (!data.value) {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "El total es requerido.";
+            valid = false;
+          }
+          body[elem] = data.value;
+          break;
+      }
+    });
+
+    return {
+      valid,
+      body,
+    };
+  }
+
+  function resetServiceFormValidation() {
+    $serviceFields.forEach((elem) => {
+      switch (elem) {
+        case "description":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          msg.innerHTML = "";
+
+          break;
+        case "totalService":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          msg.innerHTML = "";
+
+          break;
+      }
+    });
+  }
+
+  function addServiceToTable() {
+    resetServiceFormValidation();
+
+    let response = validateServiceForm();
+
+    if (response.valid) {
+      addService(response.body);
+      $("#main_modal").modal("hide");
+    }
+  }
+
   //Listen when an element from the tablie is clicked
   function mainCardTableRowClicked(e) {
     if (e.target && e.target.classList.contains("add")) {
@@ -304,8 +396,8 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  //Listen when an element from the tablie is clicked
-  function cartTableRowClicked(e) {
+  //Listen when an element from the table is clicked
+  function cartProductTableRowClicked(e) {
     if (e.target.classList.contains("add")) {
       if (e.target.tagName === "I") {
         let button = e.target.parentElement;
@@ -330,6 +422,21 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  //Listen when an element from the table is clicked
+  function serviceTableRowClicked(e) {
+    if (e.target.classList.contains("remove")) {
+      if (e.target.tagName === "I") {
+        let button = e.target.parentElement;
+        let index = button.getAttribute("data-index");
+        removeService(index);
+      } else {
+        let button = e.target;
+        let index = button.getAttribute("data-index");
+        removeService(index);
+      }
+    }
+  }
+
   //Increases the number of products of the same article
   function addMoreProduct(productIndex) {
     if (
@@ -341,7 +448,7 @@ window.addEventListener("DOMContentLoaded", () => {
     shoppingCart[productIndex].quantity++;
     shoppingCart[productIndex].total += shoppingCart[productIndex].unitPrice;
 
-    populateTable();
+    populateProductTable();
   }
 
   //reduces or removes products
@@ -353,7 +460,13 @@ window.addEventListener("DOMContentLoaded", () => {
       shoppingCart.splice(productIndex, 1);
     }
 
-    populateTable();
+    populateProductTable();
+  }
+
+  //reduces or removes services
+  function removeService(productIndex) {
+    servicesCart.splice(productIndex, 1);
+    populateSeriviceTable();
   }
 
   //add products to the cart
@@ -391,21 +504,19 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    populateTable();
+    populateProductTable();
   }
 
-  //cartTableFunction
-  //populate the cart table
-  function populateTable() {
+  //cartProductTableFunction
+  function populateProductTable() {
     if (shoppingCart.length == 0) {
-      cartTable.innerHTML = `<tr>
+      cartProductTable.innerHTML = `<tr>
           <td class="text-center w-100"> Aun no tienes productos. <br> Agrega productos a la
-          cotización   🛍
+              venta   🛍
           </td>
       </tr>`;
       total = 0;
       subTotal = 0;
-      document.querySelector("#discount").value = "";
       updateQuoteTotals();
       validateDiscount();
 
@@ -431,24 +542,92 @@ window.addEventListener("DOMContentLoaded", () => {
       </tr>`;
     });
 
-    cartTable.innerHTML = tableBody;
+    cartProductTable.innerHTML = tableBody;
     updateQuoteTotals();
     validateDiscount();
   }
 
   function updateQuoteTotals() {
     subTotal = 0;
+
+    //Get discount
     let discount = document.querySelector("#discount");
-    shoppingCart.forEach((prod) => (subTotal += prod.total));
-    subTotal = !isNaN(parseFloat(serviceInput.value))
-      ? subTotal + parseFloat(serviceInput.value)
-      : subTotal;
+    discount =
+      discount.value != undefined && discount.value != "" ? discount.value : 0;
 
-    total = subTotal - discount.value;
+    //Gets elements from the product and service cart
+    shoppingCart.forEach((prod) => (subTotal += parseFloat(prod.total)));
+    servicesCart.forEach((serv) => (subTotal += parseFloat(serv.total)));
 
-    console.log(total);
-    document.querySelector("#subTotal").innerHTML = `$${subTotal.toFixed(2)}`;
-    document.querySelector("#total").innerHTML = `$${total.toFixed(2)}`;
+    //Checkk if extra has a value and if so, is added to the subtotal
+    subTotal = !isNaN(parseFloat(extraInput.value))
+      ? parseFloat(subTotal) + parseFloat(extraInput.value)
+      : parseFloat(subTotal);
+
+    //Calculate the total by sustrating the discount minus the subtotal
+    total = parseFloat(subTotal) - parseFloat(discount);
+
+    //Sets the subtotal and total to their dom elements
+    document.querySelector("#subTotal").innerHTML = `$${parseFloat(
+      subTotal
+    ).toFixed(2)}`;
+    document.querySelector("#total").innerHTML = `$${parseFloat(total).toFixed(
+      2
+    )}`;
+  }
+
+  //Adds services to the serivice cart
+  function addService(service) {
+    if (servicesCart.length == 0) {
+      servicesCart.push({
+        id: 1,
+        description: service.description,
+        total: service.totalService,
+      });
+    } else {
+      servicesCart.push({
+        id: servicesCart.length + 1,
+        description: service.description,
+        total: service.totalService,
+      });
+    }
+    populateSeriviceTable();
+  }
+
+  //Fill serviceTable
+  function populateSeriviceTable() {
+    if (servicesCart.length == 0) {
+      cartServiceTable.innerHTML = `<tr>
+          <td class="text-center w-100"> Aun no tienes servicios. <br> Agrega servicios a la
+              venta   🛒
+          </td>
+      </tr>`;
+
+      updateQuoteTotals();
+      validateDiscount();
+
+      return;
+    }
+
+    let tableBody = "";
+    servicesCart.forEach((service, index) => {
+      tableBody += `<tr>
+          <td style="white-space:normal"> 
+            ${service.description}
+          </td>
+          <td class="text-center">$${parseFloat(service.total).toFixed(2)}</td>
+          <td class="text-center"> 
+              <button type="button"
+                  class="btn btn-sm btn-outline-secondary text-danger remove" data-index="${index}"  data-id="${
+        service._id
+      }"><i class="uil uil-multiply remove"></i></button>
+          </td>
+      </tr>`;
+    });
+
+    cartServiceTable.innerHTML = tableBody;
+    updateQuoteTotals();
+    validateDiscount();
   }
 
   //Validators
@@ -458,12 +637,15 @@ window.addEventListener("DOMContentLoaded", () => {
     let discount = document.querySelector("#discount");
     let discountMsg = document.querySelector("#discountMsg");
 
+    //checks if subtotal has a '$' and if so removes it to get the number
     subTotal = subTotal.includes("$")
       ? subTotal.substr(1, subTotal.length - 1)
       : subTotal;
 
+    //Check if the total is and number
     subTotal = isNaN(parseFloat(subTotal)) ? 0 : parseFloat(subTotal);
 
+    //checks if the subtotal is less than the discount
     if (
       subTotal - (discount.value ?? 0) < 0 ||
       isNaN(subTotal - (discount.value ?? 0))
@@ -482,10 +664,24 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function validateService() {
+  function validateExtra() {
     validateDiscount();
   }
 
+  //Modals
+  function showServiceModalBtnClicked() {
+    showServiceModal();
+  }
+
+  function showServiceModal() {
+    document.querySelector("#modal_title").innerHTML = "Agregar servicio";
+    $("#main_modal").modal("show");
+  }
+
+  $("#main_modal").on("hidden.bs.modal", function (e) {
+    resetServiceFormValidation();
+    resetForm("serviceForm");
+  });
   //Initial Actions
   let productsTable = new CardTable(
     "productsTable",

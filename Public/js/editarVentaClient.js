@@ -8,6 +8,8 @@ window.addEventListener("DOMContentLoaded", () => {
     "extra",
   ];
 
+  let $serviceFields = ["description", "totalService"];
+
   let routes = {
     showProducts: "/getProductsWithStock",
     registerSale: "/actualizar-venta",
@@ -173,7 +175,7 @@ window.addEventListener("DOMContentLoaded", () => {
   function resetForm(form) {
     switch (form) {
       case "shopping-cart":
-        hoppingCart = [];
+        shoppingCart = [];
         servicesCart = [];
 
         document.querySelector(`#concept`).value = "";

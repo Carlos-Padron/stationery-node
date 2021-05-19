@@ -93,7 +93,6 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       productsData = json.response;
-      console.log(productsData);
 
       productsData.forEach((elem, index) => {
         elem.actions = `

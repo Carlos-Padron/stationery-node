@@ -20,7 +20,7 @@ const newQuote = async (req, res) => {
       name: "asc",
     });
 
-    res.render("cotizaciones/nuevacotizacion", {
+    res.render("cotizaciones/nuevaCotizacion", {
       sectionName: "Nueva cotización",
       script: "nuevaCotizacionClient",
       activeMenu: "CTZCNS",
@@ -35,8 +35,10 @@ const newQuote = async (req, res) => {
 const registerQuote = async (req, res) => {
   try {
     let quoteDetails = [];
+    let serviceDetails = [];
     let outOfStock = [];
 
+    //Verifify if product exists and has enough stock
     for (const prod of req.body.quoteDetail) {
       let product = await Product.findById(prod.productID).select(
         "_id name price quantity"
@@ -61,6 +63,14 @@ const registerQuote = async (req, res) => {
       }
     }
 
+    //adds services to the sale
+    req.body.serviceDetail.forEach((service) => {
+      serviceDetails.push({
+        description: service.description,
+        total: service.total,
+      });
+    });
+
     if (outOfStock.length > 0) {
       return res.json({
         error: true,
@@ -74,12 +84,13 @@ const registerQuote = async (req, res) => {
       date: new Date(),
       total: req.body.total,
       discount: req.body.discount != null ? req.body.discount : 0,
-      service:
-        req.body.service === "." || req.body.service === null
+      extra:
+        req.body.extra === "." || req.body.extra === null
           ? null
-          : req.body.service,
+          : req.body.extra,
       madeBy: req.user._id,
       quoteDetail: quoteDetails,
+      serviceDetail: serviceDetails,
     });
 
     await quote.save();
@@ -119,7 +130,7 @@ const searchQuotes = async (req, res) => {
 
   try {
     let quotes = await Quote.find({
-      date: { $gte: fechaFin, $lte: fechaInicio },
+      date: { $gte: fechaInicio, $lte: fechaFin },
     })
       .select("_id concept date total")
       .sort({ date: "asc" });
@@ -160,17 +171,18 @@ const quoteDetail = async (req, res) => {
       .populate({ path: "updatedBy", select: "name fatherSurname" })
       .populate({ path: "madeBy", select: "name fatherSurname" })
       .populate({ path: "quoteDetail.productID", select: "name" })
+      .populate({ path: "quoteDetail.productID.brand", select: "name" })
       .lean();
 
     if (quote) {
       quote.discount = quote.discount == null ? 0 : quote.discount;
-      quote.service = quote.service == null ? 0 : quote.service;
-      quote.subtotal = quote.total - quote.discount - quote.service;
+      quote.extra = quote.extra == null ? 0 : quote.extra;
+      quote.subtotal = quote.total + quote.extra;
 
       quote.total = quote.total.toFixed(2);
       quote.subtotal = quote.subtotal.toFixed(2);
       quote.discount = quote.discount.toFixed(2);
-      quote.service = quote.service.toFixed(2);
+      quote.extra = quote.extra.toFixed(2);
 
       quote.madeBy =
         quote.madeBy != null
@@ -222,7 +234,9 @@ const editQuote = async (req, res) => {
 
     if (quote) {
       quote.quoteDetail = JSON.stringify(quote.quoteDetail);
+      quote.serviceDetail = JSON.stringify(quote.serviceDetail);
 
+      console.log(quote);
       res.render("cotizaciones/editarCotizacion", {
         sectionName: "Editar cotizacion",
         script: "editarCotizacionClient",
@@ -242,6 +256,7 @@ const editQuote = async (req, res) => {
 const updateQuote = async (req, res) => {
   try {
     let quoteDetails = [];
+    let serviceDetails = [];
     let outOfStock = [];
 
     let quote = await Quote.findById(req.body._id);
@@ -266,19 +281,55 @@ const updateQuote = async (req, res) => {
           `No se encontró ${prod.productName} en el catálogo de productos.`
         );
       } else {
-        if (prod.quantity > product.quantity) {
-          outOfStock.push(
-            `La cantidad agregada de ${prod.productName} supera a la cantidad de stock del inventario.`
-          );
+        let productInQuote = quote.quoteDetail.find((quoteProd) => {
+          return quoteProd.productID.toString() == product._id.toString();
+        });
+
+        if (productInQuote) {
+          //compares if the quantity of th product of the quote is equal to the quantity of the prodct of the uptdate quote
+          console.log("hay");
+          if (prod.quantity != productInQuote.quantity) {
+            if (prod.quantity > product.quantity) {
+              outOfStock.push(
+                `La cantidad agregada de ${prod.productName} supera a la cantidad de stock del inventario.`
+              );
+            } else {
+              quoteDetails.push({
+                productID: prod.productID,
+                quantity: prod.quantity,
+                unitPrice: prod.unitPrice,
+              });
+            }
+          } else {
+            quoteDetails.push({
+              productID: prod.productID,
+              quantity: prod.quantity,
+              unitPrice: prod.unitPrice,
+            });
+          }
         } else {
-          quoteDetails.push({
-            productID: prod.productID,
-            quantity: prod.quantity,
-            unitPrice: prod.unitPrice,
-          });
+          if (prod.quantity > product.quantity) {
+            outOfStock.push(
+              `La cantidad agregada de ${prod.productName} supera a la cantidad de stock del inventario.`
+            );
+          } else {
+            quoteDetails.push({
+              productID: prod.productID,
+              quantity: prod.quantity,
+              unitPrice: prod.unitPrice,
+            });
+          }
         }
       }
     }
+
+    //adds services to the sale
+    req.body.serviceDetail.forEach((service) => {
+      serviceDetails.push({
+        description: service.description,
+        total: service.total,
+      });
+    });
 
     if (outOfStock.length > 0) {
       return res.json({
@@ -291,13 +342,12 @@ const updateQuote = async (req, res) => {
     quote.concept = req.body.concept;
     quote.total = req.body.total;
     quote.discount = req.body.discount != null ? req.body.discount : 0;
-    quote.service =
-      req.body.service === "." || req.body.service === null
-        ? null
-        : req.body.service;
+    quote.extra =
+      req.body.extra === "." || req.body.extra === null ? null : req.body.extra;
     quote.updatedBy = req.user._id;
 
     quote.quoteDetail = quoteDetails;
+    quote.serviceDetail = serviceDetails;
 
     await quote.save();
 
@@ -328,6 +378,7 @@ const updateQuote = async (req, res) => {
 const sellQuote = async (req, res) => {
   try {
     let quoteDetails = [];
+    let serviceDetails = [];
     let outOfStock = [];
 
     let quote = await Quote.findById(req.body._id);
@@ -366,6 +417,13 @@ const sellQuote = async (req, res) => {
       }
     }
 
+    req.body.serviceDetail.forEach((service) => {
+      serviceDetails.push({
+        description: service.description,
+        total: service.total,
+      });
+    });
+
     if (outOfStock.length > 0) {
       return res.json({
         error: true,
@@ -383,12 +441,11 @@ const sellQuote = async (req, res) => {
     sale.total = req.body.total;
     sale.discount = req.body.discount != null ? req.body.discount : 0;
 
-    sale.service =
-      req.body.service === "." || req.body.service === null
-        ? null
-        : req.body.service;
+    sale.extra =
+      req.body.extra === "." || req.body.extra === null ? null : req.body.extra;
     sale.madeBy = req.user._id;
-    (sale.saleDetail = quoteDetails), await sale.save();
+    sale.saleDetail = quoteDetails;
+    sale.serviceDetail = serviceDetails;
 
     await sale.save();
 

@@ -137,7 +137,7 @@ const searchServices = async (req, res) => {
 
   try {
     const services = await ServiceModel.find({
-      date: { $gte: fechaFin, $lte: fechaInicio },
+      date: { $gte: fechaInicio, $lte: fechaFin },
     }).sort({ date: "asc" });
 
     res.json({

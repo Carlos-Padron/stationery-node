@@ -137,7 +137,6 @@ const searchSales = async (req, res) => {
   fechaFin = fechaFin.split("T");
   fechaFin = `${fechaFin[0]}T23:59:59z`;
 
-  console.log({ $gte: fechaInicio, $lte: fechaFin });
 
   try {
     let sales = await Sale.find({

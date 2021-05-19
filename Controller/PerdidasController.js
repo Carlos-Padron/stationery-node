@@ -165,7 +165,7 @@ const searchLosses = async (req, res) => {
 
   try {
     const losses = await LossModel.find({
-      date: { $gte: fechaFin, $lte: fechaInicio },
+      date: { $gte: fechaInicio, $lte: fechaFin },
     })
       .populate({
         path: "productID",

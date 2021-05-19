@@ -31,7 +31,7 @@ const registerSale = async (req, res) => {
     let serviceDetails = [];
     let outOfStock = [];
 
-    //Verificy if product exists and has enough stock
+    //Verifify if product exists and has enough stock
     for (const prod of req.body.saleDetail) {
       let product = await Product.findById(prod.productID).select(
         "_id name price quantity"
@@ -56,6 +56,7 @@ const registerSale = async (req, res) => {
       }
     }
 
+    //adds services to the sale
     req.body.serviceDetail.forEach((service) => {
       serviceDetails.push({
         description: service.description,
@@ -186,7 +187,7 @@ const saleDetail = async (req, res) => {
     if (sale) {
       sale.discount = sale.discount == null ? 0 : sale.discount;
       sale.extra = sale.extra == null ? 0 : sale.extra;
-      sale.subtotal = sale.total - sale.discount - sale.extra;
+      sale.subtotal = sale.total + sale.extra;
 
       sale.total = sale.total.toFixed(2);
       sale.subtotal = sale.subtotal.toFixed(2);
@@ -300,6 +301,7 @@ const editSale = async (req, res) => {
 
     if (sale) {
       sale.saleDetail = JSON.stringify(sale.saleDetail);
+      sale.serviceDetail = JSON.stringify(sale.serviceDetail);
 
       res.render("ventas/editarVenta", {
         sectionName: "Editar venta",
@@ -321,6 +323,7 @@ const editSale = async (req, res) => {
 const updateSale = async (req, res) => {
   try {
     let saleDetails = [];
+    let serviceDetails = [];
     let outOfStock = [];
 
     let sale = await Sale.findById(req.body._id);
@@ -335,6 +338,7 @@ const updateSale = async (req, res) => {
       return;
     }
 
+    //Verifify if product exists and has enough stock
     for (const prod of req.body.saleDetail) {
       let product = await Product.findById(prod.productID).select(
         "_id name price quantity"
@@ -345,19 +349,54 @@ const updateSale = async (req, res) => {
           `No se encontró ${prod.productName} en el catálogo de productos.`
         );
       } else {
-        if (prod.quantity > product.quantity) {
-          outOfStock.push(
-            `La cantidad agregada de ${prod.productName} supera a la cantidad de stock del inventario.`
-          );
+        let productInSale = sale.saleDetail.find((saleProd) => {
+          return saleProd.productID.toString() == product._id.toString();
+        });
+
+        if (productInSale) {
+          //compares if the quantity of th product of the sale is equal to the quantity of the prodct of the uptdate sale
+          if (prod.quantity != productInSale.quantity) {
+            if (prod.quantity > product.quantity) {
+              outOfStock.push(
+                `La cantidad agregada de ${prod.productName} supera a la cantidad de stock del inventario.`
+              );
+            } else {
+              saleDetails.push({
+                productID: prod.productID,
+                quantity: prod.quantity,
+                unitPrice: prod.unitPrice,
+              });
+            }
+          } else {
+            saleDetails.push({
+              productID: prod.productID,
+              quantity: prod.quantity,
+              unitPrice: prod.unitPrice,
+            });
+          }
         } else {
-          saleDetails.push({
-            productID: prod.productID,
-            quantity: prod.quantity,
-            unitPrice: prod.unitPrice,
-          });
+          if (prod.quantity > product.quantity) {
+            outOfStock.push(
+              `La cantidad agregada de ${prod.productName} supera a la cantidad de stock del inventario.`
+            );
+          } else {
+            saleDetails.push({
+              productID: prod.productID,
+              quantity: prod.quantity,
+              unitPrice: prod.unitPrice,
+            });
+          }
         }
       }
     }
+
+    //adds services to the sale
+    req.body.serviceDetail.forEach((service) => {
+      serviceDetails.push({
+        description: service.description,
+        total: service.total,
+      });
+    });
 
     if (outOfStock.length > 0) {
       return res.json({
@@ -368,17 +407,14 @@ const updateSale = async (req, res) => {
     }
 
     sale.concept = req.body.concept;
-    (sale.total = req.body.total),
-      (sale.discount = req.body.discount != null ? req.body.discount : 0);
-    (sale.serviceDescription = req.body.serviceDescription),
-      (sale.serviceAmount =
-        req.body.serviceAmount === "." || req.body.serviceAmount === null
-          ? null
-          : req.body.serviceAmount);
+    sale.total = req.body.total;
+    sale.discount = req.body.discount != null ? req.body.discount : 0;
+
     sale.extra =
       req.body.extra === "." || req.body.extra === null ? null : req.body.extra;
     sale.updatedBy = req.user._id;
     sale.changed = true;
+    sale.serviceDetail = serviceDetails;
 
     let previouSaleDetail = sale.saleDetail;
     //Se asigna el nuevo detalle a la venta
@@ -386,9 +422,12 @@ const updateSale = async (req, res) => {
 
     await sale.save();
 
+    //Gets the previuos sales's product's ids
     let previouSaleDetailIDS = previouSaleDetail.map((e) =>
       e.productID.toString()
     );
+
+    //Gets the new sales's product's ids
     let saleDetailIDS = saleDetails.map((e) => e.productID.toString());
 
     //Busca los productos que se mantuvieron en la venta

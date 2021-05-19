@@ -118,7 +118,6 @@ window.addEventListener("DOMContentLoaded", () => {
         "justify-content-center"
       );
 
-      console.log(saleInfo);
       let body = JSON.stringify(saleInfo);
 
       let request = await fetch(routes.registerSale, {
@@ -133,7 +132,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
       let json = await request.json();
 
-      console.log("json", json);
       if (json.error) {
         if (Array.isArray(json.message)) {
           let messages = "";
@@ -159,16 +157,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       resetForm("shopping-cart");
 
-      modalAlert(
-        "success",
-        "Aviso ",
-        `<strong>${json.message}</strong> <br>`
-        //,
-        //() => {
-        //$("#main_modal").modal("hide");
-        //window.location = `/ventas/detalle/${json.response}`;
-        //}
-      );
+      modalAlert("success", "Aviso ", `<strong>${json.message}</strong> <br>`);
     } catch (error) {
       errorNotification("Error interno del servidor");
       enableButton(registerSaleBtn, "Realizar venta");
@@ -374,7 +363,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let response = validateServiceForm();
 
-    console.log(response);
     if (response.valid) {
       addService(response.body);
       $("#main_modal").modal("hide");
@@ -519,7 +507,6 @@ window.addEventListener("DOMContentLoaded", () => {
       </tr>`;
       total = 0;
       subTotal = 0;
-      document.querySelector("#discount").value = "";
       updateSaleTotals();
       validateDiscount();
 
@@ -581,7 +568,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //Adds services to the serivice cart
   function addService(service) {
-    console.log(service);
     if (servicesCart.length == 0) {
       servicesCart.push({
         id: 1,
@@ -606,11 +592,6 @@ window.addEventListener("DOMContentLoaded", () => {
               venta   🛒
           </td>
       </tr>`;
-      if (shoppingCart.length == 0) {
-        total = 0;
-        subTotal = 0;
-        document.querySelector("#discount").value = "";
-      }
 
       updateSaleTotals();
       validateDiscount();
@@ -620,7 +601,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let tableBody = "";
     servicesCart.forEach((service, index) => {
-      console.log(service);
 
       tableBody += `<tr>
           <td style="white-space:normal"> 

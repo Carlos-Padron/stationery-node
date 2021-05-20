@@ -1,7 +1,6 @@
 const CashOut = require("../Model/CashOutModel");
 const Sale = require("../Model/SaleModel");
 const OtherMovements = require("../Model/OtherMovementModel");
-const ServiceModel = require("../Model/ServiceModel");
 
 const errorHandler = require("../Utils/Helpers/errorHandler");
 
@@ -42,10 +41,6 @@ const registerCashOut = async (req, res) => {
       date: { $gte: startOfTheDay, $lte: endOfTheDay },
     });
 
-    let services = await ServiceModel.find({
-      date: { $gte: startOfTheDay, $lte: endOfTheDay },
-    });
-
     let body = {};
 
     let totalSales = 0;
@@ -67,14 +62,10 @@ const registerCashOut = async (req, res) => {
       totalSales += sale.total;
     });
 
-    services.forEach((ser) => {
-      totalSales += ser.total;
-    });
-
     let cashOut = await CashOut({
       date: date,
       totalSales,
-      salesMade: sales.length + services.length,
+      salesMade: sales.length,
       madeBy: req.user._id,
     });
 
@@ -134,10 +125,6 @@ const updateCashOut = async (req, res) => {
       date: { $gte: startOfTheDay, $lte: endOfTheDay },
     });
 
-    let services = await ServiceModel.find({
-      date: { $gte: startOfTheDay, $lte: endOfTheDay },
-    });
-
     let body = {};
 
     let totalSales = 0;
@@ -159,12 +146,9 @@ const updateCashOut = async (req, res) => {
       totalSales += sale.total;
     });
 
-    services.forEach((ser) => {
-      totalSales += ser.total;
-    });
     body = {
       totalSales,
-      salesMade: sales.length + services.length,
+      salesMade: sales.length,
       updatedBy: req.user._id,
     };
 

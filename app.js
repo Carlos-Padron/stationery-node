@@ -69,7 +69,6 @@ const cotizacionesRoutes = require("./Routes/cotizacionesRoutes");
 const otrosMovimientosRoutes = require("./Routes/otrosMovimientosRoutes");
 const usuariosRoutes = require("./Routes/usuariosRoutes");
 const cortesRoutes = require("./Routes/cortesRoutes");
-const serviciosRoute = require("./Routes/servicesRoutes");
 
 app.use(authRoutes);
 app.use(dashboardhRoutes);
@@ -82,7 +81,6 @@ app.use(cotizacionesRoutes);
 app.use(otrosMovimientosRoutes);
 app.use(usuariosRoutes);
 app.use(cortesRoutes);
-app.use(serviciosRoute);
 
 app.get("*", (req, res) => {
   res.render("notFound");

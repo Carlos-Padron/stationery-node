@@ -3,7 +3,6 @@ const CashOut = require("../Model/CashOutModel");
 const Product = require("../Model/ProductModel");
 const Sale = require("../Model/SaleModel");
 const OtherMovements = require("../Model/OtherMovementModel");
-const ServiceModel = require("../Model/ServiceModel");
 
 const index = async (req, res) => {
   let currentDay = new Date();
@@ -46,10 +45,6 @@ const index = async (req, res) => {
   let salida = otherMovements.filter((mov) => mov.type == "Salida de dinero");
   let entrada = otherMovements.filter((mov) => mov.type == "Ingreso de dinero");
 
-  let services = await ServiceModel.find({
-    date: { $gte: currentDay },
-  });
-
   salida.forEach((mov) => {
     todaySales -= mov.amount;
   });
@@ -60,10 +55,6 @@ const index = async (req, res) => {
 
   sales.forEach((sale) => {
     todaySales += sale.total;
-  });
-
-  services.forEach((ser) => {
-    todaySales += ser.total;
   });
 
   products.forEach((prod, index) => {

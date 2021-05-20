@@ -192,7 +192,7 @@ const saleDetail = async (req, res) => {
     if (sale) {
       sale.discount = sale.discount == null ? 0 : sale.discount;
       sale.extra = sale.extra == null ? 0 : sale.extra;
-      sale.subtotal = sale.total + sale.extra;
+      sale.subtotal = sale.total - sale.extra + sale.discount;
 
       sale.total = sale.total.toFixed(2);
       sale.subtotal = sale.subtotal.toFixed(2);
@@ -569,6 +569,40 @@ const printCanceledSales = async (req, res) => {
   }
 };
 
+
+const printSaleDetail = async (req, res) => {
+  try {
+    const template = await renderTemplate("saleDetail", req.body);
+
+    let PDFBuffer = await createPDF(template);
+
+    res.json({
+      error: false,
+      message: null,
+      response: PDFBuffer.toString("base64"),
+    });
+  } catch (error) {
+    console.log(error);
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
+
+
 module.exports = {
   index,
   registerSale,
@@ -580,4 +614,5 @@ module.exports = {
   updateSale,
   printSalesDone,
   printCanceledSales,
+  printSaleDetail
 };

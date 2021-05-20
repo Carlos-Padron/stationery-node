@@ -27,8 +27,8 @@ window.addEventListener("DOMContentLoaded", () => {
   searchBtn.addEventListener("click", search);
   mainTableBody.addEventListener("click", rowClicked);
   btnClearSearch.addEventListener("click", clearSearch);
-  btnPrintSalesDone.addEventListener("click", printProductsReport);
-  btnPrintCanceldSales.addEventListener("click", printProductsReport);
+  btnPrintSalesDone.addEventListener("click", printSaleReport);
+  btnPrintCanceldSales.addEventListener("click", printSaleReport);
 
   //functions
   async function search() {
@@ -264,7 +264,7 @@ window.addEventListener("DOMContentLoaded", () => {
     window.location = `/ventas/detalle/${_id}`;
   }
 
-  async function printProductsReport(e) {
+  async function printSaleReport(e) {
     blockElem(searchForm);
     let body = {};
     console.log();

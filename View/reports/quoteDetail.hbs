@@ -1,0 +1,119 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalle de Cotización</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:400"
+      rel="stylesheet"
+    />
+
+    <style>
+
+      * {font-family: 'Open Sans', sans-serif; } .logo-img{ width: 5cm
+      !important; } table { border-collapse: collapse; } .table { width: 100%;
+      margin-bottom: 1rem; border-color: #8898aa; color: #525f7f;
+      background-color: transparent; } .table .thead-light th { color: #8898aa;
+      border-color: #8898aa; background-color: #f6f9fc; border: 1px solid
+      #8898aa !important;} .table .thead-light th { color: #8898aa;
+      background-color: #f6f9fc; } .table .list td { border: 1px solid #8898aa
+      !important;} tr { page-break-inside:avoid; page-break-after:auto }
+
+    </style>
+  </head>
+  <body>
+    <table id="header" style="margin-bottom: 0px;">
+      <tr>
+        <td style="width: 75%;">
+          <img class="logo-img" src="data:image/png;base64,{{logo}}" />
+        </td>
+        <td style="margin-top: auto; margin-bottom:auto">
+          <h5 style="margin:0;">Detalle de Cotización </h5>
+          <h5 style="margin-top:8px;margin-bottom:3px;">Fecha:
+            {{date}}</h5>
+
+        </td>
+      </tr>
+    </table>
+
+    <table id="extra">
+      <tr>
+        <td colspan="2">
+          <h5>Concepto
+            {{quote.concept}}</h5>
+        </td>
+        <td colspan="2" style=" text-align:right">
+          <h5>Fecha de la cotización {{quote.date}}</h5>
+        </td>
+      </tr>
+      <tr style="margin-bottom: -14px !important">
+        <td style="width:25%; text-align:center">
+          <h5>Descuento: ${{quote.discount}}</h5>
+        </td>
+        <td style="width:25%; text-align:center">
+          <h5>Extra: ${{quote.extra}}</h5>
+        </td>
+        <td style="width:25%; text-align:center">
+          <h5>Subtotal: ${{quote.subtotal}}</h5>
+        </td>
+        <td style="width:25%; text-align:center">
+          <h5>Total: ${{quote.total}}</h5>
+        </td>
+      </tr>
+    </table>
+
+ {{#customIf quote.quoteDetail.length ">" 0}}
+          <div class="">
+            <table id="" class="table">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-center"><p style="font-size:12px">Articulo</p></th>
+                  <th class="text-center"><p style="font-size:12px">Cantidad</p></th>
+                  <th class="text-center"><p style="font-size:12px">Precio de venta</p></th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {{#each ../quote.quoteDetail}}
+                  <tr>
+                    <td class="text-center" style="font-size:12px">{{this.productID.name}}</td>
+                    <td class="text-center" style="font-size:12px">
+                      {{#toFixed this.quantity}}{{/toFixed}}</td>
+                    <td class="text-center" style="font-size:12px">
+                      ${{#toFixed this.unitPrice}}{{/toFixed}}
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+        </div>
+
+      {{/customIf}}
+
+      {{#customIf quote.serviceDetail.length ">" 0}}
+          <div class="">
+            <table id="" class="table ">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-center">
+                    <p style="font-size:12px">Servicio</p>
+                  </th>
+                  <th class="text-center">
+                    <p style="font-size:12px">Costo</p>
+                 </th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {{#each ../quote.serviceDetail}}
+                  <tr>
+                    <td class="text-center" style="font-size:12px">{{this.description}}</td>
+                    <td class="text-center" style="font-size:12px">
+                      ${{#toFixed this.total}}{{/toFixed}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+        </div>
+      {{/customIf}}
+  </body>
+</html>

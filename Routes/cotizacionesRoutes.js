@@ -24,6 +24,8 @@ router.post("/actualizar-cotizacion", authRoute, cotizacionController.updateQuot
 //Actualizar y vender Cotizacion
 router.post("/vender-cotizacion", authRoute, cotizacionController.sellQuote);
 
+//Reporte
+router.post("/printQuoteDetail", authRoute, cotizacionController.printQuote);
 
 
 

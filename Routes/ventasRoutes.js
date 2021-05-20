@@ -30,5 +30,6 @@ router.post("/actualizar-venta", authRoute, ventasController.updateSale);
 //Reportes
 router.post("/printSales", authRoute, ventasController.printSalesDone);
 router.post("/printCancledSales", authRoute, ventasController.printCanceledSales);
+router.post("/printSaleDetail", authRoute, ventasController.printSaleDetail);
 
 module.exports = router;

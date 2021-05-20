@@ -7,6 +7,7 @@ const pdf = require("html-pdf");
 
 const Product = require("../../Model/ProductModel");
 const Sale = require("../../Model/SaleModel");
+const Quote = require("../../Model/QuoteModel");
 
 const renderTemplate = async (templateName, options) => {
   let html = fs.readFileSync(
@@ -26,7 +27,7 @@ const renderTemplate = async (templateName, options) => {
 
 const prepateDataForTemplate = async (templateName, options) => {
   let data = {};
-  let { fechaInicio, fechaFin, canceled } = options;
+  let { fechaInicio, fechaFin, _id } = options;
 
   let logoImg = fs
     .readFileSync(path.join(__dirname, `../../Public/images/logo/logo.png`))
@@ -35,7 +36,6 @@ const prepateDataForTemplate = async (templateName, options) => {
   data.logo = logoImg;
 
   let date = new Date().toISOString().split("T")[0];
-  console.log(date);
 
   let day = date.substring(8, 10);
   let month = date.substring(5, 7);
@@ -162,6 +162,115 @@ const prepateDataForTemplate = async (templateName, options) => {
       data.date2 = endDateSalesCanceled;
       break;
 
+    case "saleDetail":
+      let saleDetail = await Sale.findById(_id)
+        .populate({
+          path: "madeBy",
+          select: "name fatherSurname",
+        })
+        .populate({ path: "updatedBy", select: "name fatherSurname" })
+        .populate({ path: "madeBy", select: "name fatherSurname" })
+        .populate({ path: "saleDetail.productID", select: "name" })
+        .populate({ path: "saleDetail.productID.brand", select: "name" })
+        .lean();
+
+      if (saleDetail) {
+        saleDetail.discount =
+          saleDetail.discount == null ? 0 : saleDetail.discount;
+        saleDetail.extra = saleDetail.extra == null ? 0 : saleDetail.extra;
+        saleDetail.subtotal = saleDetail.total - saleDetail.extra + saleDetail.discount;
+
+        saleDetail.total = saleDetail.total.toFixed(2);
+        saleDetail.subtotal = saleDetail.subtotal.toFixed(2);
+        saleDetail.discount = saleDetail.discount.toFixed(2);
+        saleDetail.extra = saleDetail.extra.toFixed(2);
+
+        saleDetail.madeBy =
+          saleDetail.madeBy != null
+            ? `${saleDetail.madeBy.name.split(" ")[0]} ${
+                saleDetail.madeBy.fatherSurname
+              }`
+            : "";
+        saleDetail.updatedBy =
+          saleDetail.updatedBy != null
+            ? `${saleDetail.updatedBy.name.split(" ")[0]} ${
+                saleDetail.updatedBy.fatherSurname
+              }`
+            : "";
+
+        saleDetail.date = saleDetail.date.toISOString().toString();
+
+        let date = saleDetail.date.substring(0, 10);
+        let day = date.substring(8, 10);
+        let month = date.substring(5, 7);
+        let year = date.substring(0, 4);
+
+        saleDetail.date = `${day}/${month}/${year}`;
+
+        saleDetail.saleDetail.forEach((detail) => detail.unitPrice.toFixed(2));
+        saleDetail.serviceDetail.forEach((detail) => detail.total.toFixed(2));
+
+        data.sale = saleDetail;
+      } else {
+        throw new Error("No se encontró la venta solicitada");
+      }
+      break;
+
+    case "quoteDetail":
+      let quoteDetail = await Quote.findById(_id)
+        .populate({
+          path: "madeBy",
+          select: "name fatherSurname",
+        })
+        .populate({ path: "updatedBy", select: "name fatherSurname" })
+        .populate({ path: "madeBy", select: "name fatherSurname" })
+        .populate({ path: "quoteDetail.productID", select: "name" })
+        .populate({ path: "quoteDetail.productID.brand", select: "name" })
+        .lean();
+
+      if (quoteDetail) {
+        quoteDetail.discount =
+          quoteDetail.discount == null ? 0 : quoteDetail.discount;
+        quoteDetail.extra = quoteDetail.extra == null ? 0 : quoteDetail.extra;
+        quoteDetail.subtotal = quoteDetail.total - quoteDetail.extra + quoteDetail.discount;
+
+        quoteDetail.total = quoteDetail.total.toFixed(2);
+        quoteDetail.subtotal = quoteDetail.subtotal.toFixed(2);
+        quoteDetail.discount = quoteDetail.discount.toFixed(2);
+        quoteDetail.extra = quoteDetail.extra.toFixed(2);
+
+        quoteDetail.madeBy =
+          quoteDetail.madeBy != null
+            ? `${quoteDetail.madeBy.name.split(" ")[0]} ${
+                quoteDetail.madeBy.fatherSurname
+              }`
+            : "";
+        quoteDetail.updatedBy =
+          quoteDetail.updatedBy != null
+            ? `${quoteDetail.updatedBy.name.split(" ")[0]} ${
+                quoteDetail.updatedBy.fatherSurname
+              }`
+            : "";
+
+        quoteDetail.date = quoteDetail.date.toISOString().toString();
+
+        let date = quoteDetail.date.substring(0, 10);
+        let day = date.substring(8, 10);
+        let month = date.substring(5, 7);
+        let year = date.substring(0, 4);
+
+        quoteDetail.date = `${day}/${month}/${year}`;
+
+        quoteDetail.quoteDetail.forEach((detail) =>
+          detail.unitPrice.toFixed(2)
+        );
+        console.log(quoteDetail);
+        quoteDetail.serviceDetail.forEach((detail) => detail.total.toFixed(2));
+
+        data.quote = quoteDetail;
+      } else {
+        throw new Error("No se encontró la cotización solicitada");
+      }
     default:
       break;
   }

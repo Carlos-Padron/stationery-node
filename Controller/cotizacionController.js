@@ -5,6 +5,11 @@ const Brand = require("../Model/BrandModel");
 const ArticleType = require("../Model/ArticleType");
 const Product = require("../Model/ProductModel");
 
+const {
+  renderTemplate,
+  createPDF,
+} = require("../Utils/Helpers/PDFtemplateHelper");
+
 const index = async (req, res) => {
   res.render("cotizaciones/cotizaciones", {
     sectionName: "Cotizaciones",
@@ -177,7 +182,7 @@ const quoteDetail = async (req, res) => {
     if (quote) {
       quote.discount = quote.discount == null ? 0 : quote.discount;
       quote.extra = quote.extra == null ? 0 : quote.extra;
-      quote.subtotal = quote.total + quote.extra;
+      quote.subtotal = quote.total - quote.extra + quote.discount;
 
       quote.total = quote.total.toFixed(2);
       quote.subtotal = quote.subtotal.toFixed(2);
@@ -480,6 +485,37 @@ const sellQuote = async (req, res) => {
   }
 };
 
+const printQuote = async (req, res) => {
+  try {
+    const template = await renderTemplate("quoteDetail", req.body);
+
+    let PDFBuffer = await createPDF(template);
+
+    res.json({
+      error: false,
+      message: null,
+      response: PDFBuffer.toString("base64"),
+    });
+  } catch (error) {
+    console.log(error);
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 module.exports = {
   index,
   newQuote,
@@ -489,4 +525,5 @@ module.exports = {
   editQuote,
   updateQuote,
   sellQuote,
+  printQuote
 };

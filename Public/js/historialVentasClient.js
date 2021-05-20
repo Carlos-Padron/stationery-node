@@ -3,6 +3,8 @@ window.addEventListener("DOMContentLoaded", () => {
   let $fields = ["fechaInicio", "fechaFin", "canceled"];
   let routes = {
     get: "/getSales",
+    printSales: "/printSales",
+    printCancledSales: "/printCancledSales",
   };
 
   let salesColumns = [
@@ -19,11 +21,14 @@ window.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
   const mainTableBody = document.querySelector("#mainTable tbody.list");
-
+  const btnPrintSalesDone = document.querySelector("#btnPrintSalesDone");
+  const btnPrintCanceldSales = document.querySelector("#btnPrintCanceldSales");
   //Listeners
   searchBtn.addEventListener("click", search);
   mainTableBody.addEventListener("click", rowClicked);
   btnClearSearch.addEventListener("click", clearSearch);
+  btnPrintSalesDone.addEventListener("click", printProductsReport);
+  btnPrintCanceldSales.addEventListener("click", printProductsReport);
 
   //functions
   async function search() {
@@ -257,6 +262,79 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function redirectToDetailsShow(_id) {
     window.location = `/ventas/detalle/${_id}`;
+  }
+
+  async function printProductsReport(e) {
+    blockElem(searchForm);
+    let body = {};
+    console.log();
+    resetFormValidation();
+
+    let response = validateForm();
+
+    if (response.valid === false) {
+      return;
+    }
+
+    blockElem(searchForm);
+
+    body = JSON.stringify(response.body);
+
+    try {
+      let request = await fetch(
+        e.target.id == "btnPrintSalesDone"
+          ? routes.printSales
+          : routes.printCancledSales,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            credentials: "same-origin",
+          },
+          body,
+        }
+      );
+
+      let json = await request.json();
+
+      if (json.error) {
+        if (Array.isArray(json.message)) {
+          let messages = "";
+          json.message.forEach((msg) => {
+            messages += `<strong>*${msg}</strong> <br>`;
+          });
+          modalAlert("warning", "Aviso", messages);
+          unblockElem(searchForm);
+          return;
+        } else {
+          modalAlert(
+            "warning",
+            "Aviso",
+            `<strong>*${json.message}</strong> <br>`
+          );
+          unblockElem(searchForm);
+          return;
+        }
+      }
+
+      let byteArray = new Uint8Array(
+        atob(json.response)
+          .split("")
+          .map((char) => char.charCodeAt(0))
+      );
+      let blob = new Blob([byteArray], { type: "application/pdf" });
+
+      const url = window.URL.createObjectURL(blob);
+
+      window.open(url, "_blank");
+
+      unblockElem(searchForm);
+    } catch (error) {
+      unblockElem(searchForm);
+      errorNotification("Error interno del servidor");
+      console.error(error);
+    }
   }
 
   //Initial actions

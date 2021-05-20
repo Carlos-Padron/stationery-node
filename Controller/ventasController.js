@@ -4,6 +4,11 @@ const Brand = require("../Model/BrandModel");
 const ArticleType = require("../Model/ArticleType");
 const Product = require("../Model/ProductModel");
 
+const {
+  renderTemplate,
+  createPDF,
+} = require("../Utils/Helpers/PDFtemplateHelper");
+
 //Nueva Venta
 const index = async (req, res) => {
   try {
@@ -136,7 +141,6 @@ const searchSales = async (req, res) => {
 
   fechaFin = fechaFin.split("T");
   fechaFin = `${fechaFin[0]}T23:59:59z`;
-
 
   try {
     let sales = await Sale.find({
@@ -503,6 +507,68 @@ const updateSale = async (req, res) => {
   }
 };
 
+const printSalesDone = async (req, res) => {
+  try {
+    const template = await renderTemplate("salesDone", req.body);
+
+    let PDFBuffer = await createPDF(template);
+
+    res.json({
+      error: false,
+      message: null,
+      response: PDFBuffer.toString("base64"),
+    });
+  } catch (error) {
+    console.log(error);
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
+const printCanceledSales = async (req, res) => {
+  try {
+    const template = await renderTemplate("salesCanceled", req.body);
+
+    let PDFBuffer = await createPDF(template);
+
+    res.json({
+      error: false,
+      message: null,
+      response: PDFBuffer.toString("base64"),
+    });
+  } catch (error) {
+    console.log(error);
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 module.exports = {
   index,
   registerSale,
@@ -512,4 +578,6 @@ module.exports = {
   cancelSale,
   editSale,
   updateSale,
+  printSalesDone,
+  printCanceledSales,
 };

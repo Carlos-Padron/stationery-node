@@ -545,7 +545,7 @@ const getProductsForCombo = async (req, res) => {
 
 const printProductsReport = async (req, res) => {
   try {
-    const template = await renderTemplate("info", "productsReport");
+    const template = await renderTemplate( "productsReport");
 
     let PDFBuffer = await createPDF(template);
 
@@ -576,7 +576,7 @@ const printProductsReport = async (req, res) => {
 
 const printLowStockProductsReport = async (req, res) => {
   try {
-    const template = await renderTemplate("info", "lowProductsReport");
+    const template = await renderTemplate( "lowProductsReport");
 
     let PDFBuffer = await createPDF(template);
 

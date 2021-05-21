@@ -117,6 +117,7 @@ const authRoute = async (req, res, next) => {
 //Verifica si el token es válido
 const validTokenForChangingThPW = async (req, res, next) => {
   try {
+    
     let token = req.body.token;
     if (token) {
       let payload = jwt.verify(token, process.env.SECRET_KEY);

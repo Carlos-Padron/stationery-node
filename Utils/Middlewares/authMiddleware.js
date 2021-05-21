@@ -114,8 +114,49 @@ const authRoute = async (req, res, next) => {
   }
 };
 
+//Verifica si el token es válido
+const validTokenForChangingThPW = async (req, res, next) => {
+  try {
+    let token = req.body.token;
+    if (token) {
+      let payload = jwt.verify(token, process.env.SECRET_KEY);
+
+      console.log(payload._id);
+      let user = await User.findById(payload._id);
+
+      if (user) {
+        req.user = user;
+
+        next();
+        return;
+      } else {
+        return res.json({
+          error: true,
+          message: "No se puedo verificar el usuario que desea el cambio.",
+          response: null,
+        });
+      }
+    } else {
+      return res.json({
+        error: true,
+        message: "No se pudo verficiar el token.",
+        response: null,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.json({
+      error: true,
+      message:
+        "El token ha expirado, para cambiar la contraseña vuelva a enviar el correo.",
+      response: null,
+    });
+  }
+};
+
 module.exports = {
   authViews,
   redirectIfAuth,
   authRoute,
+  validTokenForChangingThPW
 };

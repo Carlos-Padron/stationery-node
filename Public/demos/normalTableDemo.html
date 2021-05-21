@@ -6,341 +6,104 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Pepelería Ricard2</title>
+    <title></title>
     <!-- Favicon -->
-    <link rel="icon" href="../assets/img/brand/favicon.png" type="image/png" />
     <!-- Fonts -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
-    />
     <!-- Icons -->
-    <link
-      rel="stylesheet"
-      href="https://unicons.iconscout.com/release/v3.0.3/css/line.css"
-    />
-    <link
-      rel="stylesheet"
-      href="../assets/vendor/@fortawesome/fontawesome-free/css/all.min.css"
-      type="text/css"
-    />
-    <!-- Page plugins -->
-    <link
-      rel="stylesheet"
-      href="../assets/vendor/animate.css/animate.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="../assets/vendor/sweetalert2/dist/sweetalert2.min.css"
-    />
 
-    <!-- Argon CSS -->
-    <link
+    <!-- Page plugins -->
+    <!-- <link
       rel="stylesheet"
       href="../assets/css/argon.css?v=1.1.0"
       type="text/css"
     />
-    <link rel="stylesheet" href="../css/global.css" type="text/css" />
+ -->
+    <style>
+      .custom-card {
+        min-width: 0;
+        word-wrap: break-word;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 0.375rem;
+        background-color: #fff;
+        background-clip: border-box;
+        margin-bottom: 30px;
+        border: 0;
+        box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+      }
+
+      .container {
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+        padding-right: 15px;
+        padding-left: 15px;
+      }
+    </style>
   </head>
 
   <body>
     <div class="container">
-      <h1>Demo Normal Table</h1>
-      <hr />
       <div class="card">
         <div class="card-body" style="padding-bottom: 0">
-          <div class="table-responsive">
-            <table id="mainTable" class="table align-items-center">
-              <thead class="thead-light">
-                <tr>
-                  <th class="text-center">Usuario</th>
-                  <th class="text-center">Acciones</th>
-                </tr>
-              </thead>
-              <tbody class="list"></tbody>
-            </table>
+          <div style="width: 100%; text-align: center">
+            <img
+              src="/images/logo/logo.png"
+              style="max-height: 100px"
+              srcset=""
+            />
+            <h1>Solicitud de cambio de contraseña</h1>
           </div>
-        </div>
 
-        <div class="card-footer text-right">
-          <button
-            type="button"
-            id="btnPrev"
-            class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle"
-          >
-            &lt;
-          </button>
-          <span id="pageCounter"></span>
-          <button
-            type="button"
-            id="btnNext"
-            class="btn-outline-default btn-sm mb-1 mr-1 rounded-circle"
-          >
-            &gt;
-          </button>
-          <div id="pagination" class="d-flex justify-content-end"></div>
+          <hr style="margin-top: 0px; margin-bottom: 5px" />
+
+          <div style="width: 100%; text-align: center">
+            <h2>¡Recibiste un nuevo correo!</h2>
+            <h3>
+              ¡Hola Carlos! Acabas de solicitar un cambio de contraseña. Para
+              poder cambiarla haz click en el botón.
+            </h3>
+            <h4>
+              Si al hacer click en el botón no se redirige, copia y pega el
+              siguiente enlace en tu navegador
+            </h4>
+            <a href="link mamalon"> 5e72e4</a>
+            <h5>*El tiempo para realizar el cambio de contraseña es 1 hora</h5>
+            <div
+              class=""
+              style="
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: 20px;
+              "
+            >
+              <a href="SUPERLINKMAMALON">
+                <button
+                  style="
+                    border-radius: 10px;
+                    height: 50px;
+                    color: white !important;
+                    background-color: #5e72e4;
+                    border-color: #5e72e4;
+                    border: none;
+                    padding: 15px 32px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    border: none;
+                    margin: 4px 2px;
+                    cursor: pointer;
+                  "
+                >
+                  <h4 style="margin: 0; color: white !important">
+                    Cambiar contraseña
+                  </h4>
+                </button>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Core -->
-    <script src="../../assets/vendor/jquery/dist/jquery.min.js"></script>
-    <script src="../../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/vendor/js-cookie/js.cookie.js"></script>
-    <script src="../../assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
-    <script src="../../assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
-    <!-- Optional JS -->
-    <script src="../assets/vendor/bootstrap-notify/bootstrap-notify.min.js"></script>
-    <script src="../assets/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
-    <!-- Argon JS -->
-    <script src="../assets/js/argon.js?v=1.1.0"></script>
-
-    <!-- Page jS -->
-    <script src="../js/general.js"></script>
-    <script src="../js/cardTable.js"></script>
-    <script src="../js/normalTable.js"></script>
-
-    <script>
-            //Declarar las columnas para mostrar en la tabla
-            //El atributo 'class' se refiere a la clase que se le aplicará
-            //a toda la columna
-            let usuariosColums = [
-              { column: "name", class: "text-center" },
-              { column: "actions", class: "text-center" },
-            ];
-
-            //Después de haber obtenido la informacion del back
-            //Se guarda en un arreglo
-
-            //La columna de actions por lo general va a ser un botón
-            //el boton deberá tener un clase que diga para que se ha a uasr
-            //en este caso uno tiene la clase 'show' y el otro 'delete'
-            //La clase la elijen usd. Es una clase simple, sin ningún estilo.
-
-            //IMPORTANTE
-
-            //Los botones siempre deben tener atrributos 'data-' seguido de lo que
-            //se quiera guardar
-            //para guardar informacion relevante
-            //data-index = se guardará la posicion en la que está en el arreglo
-            //data-id = guardará el id
-            //data-algo = guardará algo que le definadmos
-            //data-index='1' data-id='1'
-
-
-
-
-            let usuariosData = [
-              {
-                name: "carlos1",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos2",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos3",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos4",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos5",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos6",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos7",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos8",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos9",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos10",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos11",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos12",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos13",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos14",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos15",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos16",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos17",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos18",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos19",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos20",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos21",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-              {
-                name: "carlos22",
-                actions: `<div class="btn-group">
-              <button title="Editar"   type="button" class="btn btn-sm btn-icon btn-info   show"   style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-pen show"></i> </button>
-              <button title="Eliminar" type="button" class="btn btn-sm btn-icon btn-danger delete" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;"  data-index='1' data-id='1' > <i class="uil uil-multiply delete"></i> </button>
-          </div>`,
-              },
-            ];
-
-            //Se obtiene la referencia del cuerpo de la tabla que está en el DOM
-            const mainTableBody = document.querySelector("#mainTable tbody.list");
-
-            //Se le asgina un evento de click
-            mainTableBody.addEventListener("click", rowClicked);
-
-            //Se valida que el elemento que se está haciendo click sea
-            //un elemento de los del boton.
-            //Se desean cambiar los botones, deben ajustar está validacion
-            //para que busque lo que tenga el botón nuevo
-            function rowClicked(e) {
-              //Se busca que el elemento tenga la clase show
-              if (e.target && e.target.classList.contains("show")) {
-                //la tiene una I
-                if (e.target.tagName === "I") {
-                  //obtiene el elemento padre que es el que tiene los atributos data
-                  let button = e.target.parentElement;
-                  let index = button.getAttribute("data-index");
-                  //hace algo
-                  console.log('tocó el boton de show');
-                } else {
-                  let button = e.target;
-                  let index = button.getAttribute("data-index");
-                  //hace algo
-                  console.log('tocó el boton de show');
-                }
-              }
-
-              //Se busca que el elemento tenga la clase delete
-              if (e.target && e.target.classList.contains("delete")) {
-                //la tiene una I
-                if (e.target.tagName === "I") {
-                  //obtiene el elemento padre que es el que tiene los atributos data
-                  let button = e.target.parentElement;
-                  let index = button.getAttribute("data-index");
-                  //hace algo
-                  console.log('tocó el boton de show');
-                } else {
-                  let button = e.target;
-                  let index = button.getAttribute("data-index");
-                  //hace algo
-                }
-              }
-            }
-
-            let mainTable = new NormalTable(
-              "mainTable",
-              usuariosData,
-              usuariosColums,
-              "btnNext",
-              "btnPrev",
-              "pageCounter"
-            );
-            mainTable.reloadTable(usuariosData);
-    </script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -72,8 +73,7 @@ userSchema.path("email").validate(async function (email) {
 
   //console.log(existingUser);
   if (existingUser) {
-
-    console.log(existingUser.email);    
+    console.log(existingUser.email);
     if (existingUser.email === email) {
       return true;
     } else {
@@ -103,6 +103,7 @@ userSchema.pre("save", async function (next) {
       parseInt(process.env.BCRYPT_ROUNDS)
     );
   }
+
   next();
 });
 
@@ -135,6 +136,31 @@ userSchema.statics.findByCredentials = async (email, password) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new Error("Constraseña incorrecta.");
+  }
+
+  return user;
+};
+
+userSchema.methods.generatePasswordRecoveryToken = async function () {
+  const user = this;
+
+  let randomString = crypto.randomBytes(64).toString("hex");
+  let token = jwt.sign(
+    { _id: user._id.toString(), token: randomString },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: "1h",
+    }
+  );
+
+  return token;
+};
+
+userSchema.statics.findUserByEmail = async (email) => {
+  const user = await User.findOne({ email, disabled: false });
+
+  if (!user) {
+    throw new Error("No se encontró al usuario con el correo ingresado.");
   }
 
   return user;

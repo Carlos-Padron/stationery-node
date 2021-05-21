@@ -3,6 +3,10 @@ const Sale = require("../Model/SaleModel");
 const OtherMovements = require("../Model/OtherMovementModel");
 
 const errorHandler = require("../Utils/Helpers/errorHandler");
+const {
+  renderTemplate,
+  createPDF,
+} = require("../Utils/Helpers/PDFtemplateHelper");
 
 const index = (req, res) => {
   res.render("cortes/cortes", {
@@ -216,9 +220,41 @@ const searchCashOuts = async (req, res) => {
   }
 };
 
+const printCashOut = async (req, res) => {
+  try {
+    const template = await renderTemplate("cashOuts", req.body);
+
+    let PDFBuffer = await createPDF(template);
+
+    res.json({
+      error: false,
+      message: null,
+      response: PDFBuffer.toString("base64"),
+    });
+  } catch (error) {
+    console.log(error);
+    let errors = errorHandler(error);
+
+    if (errors.length === 0) {
+      res.json({
+        error: true,
+        message: error.message,
+        response: null,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: errors,
+        response: null,
+      });
+    }
+  }
+};
+
 module.exports = {
   index,
   registerCashOut,
   updateCashOut,
   searchCashOuts,
+  printCashOut,
 };

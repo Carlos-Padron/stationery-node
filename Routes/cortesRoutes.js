@@ -12,4 +12,6 @@ router.post("/addCashOut", authRoute, cortesController.registerCashOut);
 
 router.post("/updateCashOut", authRoute, cortesController.updateCashOut);
 
+router.post("/printCashOuts", authRoute, cortesController.printCashOut);
+
 module.exports = router;

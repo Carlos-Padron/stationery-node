@@ -5,6 +5,7 @@ window.addEventListener("DOMContentLoaded", () => {
     get: "/searchCahsOuts",
     add: "/addCashOut",
     update: "/updateCashOut",
+    printCashOuts: "/printCashOuts",
   };
 
   let cashOutColumns = [
@@ -18,6 +19,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.querySelector("#btnSearch");
   const searchForm = document.querySelector("#searchForm");
   const btnClearSearch = document.querySelector("#btnClearSearch");
+  const printBtn = document.querySelector("#print");
   const addBtn = document.querySelector("#btnAdd");
   const addCashOutBtn = document.querySelector("#btnAddCashOut");
   const mainTableBody = document.querySelector("#mainTable tbody.list");
@@ -28,11 +30,11 @@ window.addEventListener("DOMContentLoaded", () => {
   addCashOutBtn.addEventListener("click", addCashOutBtnClick);
   mainTableBody.addEventListener("click", rowClicked);
   btnClearSearch.addEventListener("click", clearSearch);
+  printBtn.addEventListener("click", printCashOuts);
 
   //functions
   async function search() {
     try {
-      console.log("va a buscar");
       resetSearchFormValidation();
       let response = validateSearchForm();
 
@@ -219,6 +221,71 @@ window.addEventListener("DOMContentLoaded", () => {
       console.error(error);
     }
   }
+
+  async function printCashOuts() {
+    try {
+      resetSearchFormValidation();
+      let response = validateSearchForm();
+
+      if (response.valid === false) {
+        return;
+      }
+
+      blockElem(searchForm);
+
+      body = JSON.stringify(response.body);
+
+      let request = await fetch(routes.printCashOuts, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          credentials: "same-origin",
+        },
+        body,
+      });
+
+      let json = await request.json();
+
+      if (json.error) {
+        if (Array.isArray(json.message)) {
+          let messages = "";
+          json.message.forEach((msg) => {
+            messages += `<strong>*${msg}</strong> <br>`;
+          });
+          modalAlert("warning", "Aviso", messages);
+          unblockElem(searchForm);
+          return;
+        } else {
+          modalAlert(
+            "warning",
+            "Aviso",
+            `<strong>*${json.message}</strong> <br>`
+          );
+          unblockElem(searchForm);
+          return;
+        }
+      }
+
+      let byteArray = new Uint8Array(
+        atob(json.response)
+          .split("")
+          .map((char) => char.charCodeAt(0))
+      );
+      let blob = new Blob([byteArray], { type: "application/pdf" });
+
+      const url = window.URL.createObjectURL(blob);
+
+      window.open(url, "_blank");
+
+      unblockElem(searchForm);
+    } catch (error) {
+      unblockElem(searchForm);
+      errorNotification("Error interno del servidor");
+      console.error(error);
+    }
+  }
+
   function validateForm() {
     let body = {};
     let valid = true;

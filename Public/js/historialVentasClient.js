@@ -265,9 +265,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   async function printSaleReport(e) {
-    blockElem(searchForm);
     let body = {};
-    console.log();
     resetFormValidation();
 
     let response = validateForm();

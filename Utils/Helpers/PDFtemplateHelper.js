@@ -8,6 +8,7 @@ const pdf = require("html-pdf");
 const Product = require("../../Model/ProductModel");
 const Sale = require("../../Model/SaleModel");
 const Quote = require("../../Model/QuoteModel");
+const CashOut = require("../../Model/CashOutModel");
 
 const renderTemplate = async (templateName, options) => {
   let html = fs.readFileSync(
@@ -24,6 +25,8 @@ const renderTemplate = async (templateName, options) => {
 
   return renderedTemplate;
 };
+
+
 
 const prepateDataForTemplate = async (templateName, options) => {
   let data = {};
@@ -178,7 +181,8 @@ const prepateDataForTemplate = async (templateName, options) => {
         saleDetail.discount =
           saleDetail.discount == null ? 0 : saleDetail.discount;
         saleDetail.extra = saleDetail.extra == null ? 0 : saleDetail.extra;
-        saleDetail.subtotal = saleDetail.total - saleDetail.extra + saleDetail.discount;
+        saleDetail.subtotal =
+          saleDetail.total - saleDetail.extra + saleDetail.discount;
 
         saleDetail.total = saleDetail.total.toFixed(2);
         saleDetail.subtotal = saleDetail.subtotal.toFixed(2);
@@ -232,7 +236,8 @@ const prepateDataForTemplate = async (templateName, options) => {
         quoteDetail.discount =
           quoteDetail.discount == null ? 0 : quoteDetail.discount;
         quoteDetail.extra = quoteDetail.extra == null ? 0 : quoteDetail.extra;
-        quoteDetail.subtotal = quoteDetail.total - quoteDetail.extra + quoteDetail.discount;
+        quoteDetail.subtotal =
+          quoteDetail.total - quoteDetail.extra + quoteDetail.discount;
 
         quoteDetail.total = quoteDetail.total.toFixed(2);
         quoteDetail.subtotal = quoteDetail.subtotal.toFixed(2);
@@ -271,6 +276,49 @@ const prepateDataForTemplate = async (templateName, options) => {
       } else {
         throw new Error("No se encontró la cotización solicitada");
       }
+
+    case "cashOuts":
+      fechaInicio = fechaInicio.split("T");
+      let initialDateCashout = `${fechaInicio[0].substring(
+        8,
+        10
+      )}/${fechaInicio[0].substring(5, 7)}/${fechaInicio[0].substring(0, 4)}`;
+      fechaInicio = `${fechaInicio[0]}T00:00:00z`;
+
+      fechaFin = fechaFin.split("T");
+      let endDateCashout = `${fechaFin[0].substring(
+        8,
+        10
+      )}/${fechaFin[0].substring(5, 7)}/${fechaFin[0].substring(0, 4)}`;
+      fechaFin = `${fechaFin[0]}T23:59:59z`;
+
+        console.log({
+          date: { $gte: fechaInicio, $lte: fechaFin },
+        });
+
+      let cashOuts = await CashOut.find({
+        date: { $gte: fechaInicio, $lte: fechaFin },
+      }).sort({ date: "asc" });
+
+      cashOuts.forEach((elem) => {
+
+        let date = elem.date.toISOString().substring(0, 10);
+
+        let day = date.substring(8, 10);
+        let month = date.substring(5, 7);
+        let year = date.substring(0, 4);
+
+        elem.cashOutDate = `${day}/${month}/${year}`;
+        elem.sales = elem.totalSales
+      });
+
+
+
+      data.cashOuts = cashOuts;
+      data.date1 = initialDateCashout;
+      data.date2 = endDateCashout;
+
+      break;
     default:
       break;
   }

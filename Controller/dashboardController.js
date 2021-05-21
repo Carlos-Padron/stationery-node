@@ -14,9 +14,7 @@ const index = async (req, res) => {
   currentDay = `${currentDay.toISOString().split("T")[0]}T00:00:00z`;
   sevenDaysAgo = `${sevenDaysAgo.toISOString().split("T")[0]}T23:59:59z`;
 
-  // TODO://Revisar todas las fechas
-
-  let users = await User.find({ disabled: false });
+  let users = await User.find({ disabled: false, role: "employee" });
   let cashOuts = await CashOut.find({
     date: { $gte: sevenDaysAgo, $lte: currentDay },
   })

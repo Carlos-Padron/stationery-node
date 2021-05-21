@@ -84,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
             json.message.forEach((msg) => {
               messages += `<strong>*${msg}</strong> <br>`;
             });
-            enableButton(addUserBtn, "Actualizar");
 
             modalAlert("warning", "Aviso", messages);
             return;
@@ -101,9 +100,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } else {
         console.log(json);
-        /* modalAlert("success", "Aviso", `<b>${json.message}</b>`, () => {
+        modalAlert("success", "Aviso", `<b>${json.message}</b>`, () => {
           window.location = "/login";
-        }); */
+        });
       }
     } catch (error) {
       errorNotification(error.toString());

@@ -144,7 +144,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 userSchema.methods.generatePasswordRecoveryToken = async function () {
   const user = this;
 
-  let randomString = crypto.randomBytes(64).toString("hex");
+  let randomString = crypto.randomBytes(42).toString("hex");
   let token = jwt.sign(
     { _id: user._id.toString(), token: randomString },
     process.env.SECRET_KEY,

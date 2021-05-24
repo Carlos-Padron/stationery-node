@@ -82,7 +82,7 @@ class NormalTable {
       let td = document.createElement('td')
       td.setAttribute('colspan', this.colspan)
       td.classList.add('text-center')
-      td.innerHTML = "No se encontró información para mostrar."
+      td.innerHTML = "No se encontró información para mostrar 😢."
 
       tr.appendChild(td)
 

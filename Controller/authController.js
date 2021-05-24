@@ -6,9 +6,9 @@ const path = require("path");
 const errorHandler = require("../Utils/Helpers/errorHandler");
 
 const index = (req, res) => {
-  res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
+  /* res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
   res.header("Expires", "-1");
-  res.header("Pragma", "no-cache");
+  res.header("Pragma", "no-cache"); */
 
   res.render("login", {
     script: "loginClient",

@@ -48,6 +48,8 @@ const redirectIfAuth = async (req, res, next) => {
         let userID = jwt.verify(token, process.env.SECRET_KEY);
         let user = await User.findById(userID);
 
+
+        console.log('aith middleware');
         if (user) {
           return res.redirect("/dashboard");
         } else {

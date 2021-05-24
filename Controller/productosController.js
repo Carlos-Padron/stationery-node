@@ -26,6 +26,7 @@ const index = async (req, res) => {
       activeSubmenu: "PRDCTS",
       brands,
       articleTypes,
+      PRODUCT_ROUTE: process.env.DEFAULT_PRODUCTS_ROUTE,
     });
   } catch (error) {
     res.render("notFound");
@@ -153,6 +154,8 @@ const updateProduct = async (req, res) => {
       return;
     }
 
+    console.log(req.body.image);
+    console.log(process.env.DEFAULT_PRODUCTS_ROUTE);
     if (
       req.body.image == null ||
       req.body.image == process.env.DEFAULT_PRODUCTS_ROUTE
@@ -205,19 +208,25 @@ const updateProduct = async (req, res) => {
     let action = "";
     if (newStock > currentStock) {
       action = "add";
+
+      product.history.push({
+        date: new Date(),
+        quantity: req.body.quantity,
+        action,
+        description: "Se actualizó mercancia",
+        madeBy: req.user._id,
+      });
     } else if (newStock < currentStock) {
       action = "subtract";
-    } else {
-      action = "same";
-    }
 
-    product.history.push({
-      date: new Date(),
-      quantity: req.body.quantity,
-      action,
-      description: "Se actualizó mercancia",
-      madeBy: req.user._id,
-    });
+      product.history.push({
+        date: new Date(),
+        quantity: req.body.quantity,
+        action,
+        description: "Se actualizó mercancia",
+        madeBy: req.user._id,
+      });
+    }
 
     await product.save();
 
@@ -378,7 +387,6 @@ const enableProduct = async (req, res) => {
   }
 };
 
-
 const searchProducts = async (req, res) => {
   const { name, brand, articleType } = req.body;
   console.log(req.user.role);
@@ -407,7 +415,9 @@ const searchProducts = async (req, res) => {
     let products = await Product.find(filter)
       .populate({ path: "articleType", select: "name" })
       .populate({ path: "brand", select: "name" })
-      .select("name price quantity imageRelativePath articleType brand disabled")
+      .select(
+        "name price quantity imageRelativePath articleType brand disabled"
+      )
       .sort({ name: "asc", articleType: "asc", brand: "asc" })
       .exec();
 
@@ -545,7 +555,7 @@ const getProductsForCombo = async (req, res) => {
 
 const printProductsReport = async (req, res) => {
   try {
-    const template = await renderTemplate( "productsReport");
+    const template = await renderTemplate("productsReport");
 
     let PDFBuffer = await createPDF(template);
 
@@ -576,7 +586,7 @@ const printProductsReport = async (req, res) => {
 
 const printLowStockProductsReport = async (req, res) => {
   try {
-    const template = await renderTemplate( "lowProductsReport");
+    const template = await renderTemplate("lowProductsReport");
 
     let PDFBuffer = await createPDF(template);
 

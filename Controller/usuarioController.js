@@ -23,6 +23,8 @@ const profile = async (req, res) => {
       sectionName: "Mi Perfil",
       script: "perfilClient",
       user,
+      USER_ROUTE: process.env.DEFAULT_USER_ROUTE,
+
     });
   } catch (error) {
     console.log(error);
@@ -86,6 +88,9 @@ const updateUser = async (req, res) => {
       });
       return;
     }
+
+
+
 
     if (
       req.body.image == null ||

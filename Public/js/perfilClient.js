@@ -316,7 +316,6 @@ window.addEventListener("DOMContentLoaded", () => {
   imgFileInput.type = "file";
   imgFileInput.accept = "image/png, image/jpeg";
 
-  console.log();
   if (
     image.src != DEFAULT_ROUTE_USER &&
     image.src != null &&

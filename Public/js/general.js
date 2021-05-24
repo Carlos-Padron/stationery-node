@@ -1,5 +1,5 @@
-const DEFAULT_ROUTE_PRODUCTS = `${window.location.protocol}//${window.location.hostname}:3000/inventario/productos`;
-const DEFAULT_ROUTE_USER = `${window.location.protocol}//${window.location.hostname}:3000/perfil`;
+/* const DEFAULT_ROUTE_PRODUCTS = `${window.location.protocol}//${window.location.hostname}:3000/inventario/productos`; */
+/* const DEFAULT_ROUTE_USER = `${window.location.protocol}//${window.location.hostname}:3000/perfil`; */
 
 const isEmail = (email) => {
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

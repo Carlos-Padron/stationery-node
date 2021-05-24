@@ -1,5 +1,12 @@
 const mongoose = require("mongoose");
-const connectionURL = process.env.DATABASE;
+let connectionURL;
+
+if (process.env.MODE == "PRODUCTION") {
+  connectionURL = process.env.PRODUCTION_DATABASE;
+}else{
+  connectionURL = process.env.DEVELOPMENT_DATABASE;
+
+}
 
 const mongooseConnection = mongoose
   .connect(connectionURL, {

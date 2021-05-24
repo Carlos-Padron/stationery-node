@@ -59,6 +59,7 @@ const createProduct = async (req, res) => {
     imageAbsolutePath += imageName;
     imageRelativePath += imageName;
 
+console.log(process.env.DEFAULT_PRODUCTS_ROUTE.substring(0, process.env.DEFAULT_PRODUCTS_ROUTE.length - 9 ));
 
     if (
       base64Data != null &&

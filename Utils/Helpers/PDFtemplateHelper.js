@@ -2,7 +2,7 @@ const fs = require("fs");
 const hbs = require("hbs");
 const path = require("path");
 const pdf = require("html-pdf");
-const momemt = require("moment-timezone")
+const moment = require("moment-timezone")
 
 //Models
 

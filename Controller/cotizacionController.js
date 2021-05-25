@@ -4,6 +4,7 @@ const Sale = require("../Model/SaleModel");
 const Brand = require("../Model/BrandModel");
 const ArticleType = require("../Model/ArticleType");
 const Product = require("../Model/ProductModel");
+const moment = require("moment-timezone")
 
 const {
   renderTemplate,
@@ -86,7 +87,7 @@ const registerQuote = async (req, res) => {
 
     let quote = await Quote({
       concept: req.body.concept,
-      date: new Date(),
+      date: new Date(moment.tz("America/Mexico_City").format().split("T")[0]),
       total: req.body.total,
       discount: req.body.discount != null ? req.body.discount : 0,
       extra:
@@ -442,7 +443,7 @@ const sellQuote = async (req, res) => {
     let sale = Sale();
 
     sale.concept = req.body.concept;
-    sale.date = new Date();
+    sale.date = new Date(moment.tz("America/Mexico_City").format().split("T")[0]);
     sale.total = req.body.total;
     sale.discount = req.body.discount != null ? req.body.discount : 0;
 

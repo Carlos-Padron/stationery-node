@@ -3,10 +3,12 @@ const CashOut = require("../Model/CashOutModel");
 const Product = require("../Model/ProductModel");
 const Sale = require("../Model/SaleModel");
 const OtherMovements = require("../Model/OtherMovementModel");
+const moment = require("moment-timezone")
+
 
 const index = async (req, res) => {
-  let currentDay = new Date();
-  let sevenDaysAgo = new Date();
+  let currentDay = new Date(moment.tz("America/Mexico_City").format().split("T")[0]);
+  let sevenDaysAgo = new Date(moment.tz("America/Mexico_City").format().split("T")[0]);
   let todaySales = 0;
 
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);

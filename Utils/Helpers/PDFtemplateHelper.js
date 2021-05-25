@@ -2,6 +2,7 @@ const fs = require("fs");
 const hbs = require("hbs");
 const path = require("path");
 const pdf = require("html-pdf");
+const momemt = require("moment-timezone")
 
 //Models
 
@@ -38,7 +39,7 @@ const prepateDataForTemplate = async (templateName, options) => {
 
   data.logo = logoImg;
 
-  let date = new Date().toISOString().split("T")[0];
+  let date = moment.tz("America/Mexico_City").format().split("T")[0];
 
   let day = date.substring(8, 10);
   let month = date.substring(5, 7);

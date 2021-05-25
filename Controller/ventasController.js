@@ -3,6 +3,7 @@ const Sale = require("../Model/SaleModel");
 const Brand = require("../Model/BrandModel");
 const ArticleType = require("../Model/ArticleType");
 const Product = require("../Model/ProductModel");
+const moment = require("moment-timezone");
 
 const {
   renderTemplate,
@@ -79,7 +80,7 @@ const registerSale = async (req, res) => {
 
     let sale = await Sale({
       concept: req.body.concept,
-      date: new Date(),
+      date: new Date(moment.tz("America/Mexico_City").format().split("T")[0]),
       total: req.body.total,
       discount: req.body.discount != null ? req.body.discount : 0,
       extra:
@@ -176,7 +177,8 @@ const searchSales = async (req, res) => {
 
 const saleDetail = async (req, res) => {
   const { id } = req.params;
-
+  console.log("en sale detailss");
+  console.log("id",id);
   try {
     let sale = await Sale.findById(id)
       .populate({
@@ -226,6 +228,7 @@ const saleDetail = async (req, res) => {
         activeSubmenu: "HSVNTS",
         sale,
       });
+      
     } else {
       res.render("notFound");
     }
@@ -569,7 +572,6 @@ const printCanceledSales = async (req, res) => {
   }
 };
 
-
 const printSaleDetail = async (req, res) => {
   try {
     const template = await renderTemplate("saleDetail", req.body);
@@ -601,8 +603,6 @@ const printSaleDetail = async (req, res) => {
   }
 };
 
-
-
 module.exports = {
   index,
   registerSale,
@@ -614,5 +614,5 @@ module.exports = {
   updateSale,
   printSalesDone,
   printCanceledSales,
-  printSaleDetail
+  printSaleDetail,
 };

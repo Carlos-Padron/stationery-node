@@ -4,6 +4,7 @@ const BrandModel = require("../Model/BrandModel");
 const ArticleTypeModel = require("../Model/ArticleType");
 const errorHandler = require("../Utils/Helpers/errorHandler");
 const productModel = require("../Model/ProductModel");
+const moment = require("moment-timezone")
 
 const index = async (req, res) => {
   try {
@@ -55,14 +56,14 @@ const registerLoss = async (req, res) => {
       quantity,
       unitPrice: product.price,
       madeBy: req.user._id,
-      date: new Date(),
+      date: new Date(moment.tz("America/Mexico_City").format().split("T")[0]),
     });
 
     await loss.save();
     //quitar producto
     product.quantity = product.quantity - quantity;
     product.history.push({
-      date: new Date(),
+      date: new Date(moment.tz("America/Mexico_City").format().split("T")[0]),
       quantity: quantity,
       action: "subtract",
       description: "Pérdida de mercancia",

@@ -1,5 +1,6 @@
 const OtherMovement = require("../Model/OtherMovementModel");
 const errorHandler = require("../Utils/Helpers/errorHandler");
+const moment = require("moment-timezone")
 
 const index = (req, res) => {
   res.render("otrosMovimientos/otrosMovimientos", {
@@ -12,7 +13,7 @@ const index = (req, res) => {
 const createOtherMovement = async (req, res) => {
   delete req.body._id;
 
-  req.body.date = new Date();
+  req.body.date = new Date(moment.tz("America/Mexico_City").format().split("T")[0]);
   try {
     let otherMovement = OtherMovement(req.body);
 

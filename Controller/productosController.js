@@ -61,11 +61,14 @@ const createProduct = async (req, res) => {
 
 console.log(process.env.DEFAULT_PRODUCTS_ROUTE.substring(0, process.env.DEFAULT_PRODUCTS_ROUTE.length - 9 ));
 
+console.log(base64Data)
     if (
       base64Data != null &&
       base64Data != `${process.env.DEFAULT_PRODUCTS_ROUTE}` &&
       base64Data != `${process.env.DEFAULT_PRODUCTS_ROUTE.substring(0, process.env.DEFAULT_PRODUCTS_ROUTE.length - 9 )}null`
     ) {
+
+
       let base64Image = base64Data.split(";base64,").pop();
       let buffer = Buffer.from(base64Image, "base64");
 

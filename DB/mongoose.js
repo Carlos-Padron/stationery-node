@@ -1,17 +1,14 @@
 const mongoose = require("mongoose");
-let connectionURL;
+let connectionURL =
+  process.env.MODE == "PRODUCTION"
+    ? process.env.PRODUCTION_DATABASE
+    : process.env.DEVELOPMENT_DATABASE;
 
-if (process.env.MODE == "PRODUCTION") {
-  connectionURL = process.env.PRODUCTION_DATABASE;
-}else{
-  connectionURL = process.env.DEVELOPMENT_DATABASE;
-
-}
 
 const mongooseConnection = mongoose
   .connect(connectionURL, {
-    useCreateIndex: true,
     useNewUrlParser: true,
+    useCreateIndex: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
   })

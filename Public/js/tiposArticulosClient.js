@@ -449,7 +449,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function showMainModalAdd() {
     document.querySelector("#modal_title").innerHTML =
-      "Agregar una nueva marca";
+      "Agregar un nuevo tipo de artículo";
     $("#main_modal").modal("show");
   }
 

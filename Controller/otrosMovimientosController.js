@@ -59,6 +59,8 @@ const updateOtherMovement = async (req, res) => {
       return;
     }
 
+    req.body.amount = req.body.amount.replace("$", '')
+
     await OtherMovement.findByIdAndUpdate(_id, req.body);
 
     res.json({

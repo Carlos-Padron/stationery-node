@@ -418,9 +418,11 @@
       let detalleServicio = '{{quote.serviceDetail}}'; let textArea =
       document.createElement("textarea"); textArea.innerHTML =
       detalleCotizacion; let decodedString = textArea.innerHTML;
-      detalleCotizacion = JSON.parse(decodedString) ; textArea.innerHTML =
-      detalleServicio; decodedString = textArea.innerHTML; detalleServicio =
-      JSON.parse(decodedString);
+      if(decodedString != ''){ detalleCotizacion = JSON.parse(decodedString) }
+      else{ detalleCotizacion = [] } textArea.innerHTML = detalleServicio;
+      decodedString = textArea.innerHTML; if(decodedString != ''){
+      detalleServicio = JSON.parse(decodedString); }else{ detalleServicio = [] }
+
     </script>
   {{/content}}
 

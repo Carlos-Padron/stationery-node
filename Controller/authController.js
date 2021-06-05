@@ -98,13 +98,16 @@ const sendRecoveryPasswordEmail = async (req, res) => {
           response: null,
         });
       }
+      
+      return res.json({
+        error: false,
+        message: "Correo enviado correctamente. Revise su correo para continuar con el proceso de cambio de contraseña",
+        response: null,
+      });
+
     });
 
-    return res.json({
-      error: false,
-      message: "Correo enviado correctamente. Revise su correo para continuar con el proceso de cambio de contraseña",
-      response: null,
-    });
+    
   } catch (error) {
     return res.json({
       error: true,

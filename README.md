@@ -43,7 +43,8 @@ DEFAULT_USER_ROUTE=https://{yourDomain}/perfil
 EMAIL=#email account to send mails in case someone forget his password
 EMAIL_PW=#email password
 ```
-To start using the POS yout need to add a user from the database. the password must be hashed with node js bcrypt package
+To start using the POS yout need to add a user from the database withe the role 'admin'. The password must be hashed with node js bcrypt package
+ You can change the logo with your stationery logo
 
 
 ## License

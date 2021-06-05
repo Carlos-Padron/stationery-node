@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (json.error) {
-        modalAlert("warining", "Aviso", `<b>${json.message}</b>`);
+        modalAlert("warning", "Aviso", `<b>${json.message}</b>`);
       } else {
         modalAlert("success", "Aviso", `<b>${json.message}</b>`, () => {
           window.location = "/login";

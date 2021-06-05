@@ -66,11 +66,11 @@ const sendRecoveryPasswordEmail = async (req, res) => {
       "host"
     )}/changePassword?token=${token}`;
 
-    console.log(link);
     var transporter = nodemailer.createTransport({
       host: "smtp-mail.outlook.com", // hostname
       secureConnection: false, // TLS requires secureConnection to be false
-      port: 587, // port for secure SMTP
+      port: 587, // port for secure SMTP,
+      secure: false,
       tls: {
         ciphers: "SSLv3",
       },

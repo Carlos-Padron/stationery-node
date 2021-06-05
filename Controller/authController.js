@@ -83,7 +83,7 @@ const sendRecoveryPasswordEmail = async (req, res) => {
     // setup e-mail data, even with unicode symbols
     var mailOptions = {
       from: '"Papelería Ricar2" <papeleria_rc2@hotmail.com>', // sender address (who sends)
-      to: "c_0509@hotmail.com", // list of receivers (who receives)
+      to: user.email, // list of receivers (who receives)
       subject: "Solicitud de cambio de contraseña", // Subject line
       html: renderMailHtml(user, link),
     };
@@ -91,6 +91,7 @@ const sendRecoveryPasswordEmail = async (req, res) => {
     // send mail with defined transport object
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
+        console.error(error)
         return res.json({
           error: true,
           message: error.message,
@@ -101,7 +102,7 @@ const sendRecoveryPasswordEmail = async (req, res) => {
 
     return res.json({
       error: false,
-      message: "Correo enviado",
+      message: "Correo enviado correctamente. Revise su correo para continuar con el proceso de cambio de contraseña",
       response: null,
     });
   } catch (error) {

@@ -5,7 +5,6 @@ const { redisGet } = require("../Helpers/redisHelper");
 //Valida que se tenga la cookie con el token para validar lais vistas
 const authViews = async (req, res, next) => {
   try {
-    console.log("en middleware");
 
     if (req.sessionID) {
       let cookie = await redisGet(`sess:${req.sessionID}`);
@@ -27,8 +26,6 @@ const authViews = async (req, res, next) => {
         return res.redirect("/login?code=403");
       }
     } else {
-      console.log("sin session");
-
       return res.redirect("/login?code=401");
     }
   } catch (error) {
@@ -48,8 +45,6 @@ const redirectIfAuth = async (req, res, next) => {
         let userID = jwt.verify(token, process.env.SECRET_KEY);
         let user = await User.findById(userID);
 
-
-        console.log('aith middleware');
         if (user) {
           return res.redirect("/dashboard");
         } else {
@@ -124,7 +119,6 @@ const validTokenForChangingThPW = async (req, res, next) => {
     if (token) {
       let payload = jwt.verify(token, process.env.SECRET_KEY);
 
-      console.log(payload._id);
       let user = await User.findById(payload._id);
 
       if (user) {

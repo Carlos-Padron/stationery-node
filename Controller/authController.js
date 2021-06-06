@@ -1,6 +1,6 @@
 const User = require("../Model/UserModel");
 const { redisDelete } = require("../Utils/Helpers/redisHelper");
-const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
 const fs = require("fs");
 const path = require("path");
 const errorHandler = require("../Utils/Helpers/errorHandler");
@@ -66,7 +66,7 @@ const sendRecoveryPasswordEmail = async (req, res) => {
       "host"
     )}/changePassword?token=${token}`;
 
-    var transporter = nodemailer.createTransport({
+    /*  var transporter = sgMail.createTransport({
       //host: "smtp-mail.outlook.com", // hostname
       // secureConnection: false, // TLS requires secureConnection to be false
       // port: 587, // port for secure SMTP,
@@ -106,9 +106,34 @@ const sendRecoveryPasswordEmail = async (req, res) => {
         response: null,
       });
 
-    });
+    }); */
 
-    
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+    const msg = {
+      to: user.email, // Change to your recipient
+      from: "no-reply@papeleriaricar2.com", // Change to your verified sender
+      subject: "Solicitud de cambio de contraseña",
+      html: renderMailHtml(user, link),
+    };
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+        return res.json({
+          error: false,
+          message: "Correo enviado correctamente. Revise su correo para continuar con el proceso de cambio de contraseña",
+          response: null,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        return res.json({
+          error: true,
+          message: error.message,
+          response: null,
+        });
+      });
   } catch (error) {
     return res.json({
       error: true,

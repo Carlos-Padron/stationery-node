@@ -6,7 +6,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const quoteID = document.querySelector("#quoteId").value;
   const changeQuoteBtn = document.querySelector("#changeQuoteBtn");
   const printBtn = document.querySelector("#print");
-  const mainTable = document.querySelectorAll(".mainTable");
+  const mainTable = document.querySelector(".mainTable");
 
   //Listeners
   changeQuoteBtn.addEventListener("click", editConfirmation);
@@ -21,12 +21,8 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   async function printQuoteReport(e) {
     let body = JSON.stringify({ _id: quoteID });
-    if (mainTable.length == 1) {
-      blockElem(mainTable[0]);
-    } else {
-      blockElem(mainTable[0]);
-      blockElem(mainTable[1]);
-    }
+
+    blockElem(mainTable);
 
     try {
       let request = await fetch(routes.print, {
@@ -48,12 +44,8 @@ window.addEventListener("DOMContentLoaded", () => {
             messages += `<strong>*${msg}</strong> <br>`;
           });
           modalAlert("warning", "Aviso", messages);
-          if (mainTable.length == 1) {
-            unblockElem(mainTable[0]);
-          } else {
-            unblockElem(mainTable[0]);
-            unblockElem(mainTable[1]);
-          }
+          unblockElem(mainTable);
+
           return;
         } else {
           modalAlert(
@@ -61,12 +53,8 @@ window.addEventListener("DOMContentLoaded", () => {
             "Aviso",
             `<strong>*${json.message}</strong> <br>`
           );
-          if (mainTable.length == 1) {
-            unblockElem(mainTable[0]);
-          } else {
-            unblockElem(mainTable[0]);
-            unblockElem(mainTable[1]);
-          }
+          unblockElem(mainTable);
+
           return;
         }
       }
@@ -82,19 +70,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
       window.open(url, "_blank");
 
-      if (mainTable.length == 1) {
-        unblockElem(mainTable[0]);
-      } else {
-        unblockElem(mainTable[0]);
-        unblockElem(mainTable[1]);
-      }
+      unblockElem(mainTable);
+
     } catch (error) {
-      if (mainTable.length == 1) {
-        unblockElem(mainTable[0]);
-      } else {
-        unblockElem(mainTable[0]);
-        unblockElem(mainTable[1]);
-      }
+      unblockElem(mainTable);
+
       errorNotification("Error interno del servidor");
       console.error(error);
     }

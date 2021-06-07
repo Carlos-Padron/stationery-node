@@ -171,13 +171,11 @@ const enableBrand = async (req, res) => {
 const searchBrands = async (req, res) => {
   const { name } = req.body;
   try {
-    console.log("before search");
 
     let filter = {
       name: { $regex: `.*${changeVowelsForRegex(name)}.*`, $options: "i" },
     };
 
-    console.log(req.user.role);
     if (req.user.role != "admin") {
       filter.disabled = false;
     }

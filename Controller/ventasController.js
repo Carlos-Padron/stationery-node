@@ -177,8 +177,6 @@ const searchSales = async (req, res) => {
 
 const saleDetail = async (req, res) => {
   const { id } = req.params;
-  console.log("en sale detailss");
-  console.log("id",id);
   try {
     let sale = await Sale.findById(id)
       .populate({
@@ -465,8 +463,6 @@ const updateSale = async (req, res) => {
 
     for (const prod of previouSaleDetail) {
       if (!saleDetailIDS.includes(prod.productID.toString())) {
-        console.log("removed");
-
         await Product.findOneAndUpdate(
           { _id: prod.productID },
           { $inc: { quantity: prod.quantity } }
@@ -478,7 +474,6 @@ const updateSale = async (req, res) => {
 
     for (const prod of saleDetails) {
       if (!previouSaleDetailIDS.includes(prod.productID.toString())) {
-        console.log("added");
         await Product.findOneAndUpdate(
           { _id: prod.productID },
           { $inc: { quantity: prod.quantity } }

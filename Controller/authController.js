@@ -1,9 +1,11 @@
 const User = require("../Model/UserModel");
 const { redisDelete } = require("../Utils/Helpers/redisHelper");
-const sgMail = require("@sendgrid/mail");
 const fs = require("fs");
 const path = require("path");
 const errorHandler = require("../Utils/Helpers/errorHandler");
+
+const SibApiV3Sdk = require("sib-api-v3-sdk");
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
 
 const index = (req, res) => {
   /* res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -24,7 +26,6 @@ const logInUser = async (req, res) => {
 
     req.session.key = token;
 
-    console.log(req.session);
     return res.json({
       error: false,
       message: "Acceso correcto.",
@@ -61,79 +62,55 @@ const sendRecoveryPasswordEmail = async (req, res) => {
 
   try {
     let user = await User.findUserByEmail(email);
+    let nameForMail = `${user.name.split(" ")[0]} ${user.fatherSurname}`;
     let token = await user.generatePasswordRecoveryToken();
     let link = `${req.protocol}://${req.get(
       "host"
     )}/changePassword?token=${token}`;
 
-    /*  var transporter = sgMail.createTransport({
-      //host: "smtp-mail.outlook.com", // hostname
-      // secureConnection: false, // TLS requires secureConnection to be false
-      // port: 587, // port for secure SMTP,
-      // secure: false,
-      // tls: {
-      //   ciphers: "SSLv3",
-      // },
-      service: "Hotmail",
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PW,
+    var apiKey = defaultClient.authentications["api-key"];
+    apiKey.apiKey = process.env.SENDINBLUE_API_KEY;
+    var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+    var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+    sendSmtpEmail = {
+      sender: {
+        name: process.env.BUSINESS_NAME,
+        email: process.env.BUSINESS_EMAIL,
       },
-    });
-
-    // setup e-mail data, even with unicode symbols
-    var mailOptions = {
-      from: '"Papelería Ricar2" <papeleria_rc2@hotmail.com>', // sender address (who sends)
-      to: user.email, // list of receivers (who receives)
-      subject: "Solicitud de cambio de contraseña", // Subject line
-      html: renderMailHtml(user, link),
-    };
-
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.error(error)
-        return res.json({
-          error: true,
-          message: error.message,
-          response: null,
-        });
-      }
-      
-      return res.json({
-        error: false,
-        message: "Correo enviado correctamente. Revise su correo para continuar con el proceso de cambio de contraseña",
-        response: null,
-      });
-
-    }); */
-
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-    const msg = {
-      to: user.email, // Change to your recipient
-      from: "no-reply@papeleriaricar2.com", // Change to your verified sender
+      to: [
+        {
+          email: user.email,
+          name: nameForMail,
+        },
+      ],
       subject: "Solicitud de cambio de contraseña",
-      html: renderMailHtml(user, link),
+      htmlContent: renderMailHtml(nameForMail, link),
+      headers: {
+        accept: "application/json",
+        "api-key": `xkeysib-${process.env.SENDINBLUE_API_KEY}`,
+        "content-type": "application/json",
+      },
     };
-    sgMail
-      .send(msg)
-      .then(() => {
-        console.log("Email sent");
+
+    apiInstance.sendTransacEmail(sendSmtpEmail).then(
+      function (data) {
         return res.json({
           error: false,
-          message: "Correo enviado correctamente. Revise su correo para continuar con el proceso de cambio de contraseña",
+          message:
+            "Correo enviado correctamente. Revisa tu correo para continuar con el proceso de cambio de contraseña. No olvides revisar los correos no deseados (spam).",
           response: null,
         });
-      })
-      .catch((error) => {
+      },
+      function (error) {
         console.error(error);
         return res.json({
           error: true,
           message: error.message,
           response: null,
         });
-      });
+      }
+    );
   } catch (error) {
     return res.json({
       error: true,
@@ -212,6 +189,11 @@ const renderMailHtml = (user, link) => {
           padding-right: 15px;
           padding-left: 15px;
         }
+
+        *{
+          font-family: Arial,Helvetica, sans-serif,sans-serif; color: #3c4858;
+        }
+
       </style>
     </head>
   
@@ -233,15 +215,9 @@ const renderMailHtml = (user, link) => {
             <div style="width: 100%; text-align: center">
               <h2>¡Recibiste un nuevo correo!</h2>
               <h3>
-                ¡Hola ${user.name}! Acabas de solicitar un cambio de contraseña. Para
+                ¡Hola ${user}! Acabas de solicitar un cambio de contraseña. Para
                 poder cambiarla haz click en el botón.
               </h3>
-              <h4>
-                Si al hacer click en el botón no se redirige, copia y pega el
-                siguiente enlace en tu navegador
-              </h4>
-              <a href="${link}"> ${link}</a>
-              <h5>*El tiempo para realizar el cambio de contraseña es 1 hora</h5>
               <div
                 class=""
                 style="
@@ -249,9 +225,10 @@ const renderMailHtml = (user, link) => {
                   margin-left: auto;
                   margin-right: auto;
                   margin-bottom: 20px;
+                  cursor: pointer !important
                 "
               >
-                <a href="${link}">
+                <a href="${link}" style="cursor: pointer !important">
                   <button
                     style="
                       border-radius: 10px;

@@ -32,11 +32,13 @@
             </div>
         </div>
     </div>
-    {{#customIf quote.quoteDetail.length ">" 0}}
+
+    <div class="table-wrapper mainTable">
+      {{#customIf quote.quoteDetail.length ">" 0}}
         <div class="card-body" style="padding-bottom: 0;">
         <h3>Productos</h3>
           <div class="table-responsive mb-2" style="max-height: 350px;">
-            <table id="" class=" mainTable table align-items-center">
+            <table id="" class="table align-items-center">
               <thead class="thead-light">
                 <tr>
                   <th class="text-center">Articulo</th>
@@ -59,14 +61,13 @@
             </table>
           </div>
         </div>
-
       {{/customIf}}
 
-   {{#customIf quote.serviceDetail.length ">" 0}}
+      {{#customIf quote.serviceDetail.length ">" 0}}
         <div class="card-body" style="padding-bottom: 0;">
         <h3>Servicios</h3>
           <div class="table-responsive mb-2" style="max-height: 350px;">
-            <table id="" class=" mainTable table align-items-center">
+            <table id="" class="table align-items-center">
               <thead class="thead-light">
                 <tr>
                   <th class="text-center">Servicio</th>
@@ -86,6 +87,8 @@
           </div>
         </div>
       {{/customIf}}
+    </div>
+    
 
 
     <div class="card-footer">

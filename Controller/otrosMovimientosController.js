@@ -90,7 +90,6 @@ const updateOtherMovement = async (req, res) => {
 const deleteOtherMovement = async (req, res) => {
   const _id = req.body._id;
 
-  console.log(req.body);
   try {
     let otherMovement = await OtherMovement.findById(_id);
 

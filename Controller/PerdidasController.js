@@ -84,7 +84,7 @@ const registerLoss = async (req, res) => {
     });
   } catch (error) {
     let errors = errorHandler(error);
-    //console.log(error);
+    console.log(error);
     if (errors.length === 0) {
       res.json({
         error: true,
@@ -103,7 +103,6 @@ const registerLoss = async (req, res) => {
 
 const deleteLoss = async (req, res) => {
   const _id = req.body._id;
-  console.log(_id);
   try {
     let loss = await LossModel.findById(_id);
 

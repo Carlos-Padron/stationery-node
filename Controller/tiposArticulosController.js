@@ -88,7 +88,6 @@ const updateArticleType = async (req, res) => {
 const deleteArticleType = async (req, res) => {
   const _id = req.body._id;
 
-  console.log(req.body);
   try {
     let articleType = await ArticleType.findById(_id);
 
@@ -132,7 +131,6 @@ const deleteArticleType = async (req, res) => {
 const enableArticleType = async (req, res) => {
   const _id = req.body._id;
 
-  console.log(req.body);
   try {
     let articleType = await ArticleType.findById(_id);
 

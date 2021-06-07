@@ -71,7 +71,6 @@ const updateUser = async (req, res) => {
     _id = req.body._id;
     delete req.body._id;
   }
-  console.log();
 
   let imageRelativePath = `${req.protocol}://${req.get("host")}/images/users/`;
   let imageAbsolutePath = `${__dirname}/Public/images/users/`;

@@ -59,16 +59,15 @@ const createProduct = async (req, res) => {
     imageAbsolutePath += imageName;
     imageRelativePath += imageName;
 
-console.log(process.env.DEFAULT_PRODUCTS_ROUTE.substring(0, process.env.DEFAULT_PRODUCTS_ROUTE.length - 9 ));
-
-console.log(base64Data)
     if (
       base64Data != null &&
       base64Data != `${process.env.DEFAULT_PRODUCTS_ROUTE}` &&
-      base64Data != `${process.env.DEFAULT_PRODUCTS_ROUTE.substring(0, process.env.DEFAULT_PRODUCTS_ROUTE.length - 9 )}null`
+      base64Data !=
+        `${process.env.DEFAULT_PRODUCTS_ROUTE.substring(
+          0,
+          process.env.DEFAULT_PRODUCTS_ROUTE.length - 9
+        )}null`
     ) {
-
-
       let base64Image = base64Data.split(";base64,").pop();
       let buffer = Buffer.from(base64Image, "base64");
 
@@ -159,13 +158,10 @@ const updateProduct = async (req, res) => {
       return;
     }
 
-    console.log(req.body.image);
-    console.log(process.env.DEFAULT_PRODUCTS_ROUTE);
     if (
       req.body.image == null ||
       req.body.image == process.env.DEFAULT_PRODUCTS_ROUTE
     ) {
-      console.log("sin imagen");
       product.imageAbsolutePath = null;
       product.imageRelativePath = null;
 
@@ -173,7 +169,6 @@ const updateProduct = async (req, res) => {
         fs.unlinkSync(product.imageAbsolutePath);
       }
     } else if (req.body.image != null && req.body.image.includes("base64")) {
-      console.log("con imagen nueva");
 
       let base64Image = req.body.image.split(";base64,").pop();
       let buffer = Buffer.from(base64Image, "base64");
@@ -394,7 +389,6 @@ const enableProduct = async (req, res) => {
 
 const searchProducts = async (req, res) => {
   const { name, brand, articleType } = req.body;
-  console.log(req.user.role);
 
   let filter = {};
   if (req.user.role != "admin") {
@@ -560,7 +554,11 @@ const getProductsForCombo = async (req, res) => {
 
 const printProductsReport = async (req, res) => {
   try {
-    const template = await renderTemplate("productsReport");
+    const template = await renderTemplate("productsReport", {
+      fechaInicio: "",
+      fechaFin: "",
+      _id: "",
+    });
 
     let PDFBuffer = await createPDF(template);
 
@@ -591,7 +589,11 @@ const printProductsReport = async (req, res) => {
 
 const printLowStockProductsReport = async (req, res) => {
   try {
-    const template = await renderTemplate("lowProductsReport");
+    const template = await renderTemplate("lowProductsReport", {
+      fechaInicio: "",
+      fechaFin: "",
+      _id: "",
+    });
 
     let PDFBuffer = await createPDF(template);
 

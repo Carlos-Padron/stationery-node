@@ -71,9 +71,7 @@ userSchema.path("email").validate(async function (email) {
           _id: this.getQuery()._id,
         });
 
-  //console.log(existingUser);
   if (existingUser) {
-    console.log(existingUser.email);
     if (existingUser.email === email) {
       return true;
     } else {

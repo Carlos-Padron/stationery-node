@@ -293,7 +293,6 @@ const updateQuote = async (req, res) => {
 
         if (productInQuote) {
           //compares if the quantity of th product of the quote is equal to the quantity of the prodct of the uptdate quote
-          console.log("hay");
           if (prod.quantity != productInQuote.quantity) {
             if (prod.quantity > product.quantity) {
               outOfStock.push(

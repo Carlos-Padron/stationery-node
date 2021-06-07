@@ -2,7 +2,7 @@ const fs = require("fs");
 const hbs = require("hbs");
 const path = require("path");
 const pdf = require("html-pdf");
-const moment = require("moment-timezone")
+const moment = require("moment-timezone");
 
 //Models
 
@@ -26,8 +26,6 @@ const renderTemplate = async (templateName, options) => {
 
   return renderedTemplate;
 };
-
-
 
 const prepateDataForTemplate = async (templateName, options) => {
   let data = {};
@@ -81,8 +79,6 @@ const prepateDataForTemplate = async (templateName, options) => {
         prod.price = prod.price.toFixed(2);
       });
 
-      console.log(lowStockProducts);
-
       data.products = lowStockProducts;
 
       break;
@@ -113,7 +109,6 @@ const prepateDataForTemplate = async (templateName, options) => {
         elem.total = `$${elem.total.toFixed(2)}`;
 
         let date = elem.date.toISOString().substring(0, 10);
-        console.log(date);
         let day = date.substring(8, 10);
         let month = date.substring(5, 7);
         let year = date.substring(0, 4);
@@ -153,7 +148,6 @@ const prepateDataForTemplate = async (templateName, options) => {
         elem.total = `$${elem.total.toFixed(2)}`;
 
         let date = elem.date.toISOString().substring(0, 10);
-        console.log(date);
         let day = date.substring(8, 10);
         let month = date.substring(5, 7);
         let year = date.substring(0, 4);
@@ -212,8 +206,15 @@ const prepateDataForTemplate = async (templateName, options) => {
 
         saleDetail.date = `${day}/${month}/${year}`;
 
-        saleDetail.saleDetail.forEach((detail) => detail.unitPrice.toFixed(2));
-        saleDetail.serviceDetail.forEach((detail) => detail.total.toFixed(2));
+        if (saleDetail.saleDetail) {
+          saleDetail.saleDetail.forEach((detail) =>
+            detail.unitPrice.toFixed(2)
+          );
+        }
+
+        if (saleDetail.serviceDetail) {
+          saleDetail.serviceDetail.forEach((detail) => detail.total.toFixed(2));
+        }
 
         data.sale = saleDetail;
       } else {
@@ -266,18 +267,24 @@ const prepateDataForTemplate = async (templateName, options) => {
         let year = date.substring(0, 4);
 
         quoteDetail.date = `${day}/${month}/${year}`;
+        if (quoteDetail.quoteDetail) {
+          quoteDetail.quoteDetail.forEach((detail) =>
+            detail.unitPrice.toFixed(2)
+          );
+        }
 
-        quoteDetail.quoteDetail.forEach((detail) =>
-          detail.unitPrice.toFixed(2)
-        );
-        console.log(quoteDetail);
-        quoteDetail.serviceDetail.forEach((detail) => detail.total.toFixed(2));
+        if (quoteDetail.serviceDetail) {
+          quoteDetail.serviceDetail.forEach((detail) =>
+            detail.total.toFixed(2)
+          );
+        }
 
         data.quote = quoteDetail;
       } else {
         throw new Error("No se encontró la cotización solicitada");
       }
 
+      break;
     case "cashOuts":
       fechaInicio = fechaInicio.split("T");
       let initialDateCashout = `${fechaInicio[0].substring(
@@ -293,16 +300,11 @@ const prepateDataForTemplate = async (templateName, options) => {
       )}/${fechaFin[0].substring(5, 7)}/${fechaFin[0].substring(0, 4)}`;
       fechaFin = `${fechaFin[0]}T23:59:59z`;
 
-        console.log({
-          date: { $gte: fechaInicio, $lte: fechaFin },
-        });
-
       let cashOuts = await CashOut.find({
         date: { $gte: fechaInicio, $lte: fechaFin },
       }).sort({ date: "asc" });
 
       cashOuts.forEach((elem) => {
-
         let date = elem.date.toISOString().substring(0, 10);
 
         let day = date.substring(8, 10);
@@ -310,10 +312,8 @@ const prepateDataForTemplate = async (templateName, options) => {
         let year = date.substring(0, 4);
 
         elem.cashOutDate = `${day}/${month}/${year}`;
-        elem.sales = elem.totalSales
+        elem.sales = elem.totalSales;
       });
-
-
 
       data.cashOuts = cashOuts;
       data.date1 = initialDateCashout;

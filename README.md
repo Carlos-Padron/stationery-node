@@ -40,8 +40,11 @@ BCRYPT_ROUNDS=
 REDIS_HOST=
 DEFAULT_PRODUCTS_ROUTE=https://{yourDomain}/inventario/productos
 DEFAULT_USER_ROUTE=https://{yourDomain}/perfil
-EMAIL=#email account to send mails in case someone forget his password
-EMAIL_PW=#email password
+SENDINBLUE_API_KEY=#sendInBlue APIKEY to send email in case some forget his pw
+BUSINESS_NAME= #name of the buisiness. This will apper in the emails
+BUSINESS_EMAIL=no-reply@yourDomain.com
+
+#To send emails is required to have a sendInBlue accunt and have configured a domain in your sendInBlue account
 ```
 To start using the POS yout need to add a user from the database withe the role 'admin'. The password must be hashed with node js bcrypt package
  You can change the logo with your stationery logo

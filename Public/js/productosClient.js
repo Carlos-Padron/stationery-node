@@ -3,6 +3,7 @@ window.addEventListener("DOMContentLoaded", () => {
   let $fields = [
     "_id",
     "name",
+    "barcode",
     "image",
     "price",
     "quantity",
@@ -130,7 +131,7 @@ window.addEventListener("DOMContentLoaded", () => {
       console.log(productsData);
 
       let role = localStorage.getItem("role");
-      
+
       productsData.forEach((elem, index) => {
         if (role == "admin") {
           if (elem.disabled) {
@@ -356,6 +357,19 @@ window.addEventListener("DOMContentLoaded", () => {
       switch (elem) {
         case "_id":
           data = document.querySelector(`#${elem}`);
+          body[elem] = data.value;
+          break;
+
+        case "barcode":
+          data = document.querySelector(`#${elem}`);
+          msg = document.querySelector(`#${elem}Msg`);
+
+          if (data.value === "") {
+            data.classList.add("invalid-input");
+            msg.innerHTML += "El código es requerido.";
+            msg.classList.add("text-danger");
+            valid = false;
+          }
           body[elem] = data.value;
           break;
 

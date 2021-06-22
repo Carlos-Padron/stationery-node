@@ -25,7 +25,18 @@
       <div class="card-body">
         <form id="searchForm">
           <div class="row">
-            <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+            <div class="col-12 col-sm-3 col-md-3 col-lg-3">
+              <div class="form-group">
+                <label class="form-control-label">Código del producto:</label>
+                <input
+                  class="form-control form-control-sm"
+                  placeholder="Código de barras"
+                  type="text"
+                  data-search="barcode"
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-3 col-md-3 col-lg-3">
               <div class="form-group">
                 <label class="form-control-label">Nombre del producto:</label>
                 <input
@@ -36,7 +47,7 @@
                 />
               </div>
             </div>
-            <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+            <div class="col-12 col-sm-3 col-md-3 col-lg-3">
               <div class="form-group">
                 <label class="form-control-label">Tipo de Artículo:</label>
                 <select
@@ -50,7 +61,7 @@
                 </select>
               </div>
             </div>
-            <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+            <div class="col-12 col-sm-3 col-md-3 col-lg-3">
               <div class="form-group">
                 <label class="form-control-label">Marca:</label>
                 <select
@@ -251,6 +262,20 @@
                             <div class="col-md-8">
                               <div class="row">
                                 <div class="col-6">
+                                  <small id="barcodeMsg"></small>
+                                  <div class="form-group">
+                                    <label
+                                      class="form-control-label"
+                                    >Código:</label>
+                                    <input
+                                      class="form-control form-control-sm"
+                                      placeholder="Código de barras"
+                                      type="text"
+                                      id="barcode"
+                                    />
+                                  </div>
+                                </div>
+                                <div class="col-6">
                                   <small id="nameMsg"></small>
                                   <div class="form-group">
                                     <label
@@ -261,21 +286,6 @@
                                       placeholder="Nombre"
                                       type="text"
                                       id="name"
-                                    />
-                                  </div>
-                                </div>
-                                <div class="col-6">
-                                  <small id="priceMsg"></small>
-                                  <div class="form-group">
-                                    <label
-                                      class="form-control-label"
-                                    >Precio:</label>
-                                    <input
-                                      class="form-control form-control-sm"
-                                      placeholder="$"
-                                      oninput="currencyMask()"
-                                      type="text"
-                                      id="price"
                                     />
                                   </div>
                                 </div>
@@ -297,24 +307,18 @@
                                   </div>
                                 </div>
                                 <div class="col-6">
-                                  <small id="articleTypeMsg"></small>
+                                  <small id="priceMsg"></small>
                                   <div class="form-group">
-                                    <label class="form-control-label">Tipo de
-                                      Artículo:</label>
-                                    <select
+                                    <label
+                                      class="form-control-label"
+                                    >Precio:</label>
+                                    <input
                                       class="form-control form-control-sm"
-                                      id="articleType"
-                                    >
-                                      <option
-                                        value=""
-                                        selected="true"
-                                      >Seleccione</option>
-                                      {{#each articleTypes}}
-                                        <option
-                                          value="{{this._id}}"
-                                        >{{this.name}}</option>
-                                      {{/each}}
-                                    </select>
+                                      placeholder="$"
+                                      oninput="currencyMask()"
+                                      type="text"
+                                      id="price"
+                                    />
                                   </div>
                                 </div>
                               </div>
@@ -334,6 +338,27 @@
                                         selected="true"
                                       >Seleccione</option>
                                       {{#each brands}}
+                                        <option
+                                          value="{{this._id}}"
+                                        >{{this.name}}</option>
+                                      {{/each}}
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-6">
+                                  <small id="articleTypeMsg"></small>
+                                  <div class="form-group">
+                                    <label class="form-control-label">Tipo de
+                                      Artículo:</label>
+                                    <select
+                                      class="form-control form-control-sm"
+                                      id="articleType"
+                                    >
+                                      <option
+                                        value=""
+                                        selected="true"
+                                      >Seleccione</option>
+                                      {{#each articleTypes}}
                                         <option
                                           value="{{this._id}}"
                                         >{{this.name}}</option>
@@ -421,13 +446,10 @@
     </div>
   {{/content}}
 
-
- {{#content "scripts" mode="append"}}
+  {{#content "scripts" mode="append"}}
     <script>
       const DEFAULT_ROUTE_PRODUCTS = "{{PRODUCT_ROUTE}}";
     </script>
   {{/content}}
-
-
 
 {{/extend}}

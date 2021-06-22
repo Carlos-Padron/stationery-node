@@ -147,6 +147,8 @@ const updateProduct = async (req, res) => {
       return;
     }
 
+
+
     currentStock = product.quantity;
 
     if (parseInt(newStock) < 0) {
@@ -199,6 +201,7 @@ const updateProduct = async (req, res) => {
       product.imageRelativePath = imageRelativePath;
     }
 
+    product.barcode = req.body.barcode;
     product.name = req.body.name;
     product.price = req.body.price;
     product.quantity = req.body.quantity;
@@ -265,7 +268,7 @@ const showProduct = async (req, res) => {
         path: "history.madeBy",
         select: "name fatherSurname",
       })
-      .select("name price quantity imageRelativePath articleType brand history")
+      .select("barcode name price quantity imageRelativePath articleType brand history")
       .exec();
 
     if (!product) {
@@ -388,11 +391,15 @@ const enableProduct = async (req, res) => {
 };
 
 const searchProducts = async (req, res) => {
-  const { name, brand, articleType } = req.body;
+  const { barcode, name, brand, articleType } = req.body;
 
   let filter = {};
   if (req.user.role != "admin") {
     filter.disabled = false;
+  }
+
+  if (barcode) {
+    filter.barcode = barcode;
   }
 
   if (name) {

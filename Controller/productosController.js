@@ -452,11 +452,15 @@ const searchProducts = async (req, res) => {
 };
 
 const searchProductsWithStock = async (req, res) => {
-  const { name, brand, articleType } = req.body;
+  const { barcode, name, brand, articleType } = req.body;
 
   let filter = {
     disabled: false,
   };
+
+  if (barcode) {
+    filter.barcode = barcode;
+  }
 
   if (name) {
     filter.name = {

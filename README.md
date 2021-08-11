@@ -35,6 +35,7 @@ MODE=PRODUCTION #PRODUCTION / DEVELOPMENT
 PRODUCTION_DATABASE = #connection string
 DEVELOPMENT_DATABASE= #connection string
 SECRET_KEY= #Secret key for the JWT
+MONGO_DB_AUTH_SOURCE=admin
 REDIS_SECRET= #Secret key to generate a session
 BCRYPT_ROUNDS=
 REDIS_HOST=

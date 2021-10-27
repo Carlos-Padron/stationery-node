@@ -7,7 +7,9 @@ const authViews = async (req, res, next) => {
   try {
 
     if (req.sessionID) {
+      console.log(req.sessionID)
       let cookie = await redisGet(`sess:${req.sessionID}`);
+      console.log(cookie)
 
       if (!cookie) {
         return res.redirect("/login");

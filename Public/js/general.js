@@ -93,7 +93,7 @@ const getRepeatedEntriesFromArray = (array, elementToSearch) => {
   return count;
 };
 
-//butons
+//buttons
 const disableButton = (btn, msg, justify = "justify-content-between") => {
   btn.setAttribute("disabled", true);
   btn.classList.add("disabled-btn");

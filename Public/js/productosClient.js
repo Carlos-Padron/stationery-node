@@ -364,13 +364,15 @@ window.addEventListener("DOMContentLoaded", () => {
           data = document.querySelector(`#${elem}`);
           msg = document.querySelector(`#${elem}Msg`);
 
-          if (data.value === "") {
+          /* if (data.value === "") {
             data.classList.add("invalid-input");
             msg.innerHTML += "El código es requerido.";
             msg.classList.add("text-danger");
             valid = false;
-          }
-          body[elem] = data.value;
+          } */
+
+          
+          body[elem] = data.value.trim();
           break;
 
         case "name":

@@ -22,7 +22,7 @@ let productSchema = new mongoose.Schema({
   },
   barcode: {
     type: String,
-    required: [true, "EL código del barras de producto es requerido"],
+    //required: [true, "EL código del barras de producto es requerido"],
     trim: true,
     unique: true,
   },

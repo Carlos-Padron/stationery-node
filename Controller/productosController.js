@@ -50,7 +50,7 @@ const createProduct = async (req, res) => {
       date: new Date(),
       quantity: req.body.quantity,
       action: "add",
-      description: "Se ingresó mercancia",
+      description: "Se ingresó mercancía",
       madeBy: req.user._id,
     },
   ];
@@ -63,10 +63,10 @@ const createProduct = async (req, res) => {
       base64Data != null &&
       base64Data != `${process.env.DEFAULT_PRODUCTS_ROUTE}` &&
       base64Data !=
-        `${process.env.DEFAULT_PRODUCTS_ROUTE.substring(
-          0,
-          process.env.DEFAULT_PRODUCTS_ROUTE.length - 9
-        )}null`
+      `${process.env.DEFAULT_PRODUCTS_ROUTE.substring(
+        0,
+        process.env.DEFAULT_PRODUCTS_ROUTE.length - 9
+      )}null`
     ) {
       let base64Image = base64Data.split(";base64,").pop();
       let buffer = Buffer.from(base64Image, "base64");
@@ -212,21 +212,30 @@ const updateProduct = async (req, res) => {
     if (newStock > currentStock) {
       action = "add";
 
-      product.history.push({
-        date: new Date(),
-        quantity: req.body.quantity,
-        action,
-        description: "Se actualizó mercancia",
-        madeBy: req.user._id,
-      });
-    } else if (newStock < currentStock) {
-      action = "subtract";
+
+      if (product.history.length >= 5) {
+        product.history = product.history.slice(1, 5)
+      }
 
       product.history.push({
         date: new Date(),
         quantity: req.body.quantity,
         action,
-        description: "Se actualizó mercancia",
+        description: "Se actualizó mercancía",
+        madeBy: req.user._id,
+      });
+    } else if (newStock < currentStock) {
+      action = "subtract";
+
+      if (product.history.length >= 5) {
+        product.history = product.history.slice(1, 5)
+      }
+
+      product.history.push({
+        date: new Date(),
+        quantity: req.body.quantity,
+        action,
+        description: "Se actualizó mercancía",
         madeBy: req.user._id,
       });
     }

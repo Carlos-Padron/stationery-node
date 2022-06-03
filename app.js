@@ -9,7 +9,7 @@ const path = require("path");
 const { sessionObj } = require("./Utils/Helpers/redisHelper");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3200;
 
 //Express config
 const publicDirectoryPath = path.join(__dirname, "Public");

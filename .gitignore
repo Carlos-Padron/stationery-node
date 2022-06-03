@@ -48,3 +48,5 @@ msbuild.wrn
 .history/
 
 Public/images/productos
+
+dump.rdb
